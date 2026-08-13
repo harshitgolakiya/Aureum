@@ -7,3 +7,12 @@ npm-debug.log*
 .qa-server.log
 .qa-shots/
 *.tsbuildinfo
+
+# Local AI/project working files
+AGENTS.md
+CLAUDE.md
+IMPROVEMENTS.md
+LAUNCH_READINESS.md
+AUREUM NEW WEBSITE CONTENTS (1).md
+AUREUM - SECONDARY COLORS PROPOSAL.pdf
+aureumLogo.svg

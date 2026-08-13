@@ -2,7 +2,9 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 export async function GET() {
-  const logo = await readFile(path.join(process.cwd(), "aureumLogo.svg"));
+  const logo = await readFile(
+    path.join(process.cwd(), "public", "aureumLogo.svg"),
+  );
   return new Response(new Uint8Array(logo), {
     headers: {
       "Content-Type": "image/svg+xml",

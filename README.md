@@ -15,4 +15,10 @@ npm run dev
 npm run verify
 ```
 
-See `LAUNCH_READINESS.md` for deployment requirements and outstanding client-controlled content.
+## Production environment
+
+- `NEXT_PUBLIC_SITE_URL`: final HTTPS origin.
+- `NEXT_PUBLIC_CONTACT_ENDPOINT`: approved form endpoint.
+- `NEXT_PUBLIC_MAPBOX_TOKEN`: optional Mapbox credential.
+
+Use `npm run audit:env:production` before deployment.
