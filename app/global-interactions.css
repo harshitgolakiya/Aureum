@@ -1,0 +1,302 @@
+.nav-item {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.header.on-light-hero:not(.is-scrolled) {
+  background: var(--navy);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.desktop-nav .nav-item > a {
+  position: relative;
+  padding: 0.7rem 0;
+}
+.desktop-nav .nav-item > a:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.3rem;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s var(--ease);
+}
+.desktop-nav .nav-item > a:hover:after,
+.desktop-nav .nav-item > a.active:after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+.mega-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  min-height: 0;
+  height: 0;
+  overflow: hidden;
+  background: rgba(15, 34, 64, 0.97);
+  backdrop-filter: blur(22px);
+  display: grid;
+  grid-template-columns: 0.75fr 1.25fr auto;
+  gap: 6vw;
+  padding: 0 var(--pad);
+  opacity: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  transition:
+    height 0.55s var(--ease),
+    opacity 0.35s,
+    padding 0.55s var(--ease);
+}
+.mega-menu.open {
+  height: 320px;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  opacity: 1;
+}
+.mega-menu.open > * {
+  animation: megaReveal 0.65s var(--ease) both;
+}
+.mega-menu.open > :nth-child(2) {
+  animation-delay: 0.06s;
+}
+.mega-menu.open > :nth-child(3) {
+  animation-delay: 0.12s;
+}
+.mega-menu small {
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.55rem;
+}
+.mega-menu p {
+  color: var(--ivory);
+  line-height: 1.7;
+  max-width: 360px;
+  margin-top: 1.2rem;
+}
+.mega-menu > div:nth-child(2) {
+  border-top: 1px solid rgba(255, 255, 255, 0.13);
+}
+.mega-menu > div:nth-child(2) a {
+  display: grid;
+  grid-template-columns: 55px 1fr auto;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.13);
+  font-size: 1rem;
+}
+.mega-menu > div:nth-child(2) a span,
+.mega-menu > div:nth-child(2) a b {
+  color: var(--gold);
+  font-size: 0.65rem;
+}
+.mega-all {
+  align-self: end;
+  border-bottom: 1px solid var(--gold);
+  padding: 0.75rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.6rem;
+}
+.mega-all span {
+  margin-left: 2rem;
+}
+.mega-all:before {
+  content: "360°";
+  display: block;
+  font-family: Georgia, serif;
+  font-size: clamp(2.5rem, 4vw, 4.5rem);
+  line-height: 1;
+  margin-bottom: 1.4rem;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: -0.06em;
+}
+
+@keyframes megaReveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+:where(.button, .nav-cta) {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+:where(.button, .nav-cta):before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: var(--navy);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s var(--ease);
+}
+:where(.button, .nav-cta):hover,
+:where(.button, .nav-cta):focus-visible {
+  color: #fff;
+  background: var(--gold);
+}
+:where(.button, .nav-cta):hover:before,
+:where(.button, .nav-cta):focus-visible:before {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+:where(.button, .nav-cta) span {
+  transition: transform 0.45s var(--ease);
+}
+:where(.button, .nav-cta):hover span,
+:where(.button, .nav-cta):focus-visible span {
+  transform: translate(4px, -4px);
+}
+.button.dark:before {
+  background: var(--gold);
+}
+.button.dark:hover,
+.button.dark:focus-visible {
+  color: var(--navy);
+}
+.text-link {
+  position: relative;
+  border-bottom: 0;
+}
+.text-link:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--gold);
+  transform-origin: left;
+  transition: transform 0.45s var(--ease);
+}
+.text-link:hover:after,
+.text-link:focus-visible:after {
+  animation: ruleTravel 0.65s var(--ease);
+}
+@keyframes ruleTravel {
+  45% {
+    transform: scaleX(0);
+    transform-origin: right;
+  }
+  46% {
+    transform-origin: left;
+  }
+}
+.mobile-menu a.active {
+  color: var(--gold);
+}
+.connect {
+  position: relative;
+  overflow: hidden;
+}
+.connect:after {
+  content: "";
+  position: absolute;
+  width: min(42vw, 620px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(183, 154, 88, 0.14);
+  border-radius: 50%;
+  right: -15%;
+  bottom: -55%;
+  box-shadow: 0 0 0 70px rgba(183, 154, 88, 0.025);
+}
+footer {
+  position: relative;
+  overflow: hidden;
+}
+footer:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: var(--pad);
+  right: var(--pad);
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold), rgba(183, 154, 88, 0));
+  transform-origin: left;
+}
+.footer-orbit {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border: 1px solid rgba(183, 154, 88, 0.09);
+  border-radius: 50%;
+  right: -210px;
+  top: -210px;
+  box-shadow: 0 0 0 65px rgba(183, 154, 88, 0.018);
+}
+.footer-grid,
+.footer-bottom {
+  position: relative;
+  z-index: 1;
+}
+@media (max-width: 900px) {
+  .header > .logo,
+  .header > .menu-button {
+    position: relative;
+    z-index: 3;
+  }
+  .menu-button i {
+    position: relative;
+    transition: transform 0.4s var(--ease);
+  }
+  .menu-button i:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 100%;
+    height: 1px;
+    background: var(--gold);
+    transition:
+      transform 0.4s var(--ease),
+      top 0.4s var(--ease);
+  }
+  .menu-button[aria-expanded="true"] i {
+    transform: rotate(45deg);
+  }
+  .menu-button[aria-expanded="true"] i:after {
+    top: 0;
+    transform: rotate(90deg);
+  }
+  .mobile-menu {
+    z-index: 2;
+    width: 100%;
+    height: 100dvh;
+    min-height: 100svh;
+    padding: max(7.5rem, 15svh) var(--pad) max(2rem, 6svh);
+    justify-content: flex-start;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--navy);
+  }
+  .mobile-menu a {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: 2.2rem minmax(0, 1fr);
+    align-items: baseline;
+    width: 100%;
+    padding: clamp(0.8rem, 2.4vh, 1.2rem) 0;
+    font-size: clamp(2rem, 9vw, 3.5rem);
+    line-height: 1;
+    color: #fff;
+  }
+  .mobile-menu small {
+    margin-right: 0;
+  }
+  .mobile-menu a.active {
+    color: var(--gold);
+  }
+  .mega-menu {
+    display: none;
+  }
+  .connect:after {
+    width: 70vw;
+    right: -35%;
+    bottom: -20%;
+  }
+}

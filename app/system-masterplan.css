@@ -1,0 +1,471 @@
+/* Aureum System: scroll-built industrial masterplan */
+.system-story {
+  background: var(--cream);
+  color: var(--navy);
+  overflow: clip;
+}
+.system-story .system-art,
+.system-story .diagram-core {
+  display: none !important;
+}
+.system-masterplan {
+  position: relative;
+  height: min(72vh, 690px);
+  min-height: 500px;
+  border-top: 1px solid rgba(16, 26, 43, 0.2);
+  border-bottom: 1px solid rgba(16, 26, 43, 0.2);
+  overflow: hidden;
+  min-width: 0;
+}
+.system-masterplan:before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.18),
+    transparent 48%
+  );
+  pointer-events: none;
+}
+.system-masterplan svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  padding: 3.6rem 0 3.4rem;
+  transform: scale(1.055);
+  transform-origin: center;
+}
+.plan-meta {
+  position: absolute;
+  z-index: 2;
+  inset: 1rem 1.2rem auto;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.51rem;
+  letter-spacing: 0.14em;
+  color: var(--dusty);
+}
+.plan-explanation {
+  position: absolute;
+  z-index: 3;
+  left: 1.2rem;
+  top: 2.25rem;
+  max-width: 360px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.plan-explanation small {
+  display: none;
+}
+.plan-explanation strong {
+  display: block;
+  color: var(--dusty);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.signal-labels text,
+.plot-labels text,
+.asset-labels text {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  transition: 0.55s var(--ease);
+}
+.signal-labels text {
+  fill: var(--dusty);
+}
+.plot-labels text {
+  fill: var(--gold);
+  opacity: 0;
+}
+.asset-labels text {
+  fill: white;
+  opacity: 0;
+  font-size: 8px;
+}
+.stage-1 .signal-labels text {
+  opacity: 1;
+}
+.stage-2 .signal-labels text {
+  opacity: 0.12;
+}
+.stage-2 .plot-labels text {
+  opacity: 1;
+}
+.stage-3 .signal-labels text,
+.stage-3 .plot-labels text {
+  opacity: 0;
+}
+.stage-3 .asset-labels text {
+  opacity: 1;
+}
+.survey-grid path {
+  fill: none;
+  stroke: rgba(84, 102, 125, 0.12);
+  stroke-width: 1;
+}
+.site-boundary {
+  fill: rgba(255, 255, 255, 0.08);
+  stroke: var(--dusty);
+  stroke-width: 1.3;
+  stroke-dasharray: 5 7;
+  transition: 1s var(--ease);
+}
+.access-infrastructure path {
+  fill: none;
+  transition: 0.9s var(--ease);
+}
+.access-road-edge {
+  stroke: var(--dusty);
+  stroke-width: 18;
+  opacity: 0.12;
+}
+.access-road {
+  stroke: var(--cream);
+  stroke-width: 10;
+}
+.site-entry {
+  stroke: var(--gold);
+  stroke-width: 3;
+  stroke-dasharray: 80;
+  stroke-dashoffset: 80;
+}
+.stage-1 .access-infrastructure {
+  opacity: 0.18;
+}
+.stage-2 .access-infrastructure,
+.stage-3 .access-infrastructure {
+  opacity: 1;
+}
+.stage-2 .site-entry,
+.stage-3 .site-entry {
+  stroke-dashoffset: 0;
+}
+.opportunity-signals circle {
+  fill: var(--gold);
+  stroke: var(--cream);
+  stroke-width: 6;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: 0.7s var(--ease);
+}
+.strategy-routes path {
+  fill: none;
+  stroke: var(--gold);
+  stroke-width: 1.6;
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  transition: 1.2s var(--ease);
+}
+.strategy-routes .primary-route {
+  stroke-width: 4;
+  opacity: 0.45;
+}
+.development-plots path {
+  fill: rgba(84, 102, 125, 0.06);
+  stroke: var(--dusty);
+  stroke-width: 1;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: 0.8s var(--ease);
+}
+.building-cores path {
+  fill: var(--navy);
+  stroke: var(--gold);
+  stroke-width: 1;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: 0.8s var(--ease);
+}
+.stage-1 .opportunity-signals circle {
+  animation: signal-pulse 2.2s ease-in-out infinite;
+}
+.stage-1 .site-boundary {
+  opacity: 0.35;
+}
+.stage-2 .strategy-routes path,
+.stage-3 .strategy-routes path {
+  stroke-dashoffset: 0;
+}
+.stage-2 .opportunity-signals circle,
+.stage-3 .opportunity-signals circle {
+  transform: scale(0.65);
+}
+.stage-2 .development-plots path,
+.stage-3 .development-plots path {
+  opacity: 1;
+  transform: none;
+}
+.stage-3 .building-cores path {
+  opacity: 1;
+  transform: none;
+}
+.stage-3 .development-plots path {
+  fill: rgba(84, 102, 125, 0.12);
+}
+.development-plots path:nth-child(2),
+.building-cores path:nth-child(2) {
+  transition-delay: 0.08s;
+}
+.development-plots path:nth-child(3),
+.building-cores path:nth-child(3) {
+  transition-delay: 0.16s;
+}
+.development-plots path:nth-child(4),
+.building-cores path:nth-child(4) {
+  transition-delay: 0.24s;
+}
+.development-plots path:nth-child(5),
+.building-cores path:nth-child(5) {
+  transition-delay: 0.32s;
+}
+.plan-stage {
+  position: absolute;
+  left: 1.2rem;
+  bottom: 0.8rem;
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+.plan-stage strong {
+  font-family: Georgia, serif;
+  font-size: clamp(2rem, 3vw, 3rem);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--navy);
+}
+.plan-stage span {
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--dusty);
+  max-width: 215px;
+  line-height: 1.5;
+}
+.plan-legend {
+  position: absolute;
+  right: 1.2rem;
+  top: 4.1rem;
+  bottom: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.55rem;
+  color: var(--dusty);
+  font-size: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.plan-legend span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.plan-legend i {
+  display: block;
+  width: 18px;
+  height: 1px;
+  background: var(--gold);
+}
+.legend-signal i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.legend-route i {
+  height: 3px;
+}
+.legend-plot i {
+  height: 9px;
+  border: 1px solid var(--dusty);
+  background: transparent;
+}
+.legend-asset i {
+  height: 9px;
+  background: var(--navy);
+}
+.plan-legend span {
+  opacity: 0.34;
+  transition: 0.5s var(--ease);
+}
+.stage-1 .legend-signal,
+.stage-2 .legend-route,
+.stage-2 .legend-plot,
+.stage-3 .legend-route,
+.stage-3 .legend-plot,
+.stage-3 .legend-asset {
+  opacity: 1;
+}
+.stage-1 .strategy-routes,
+.stage-1 .development-plots,
+.stage-1 .building-cores {
+  opacity: 0;
+}
+.stage-2 .building-cores {
+  opacity: 0;
+}
+.stage-3 .opportunity-signals {
+  opacity: 0.35;
+}
+.stage-3 .strategy-routes {
+  opacity: 0.5;
+}
+.plan-flow {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.8rem;
+  background: rgba(210, 207, 203, 0.92);
+  border: 1px solid rgba(16, 26, 43, 0.12);
+  font-size: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: var(--dusty);
+}
+.plan-flow i {
+  width: 28px;
+  height: 1px;
+  background: rgba(16, 26, 43, 0.25);
+}
+.plan-flow span.active {
+  color: var(--navy);
+  font-weight: 800;
+}
+.plan-flow span.active:before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+.system-story .system-active-copy {
+  color: var(--navy);
+  border-bottom-color: rgba(16, 26, 43, 0.18);
+}
+.system-story .system-active-copy small {
+  color: var(--gold);
+}
+.system-story .system-active-copy h3 {
+  color: var(--navy);
+  font-size: clamp(2.1rem, 3.3vw, 4rem);
+  font-weight: 400;
+  letter-spacing: -0.045em;
+}
+.system-story .system-active-copy p {
+  color: var(--dusty);
+  font-size: clamp(0.88rem, 1vw, 1rem);
+  line-height: 1.85;
+}
+@keyframes signal-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(0.75);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+@media (min-width: 901px) {
+  body .system-story .system-sticky {
+    display: block;
+    grid-template-columns: none;
+    padding: clamp(4rem, 7vh, 6rem) var(--pad);
+    height: 100vh;
+  }
+  body .system-story .system-copy {
+    display: none;
+  }
+  body .system-story .system-visual {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    aspect-ratio: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1.18fr) minmax(300px, 0.82fr);
+    grid-template-rows: 1fr;
+    gap: 7vw;
+    align-items: center;
+    overflow: hidden;
+  }
+  .system-masterplan {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  body .system-story .system-active-copy {
+    position: static;
+    grid-column: 2;
+    grid-row: 1;
+    transform: none;
+    width: auto;
+    background: transparent;
+    backdrop-filter: none;
+    padding: 2rem 0;
+    border-left: 0;
+    border-top: 1px solid var(--gold);
+    border-bottom: 1px solid var(--line);
+    min-width: 0;
+  }
+}
+@media (min-width: 901px) and (max-width: 1250px) {
+  body .system-story .system-sticky {
+    padding-inline: clamp(1.5rem, 4vw, 3rem);
+  }
+  body .system-story .system-visual {
+    grid-template-columns: minmax(0, 1.08fr) minmax(260px, 0.92fr);
+    gap: 3vw;
+  }
+  .system-masterplan {
+    height: min(66vh, 590px);
+    min-height: 430px;
+  }
+  .plan-explanation {
+    max-width: 260px;
+  }
+  .plan-explanation strong {
+    font-size: 0.65rem;
+  }
+  .plan-legend {
+    font-size: 0.43rem;
+  }
+  .system-story .system-active-copy h3 {
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+  }
+  .system-story .system-active-copy p {
+    font-size: 0.8rem;
+  }
+}
+@media (max-width: 900px) {
+  .system-masterplan {
+    display: none;
+  }
+  .system-story .system-active-copy {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .opportunity-signals circle {
+    animation: none !important;
+  }
+  .strategy-routes path {
+    stroke-dashoffset: 0;
+  }
+  .development-plots path,
+  .building-cores path {
+    transform: none;
+  }
+}

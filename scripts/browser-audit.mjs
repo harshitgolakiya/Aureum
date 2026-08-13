@@ -1,0 +1,191 @@
+import { spawn, spawnSync } from "node:child_process";
+import { once } from "node:events";
+import { existsSync } from "node:fs";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { setTimeout as wait } from "node:timers/promises";
+import WebSocket from "ws";
+
+const appPort = 3198;
+const origin = `http://127.0.0.1:${appPort}`;
+const nextBin = fileURLToPath(
+  new URL("../node_modules/next/dist/bin/next", import.meta.url),
+);
+const app = spawn(process.execPath, [nextBin, "start", "-p", String(appPort)], {
+  stdio: "ignore",
+  windowsHide: true,
+});
+const browsers = [
+  ["Chrome", "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"],
+  ["Edge", "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"],
+].filter(([, executable]) => existsSync(executable));
+const routes = [
+  "/",
+  "/who-we-are",
+  "/how-we-partner",
+  "/portfolio",
+  "/portfolio/project-1",
+  "/insights",
+  "/insights/article-1",
+  "/contact",
+  "/privacy-policy",
+];
+const viewports = [
+  ["mobile", 390, 844],
+  ["desktop", 1440, 900],
+];
+
+async function waitFor(url, attempts = 40) {
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    try {
+      const response = await fetch(url);
+      if (response.ok) return response;
+    } catch {}
+    await wait(250);
+  }
+  throw new Error(`Timed out waiting for ${url}`);
+}
+
+function connect(webSocketUrl) {
+  const socket = new WebSocket(webSocketUrl);
+  const pending = new Map();
+  let sequence = 0;
+  socket.addEventListener("message", ({ data }) => {
+    const message = JSON.parse(data);
+    if (!message.id || !pending.has(message.id)) return;
+    const { resolve, reject } = pending.get(message.id);
+    pending.delete(message.id);
+    if (message.error) reject(new Error(message.error.message));
+    else resolve(message.result);
+  });
+  const opened = once(socket, "open");
+  return {
+    opened,
+    send(method, params = {}) {
+      const id = ++sequence;
+      socket.send(JSON.stringify({ id, method, params }));
+      return new Promise((resolve, reject) =>
+        pending.set(id, { resolve, reject }),
+      );
+    },
+    close() {
+      socket.close();
+    },
+  };
+}
+
+const auditExpression = `(() => {
+  const duplicateIds = [...document.querySelectorAll('[id]')]
+    .map(node => node.id)
+    .filter((id, index, ids) => id && ids.indexOf(id) !== index);
+  const unlabeledButtons = [...document.querySelectorAll('button')]
+    .filter(node => !node.getAttribute('aria-label') && !node.getAttribute('title') && !node.textContent.trim()).length;
+  const imagesWithoutAlt = [...document.querySelectorAll('img')]
+    .filter(node => !node.hasAttribute('alt')).length;
+  return {
+    overflow: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - innerWidth,
+    main: Boolean(document.querySelector('main')),
+    duplicateIds: [...new Set(duplicateIds)],
+    unlabeledButtons,
+    imagesWithoutAlt,
+    overflowElements: [...document.querySelectorAll('body *')]
+      .filter(node => { const rect = node.getBoundingClientRect(); return rect.right > innerWidth + 2 || rect.left < -2; })
+      .slice(0, 8)
+      .map(node => ({ tag: node.tagName, className: String(node.className || ''), rect: node.getBoundingClientRect().toJSON() })),
+  };
+})()`;
+
+let failed = false;
+try {
+  await waitFor(origin);
+  if (!browsers.length)
+    console.log("SKIP No supported local Chromium browser found.");
+  for (
+    let browserIndex = 0;
+    browserIndex < browsers.length;
+    browserIndex += 1
+  ) {
+    const [name, executable] = browsers[browserIndex];
+    const debugPort = 9320 + browserIndex;
+    const profile = await mkdtemp(join(tmpdir(), "aureum-browser-audit-"));
+    const browser = spawn(
+      executable,
+      [
+        "--headless=new",
+        "--disable-gpu",
+        "--no-first-run",
+        "--no-default-browser-check",
+        `--remote-debugging-port=${debugPort}`,
+        `--user-data-dir=${profile}`,
+        "about:blank",
+      ],
+      { stdio: "ignore", windowsHide: true },
+    );
+    try {
+      await waitFor(`http://127.0.0.1:${debugPort}/json/version`);
+      const pages = await (
+        await fetch(`http://127.0.0.1:${debugPort}/json/list`)
+      ).json();
+      const page = pages.find((entry) => entry.type === "page");
+      const cdp = connect(page.webSocketDebuggerUrl);
+      await cdp.opened;
+      await cdp.send("Page.enable");
+      await cdp.send("Runtime.enable");
+      await cdp.send("Emulation.setEmulatedMedia", {
+        features: [{ name: "prefers-reduced-motion", value: "reduce" }],
+      });
+      for (const [viewport, width, height] of viewports) {
+        await cdp.send("Emulation.setDeviceMetricsOverride", {
+          width,
+          height,
+          deviceScaleFactor: 1,
+          mobile: viewport === "mobile",
+        });
+        for (const route of routes) {
+          await cdp.send("Page.navigate", { url: origin + route });
+          await wait(450);
+          const result = await cdp.send("Runtime.evaluate", {
+            expression: auditExpression,
+            returnByValue: true,
+          });
+          const value = result.result.value;
+          const pass =
+            value.main &&
+            value.overflow <= 2 &&
+            !value.duplicateIds.length &&
+            value.unlabeledButtons === 0 &&
+            value.imagesWithoutAlt === 0;
+          console.log(
+            `${pass ? "PASS" : "FAIL"} ${name} ${viewport} ${route}`,
+            value,
+          );
+          if (!pass) failed = true;
+        }
+      }
+      cdp.close();
+    } finally {
+      if (process.platform === "win32") {
+        spawnSync("taskkill", ["/pid", String(browser.pid), "/T", "/F"], {
+          stdio: "ignore",
+          windowsHide: true,
+        });
+      } else browser.kill("SIGTERM");
+      await Promise.race([once(browser, "exit"), wait(2000)]);
+      for (let attempt = 0; attempt < 4; attempt += 1) {
+        try {
+          await rm(profile, { recursive: true, force: true });
+          break;
+        } catch (error) {
+          if (attempt === 3) throw error;
+          await wait(300);
+        }
+      }
+    }
+  }
+} finally {
+  app.kill("SIGTERM");
+  await Promise.race([once(app, "exit"), wait(2000)]);
+}
+if (failed) process.exitCode = 1;

@@ -1,0 +1,550 @@
+.who-shift {
+  min-height: 110vh;
+  padding: clamp(7rem, 12vw, 13rem) var(--pad);
+  display: grid;
+  grid-template-columns: 90px 1.15fr 0.85fr;
+  gap: 5vw;
+  align-items: center;
+}
+.who-shift h2,
+.who-philosophy h2,
+.leadership h2 {
+  font-size: clamp(3rem, 6vw, 7rem);
+}
+.who-shift > p {
+  font-size: clamp(1.25rem, 2vw, 2rem);
+  line-height: 1.55;
+  color: var(--dusty);
+}
+.who-shift-rail {
+  height: 55vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-transform: uppercase;
+  font-size: 0.5rem;
+  letter-spacing: 0.12em;
+  color: var(--dusty);
+}
+.who-shift-rail span {
+  writing-mode: vertical-rl;
+}
+.who-shift-rail i {
+  height: 65%;
+  width: 1px;
+  background: var(--gold);
+  transform: scaleY(0.08);
+}
+.who-philosophy {
+  padding: clamp(7rem, 11vw, 12rem) var(--pad);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7vw;
+  background: var(--cream);
+}
+.philosophy-index {
+  min-height: 630px;
+  position: relative;
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+}
+.philosophy-index:before,
+.philosophy-index:after {
+  content: "";
+  position: absolute;
+  background: var(--line);
+}
+.philosophy-index:before {
+  width: 1px;
+  top: 0;
+  bottom: 0;
+}
+.philosophy-index:after {
+  height: 1px;
+  left: 0;
+  right: 0;
+}
+.philosophy-index span {
+  position: absolute;
+  text-transform: uppercase;
+  font-size: 0.55rem;
+  letter-spacing: 0.14em;
+  color: var(--dusty);
+}
+.philosophy-index span:nth-child(1) {
+  top: 8%;
+  left: 8%;
+}
+.philosophy-index span:nth-child(2) {
+  top: 8%;
+  right: 8%;
+}
+.philosophy-index span:nth-child(3) {
+  bottom: 8%;
+  left: 8%;
+}
+.philosophy-index b {
+  display: grid;
+  place-items: center;
+  width: 210px;
+  height: 210px;
+  border: 1px solid var(--gold);
+  font-family: Georgia, serif;
+  font-weight: 400;
+  font-size: 2rem;
+  transform: rotate(45deg);
+}
+.philosophy-index b::first-line {
+  transform: rotate(-45deg);
+}
+.who-philosophy > div:last-child {
+  align-self: center;
+}
+.who-philosophy > div:last-child > p {
+  color: var(--dusty);
+  line-height: 1.8;
+}
+.who-philosophy blockquote {
+  font-size: clamp(1.8rem, 3vw, 3.3rem);
+}
+.founder-feature {
+  background: var(--navy);
+  color: white;
+  padding: clamp(7rem, 11vw, 12rem) var(--pad);
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 7vw;
+}
+.founder-portrait {
+  position: sticky;
+  top: 110px;
+  align-self: start;
+}
+.founder-portrait .media {
+  height: 70vh;
+  max-height: 780px;
+}
+.founder-portrait > span {
+  font-size: 0.55rem;
+  color: var(--grey);
+  text-transform: uppercase;
+}
+.founder-quote {
+  color: white;
+  margin: 4rem 0;
+}
+.founder-quote span {
+  display: block;
+  overflow: hidden;
+}
+.founder-copy {
+  max-width: 680px;
+  margin-left: auto;
+  color: var(--ivory);
+  line-height: 1.85;
+}
+.leadership {
+  padding: clamp(7rem, 11vw, 12rem) var(--pad);
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 8vw;
+}
+.leadership-heading > p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+.leadership-heading > small {
+  display: block;
+  color: var(--dusty);
+  line-height: 1.8;
+}
+.leadership-list {
+  border-top: 1px solid var(--line);
+}
+.leadership-list button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 55px 1fr auto;
+  align-items: center;
+  text-align: left;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  padding: 2rem 0;
+  color: var(--navy);
+  cursor: pointer;
+  transition: 0.35s;
+}
+.leadership-list button:hover,
+.leadership-list button:focus-visible {
+  padding-left: 1rem;
+  background: var(--cream);
+}
+.leadership-list button > span,
+.leadership-list button > b {
+  font-size: 0.6rem;
+  color: var(--gold);
+}
+.leadership-list strong {
+  display: block;
+  font-size: 1.2rem;
+}
+.leadership-list small {
+  color: var(--dusty);
+}
+.bio-overlay {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  background: var(--navy);
+  color: white;
+  padding: 7rem var(--pad) 4rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7vw;
+  align-items: center;
+  animation: bio-in 0.55s var(--ease);
+}
+.bio-visual .media {
+  height: 70vh;
+}
+.bio-overlay h2 {
+  font-size: clamp(3rem, 6vw, 7rem);
+  margin: 2rem 0;
+}
+.bio-overlay h3 {
+  color: var(--gold);
+  font-weight: 400;
+}
+.bio-overlay p {
+  color: var(--ivory);
+  line-height: 1.8;
+}
+.bio-close {
+  position: absolute;
+  right: var(--pad);
+  top: 2rem;
+  border: 0;
+  background: none;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+@keyframes bio-in {
+  from {
+    opacity: 0;
+    clip-path: inset(0 0 100%);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+  }
+}
+.partner-journey {
+  position: relative;
+  background: var(--warm);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.partner-visual {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: 120px var(--pad) 4rem;
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+}
+.partner-visual-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--dusty);
+}
+.partner-visual-meta b {
+  color: var(--gold);
+}
+.partner-path {
+  position: relative;
+  flex: 1;
+  margin: 3rem 0;
+}
+.partner-path > i {
+  position: absolute;
+  border: 1px solid rgba(84, 102, 125, 0.18);
+  transition: 0.7s var(--ease);
+}
+.partner-path > i:first-child {
+  inset: 8% 14%;
+  transform: rotate(45deg);
+}
+.partner-path > i:nth-child(2) {
+  width: 45%;
+  height: 45%;
+  left: 28%;
+  top: 27%;
+  border-color: rgba(183, 154, 88, 0.35);
+}
+.partner-path > i:nth-child(3) {
+  inset: 42% 8%;
+  height: 1px;
+  border: 0;
+  background: rgba(84, 102, 125, 0.25);
+}
+.partner-path svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  stroke: var(--gold);
+  stroke-width: 1;
+  opacity: 0.35;
+}
+.partner-path .node {
+  position: absolute;
+  font-size: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--dusty);
+  padding: 0.5rem;
+  background: var(--warm);
+  border: 1px solid var(--line);
+  transition: 0.6s;
+}
+.node.land {
+  left: 5%;
+  top: 10%;
+}
+.node.intelligence {
+  right: 5%;
+  top: 10%;
+}
+.node.requirements {
+  left: 5%;
+  bottom: 10%;
+}
+.node.capital {
+  right: 5%;
+  bottom: 10%;
+}
+.partner-path strong {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: 140px;
+  height: 140px;
+  background: var(--navy);
+  color: white;
+  border-radius: 50%;
+  font-family: Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+.partner-path strong small {
+  font-family: var(--font-sans);
+  font-size: 0.45rem;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+.path-1 .intelligence,
+.path-2 .requirements,
+.path-3 .land,
+.path-3 .capital {
+  border-color: var(--gold);
+  color: var(--navy);
+}
+.partner-visual > p {
+  text-align: center;
+  color: var(--dusty);
+  font-family: Georgia, serif;
+  font-style: italic;
+}
+.partner-chapter {
+  min-height: 100vh;
+  padding: clamp(7rem, 11vw, 11rem) 5vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-bottom: 1px solid var(--line);
+}
+.partner-chapter h2 {
+  font-size: clamp(3rem, 5vw, 6rem);
+  margin: 3rem 0;
+}
+.partner-chapter > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin: 3rem 0;
+}
+.partner-chapter > div small {
+  color: var(--gold);
+  text-transform: uppercase;
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+}
+.partner-chapter > div p {
+  color: var(--dusty);
+  line-height: 1.75;
+}
+.partner-chapter .button {
+  align-self: flex-start;
+}
+.partner-convergence {
+  padding: clamp(8rem, 13vw, 14rem) var(--pad);
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 8vw;
+  background: var(--cream);
+}
+.convergence-lines {
+  position: relative;
+  min-height: 500px;
+}
+.convergence-lines i {
+  position: absolute;
+  height: 1px;
+  background: var(--gold);
+  left: 0;
+  right: 50%;
+  top: 50%;
+  transform-origin: right;
+}
+.convergence-lines i:first-child {
+  transform: rotate(28deg);
+}
+.convergence-lines i:nth-child(2) {
+  transform: rotate(0);
+}
+.convergence-lines i:nth-child(3) {
+  transform: rotate(-28deg);
+}
+.convergence-lines span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  width: 130px;
+  height: 130px;
+  background: var(--navy);
+  color: white;
+  border-radius: 50%;
+  font-family: Georgia, serif;
+  font-size: 3rem;
+}
+.partner-convergence > div:last-child {
+  align-self: center;
+}
+.partner-convergence h2 {
+  margin: 3rem 0;
+}
+.partner-convergence p {
+  max-width: 600px;
+  color: var(--dusty);
+  line-height: 1.8;
+}
+.partner-convergence a {
+  display: inline-block;
+  margin-top: 2rem;
+  border-bottom: 1px solid var(--gold);
+  padding: 0.7rem 0;
+  text-transform: uppercase;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+}
+@media (max-width: 900px) {
+  .who-shift,
+  .who-philosophy,
+  .founder-feature,
+  .leadership,
+  .partner-journey,
+  .partner-convergence {
+    grid-template-columns: 1fr;
+  }
+  .who-shift {
+    min-height: auto;
+  }
+  .who-shift-rail {
+    display: none;
+  }
+  .philosophy-index {
+    min-height: 420px;
+  }
+  .founder-portrait {
+    position: static;
+  }
+  .founder-portrait .media {
+    height: 500px;
+  }
+  .bio-overlay {
+    grid-template-columns: 1fr;
+    overflow: auto;
+  }
+  .bio-visual .media {
+    height: 40vh;
+  }
+  .partner-visual {
+    position: relative;
+    height: auto;
+    min-height: 620px;
+    top: auto;
+  }
+  .partner-chapter {
+    min-height: auto;
+  }
+  .partner-convergence {
+    padding-top: 7rem;
+  }
+  .convergence-lines {
+    min-height: 320px;
+  }
+}
+@media (max-width: 600px) {
+  .who-shift,
+  .who-philosophy,
+  .founder-feature,
+  .leadership {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+  .philosophy-index {
+    min-height: 330px;
+  }
+  .philosophy-index b {
+    width: 150px;
+    height: 150px;
+  }
+  .founder-portrait .media {
+    height: 400px;
+  }
+  .leadership-list button {
+    grid-template-columns: 40px 1fr;
+  }
+  .leadership-list button > b {
+    display: none;
+  }
+  .partner-chapter > div {
+    grid-template-columns: 1fr;
+  }
+  .partner-visual {
+    min-height: 500px;
+    padding-top: 100px;
+  }
+  .partner-path strong {
+    width: 110px;
+    height: 110px;
+  }
+  .bio-overlay {
+    padding-top: 5rem;
+  }
+}

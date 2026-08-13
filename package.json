@@ -1,0 +1,35 @@
+{
+  "name": "aureum-website",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test:routes": "node scripts/verify-routes.mjs",
+    "audit:content": "node scripts/audit-content.mjs",
+    "audit:browsers": "npm run build && npm run audit:browsers:prepared",
+    "audit:browsers:prepared": "node scripts/browser-audit.mjs",
+    "audit:env": "node scripts/verify-env.mjs",
+    "audit:env:production": "node scripts/verify-env.mjs --production",
+    "verify": "npm run typecheck && npm run lint && npm run build && npm run test:routes && npm run audit:browsers:prepared && npm run audit:content"
+  },
+  "dependencies": {
+    "gsap": "^3.15.0",
+    "next": "^16.3.0",
+    "react": "19.1.1",
+    "react-dom": "19.1.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "3.3.1",
+    "@types/node": "22.17.1",
+    "@types/react": "19.1.10",
+    "@types/react-dom": "19.1.7",
+    "eslint": "9.33.0",
+    "eslint-config-next": "^16.3.0",
+    "typescript": "5.9.2",
+    "ws": "^8.21.0"
+  }
+}

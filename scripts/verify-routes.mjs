@@ -1,0 +1,75 @@
+import { spawn } from "node:child_process";
+import { once } from "node:events";
+import { setTimeout as wait } from "node:timers/promises";
+import { fileURLToPath } from "node:url";
+
+const port = 3199;
+const origin = `http://127.0.0.1:${port}`;
+const nextBin = fileURLToPath(
+  new URL("../node_modules/next/dist/bin/next", import.meta.url),
+);
+const server = spawn(process.execPath, [nextBin, "start", "-p", String(port)], {
+  stdio: ["ignore", "pipe", "pipe"],
+  windowsHide: true,
+});
+let output = "";
+server.stdout.on("data", (chunk) => (output += chunk));
+server.stderr.on("data", (chunk) => (output += chunk));
+
+const routes = [
+  "/",
+  "/who-we-are",
+  "/how-we-partner",
+  "/portfolio",
+  "/portfolio/project-1",
+  "/insights",
+  "/insights/article-1",
+  "/contact",
+  "/privacy-policy",
+  "/manifest.webmanifest",
+  "/opengraph-image",
+  "/robots.txt",
+  "/sitemap.xml",
+];
+
+async function ready() {
+  for (let attempt = 0; attempt < 40; attempt += 1) {
+    try {
+      if ((await fetch(origin)).ok) return;
+    } catch {}
+    await wait(250);
+  }
+  throw new Error(`Server did not become ready.\n${output}`);
+}
+
+let failed = false;
+try {
+  await ready();
+  for (const route of routes) {
+    const response = await fetch(origin + route);
+    console.log(`${response.ok ? "PASS" : "FAIL"} ${response.status} ${route}`);
+    if (!response.ok) failed = true;
+  }
+  const landing = await fetch(origin);
+  const headers = {
+    "x-content-type-options": "nosniff",
+    "x-frame-options": "DENY",
+    "referrer-policy": "strict-origin-when-cross-origin",
+  };
+  for (const [header, expected] of Object.entries(headers)) {
+    const value = landing.headers.get(header);
+    console.log(
+      `${value === expected ? "PASS" : "FAIL"} header ${header}: ${value || "missing"}`,
+    );
+    if (value !== expected) failed = true;
+  }
+  const missing = await fetch(origin + "/route-that-does-not-exist");
+  console.log(
+    `${missing.status === 404 ? "PASS" : "FAIL"} ${missing.status} branded 404`,
+  );
+  if (missing.status !== 404) failed = true;
+} finally {
+  server.kill("SIGTERM");
+  await Promise.race([once(server, "exit"), wait(2000)]);
+}
+if (failed) process.exitCode = 1;

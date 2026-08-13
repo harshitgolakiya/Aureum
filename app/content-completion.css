@@ -1,0 +1,230 @@
+.listing-intro {
+  max-width: 680px;
+  color: var(--dusty);
+  line-height: 1.8;
+  margin: 3rem 0 0;
+}
+.alternative-contact {
+  padding: 6rem var(--pad);
+  background: var(--cream);
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 5vw;
+}
+.alternative-contact > p {
+  max-width: 760px;
+  line-height: 1.8;
+  color: var(--dusty);
+}
+@media (max-width: 900px) {
+  .alternative-contact {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Refined Aureum System instrument: diagram and explanation remain separate. */
+@media (min-width: 901px) {
+  .system-introduction {
+    min-height: 100vh;
+    padding: clamp(7rem, 11vw, 12rem) var(--pad);
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 8vw;
+    align-items: center;
+    background: var(--cream);
+  }
+  .system-introduction h2 {
+    font-size: clamp(3.5rem, 6vw, 7rem);
+    margin: 3rem 0 0;
+  }
+  .system-introduction > div:last-child {
+    align-self: end;
+    padding-bottom: 7vh;
+  }
+  .system-introduction p {
+    max-width: 590px;
+    color: var(--dusty);
+    line-height: 1.85;
+    margin-bottom: 2.5rem;
+  }
+  .system-story .system-copy {
+    display: none;
+  }
+  .system-story .system-sticky {
+    display: block;
+    padding-inline: var(--pad);
+  }
+  .system-story .system-visual {
+    width: 100%;
+    height: 100%;
+    max-height: none !important;
+    aspect-ratio: auto;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    grid-template-rows: 1fr;
+    gap: 6vw;
+    align-items: center;
+    overflow: hidden;
+  }
+  .system-story .system-art {
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    height: min(70vh, 680px);
+    max-height: none;
+  }
+  .system-story .system-active-copy {
+    position: static;
+    grid-column: 2;
+    grid-row: 1;
+    transform: none;
+    width: auto;
+    background: transparent;
+    backdrop-filter: none;
+    padding: 2rem 0;
+    border-left: 0;
+    border-top: 1px solid var(--gold);
+    border-bottom: 1px solid var(--line);
+  }
+  .system-story .system-visual .diagram-core {
+    top: 50%;
+    left: 28.75%;
+    color: white;
+    z-index: 2;
+  }
+}
+@media (max-width: 900px) {
+  .system-introduction {
+    display: none;
+  }
+}
+@media (min-width: 1400px) {
+  .system-sticky {
+    grid-template-columns: 0.86fr 1.14fr;
+  }
+  .system-visual {
+    aspect-ratio: auto;
+    max-height: none;
+    display: grid;
+    grid-template-columns: minmax(340px, 1.1fr) minmax(230px, 0.7fr);
+    gap: 2.4rem;
+    align-items: center;
+    overflow: hidden;
+  }
+  .system-art {
+    grid-column: 1;
+    width: 100%;
+    max-height: 64vh;
+  }
+  .system-active-copy {
+    position: static;
+    grid-column: 2;
+    transform: none;
+    width: auto;
+    background: transparent;
+    backdrop-filter: none;
+    padding: 2rem 0;
+    border-left: 0;
+    border-top: 1px solid var(--gold);
+    border-bottom: 1px solid var(--line);
+  }
+  .system-active-copy h3 {
+    font-size: clamp(1.25rem, 1.7vw, 1.8rem);
+    margin: 1rem 0;
+  }
+  .system-active-copy p {
+    line-height: 1.7;
+  }
+  .system-visual .diagram-core {
+    left: 31%;
+    top: 50%;
+  }
+}
+@media (min-width: 901px) and (max-width: 1399px) {
+  .system-sticky {
+    grid-template-columns: 0.78fr 1.22fr;
+    gap: 3vw;
+  }
+  .system-copy h2 {
+    font-size: clamp(2.6rem, 4.3vw, 4rem);
+  }
+  .system-copy > p {
+    font-size: 0.85rem;
+  }
+  .system-visual {
+    aspect-ratio: auto;
+    max-height: 78vh;
+    display: grid;
+    grid-template-rows: minmax(300px, 48vh) auto;
+    overflow: hidden;
+  }
+  .system-art {
+    height: 100%;
+    width: 100%;
+  }
+  .system-active-copy {
+    position: static;
+    transform: none;
+    width: auto;
+    background: transparent;
+    backdrop-filter: none;
+    padding: 1rem 0;
+    border-left: 0;
+    border-top: 1px solid var(--gold);
+  }
+  .system-active-copy p {
+    font-size: 0.7rem;
+  }
+  .system-visual .diagram-core {
+    top: 31%;
+    left: 50%;
+  }
+}
+
+/* Definitive desktop layout: one introduction scene, then one stable instrument scene. */
+@media (min-width: 901px) {
+  body .system-story .system-sticky {
+    display: block;
+    grid-template-columns: none;
+    padding: clamp(4rem, 7vh, 6rem) var(--pad);
+    height: 100vh;
+  }
+  body .system-story .system-visual {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    aspect-ratio: auto;
+    display: grid;
+    grid-template-columns: 1.12fr 0.88fr;
+    grid-template-rows: 1fr;
+    gap: 6vw;
+    align-items: center;
+    overflow: hidden;
+  }
+  body .system-story .system-art {
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    height: min(70vh, 680px);
+    max-height: none;
+  }
+  body .system-story .system-active-copy {
+    position: static;
+    grid-column: 2;
+    grid-row: 1;
+    transform: none;
+    width: auto;
+    background: transparent;
+    backdrop-filter: none;
+    padding: 2rem 0;
+    border-left: 0;
+    border-top: 1px solid var(--gold);
+    border-bottom: 1px solid var(--line);
+  }
+  body .system-story .system-visual .diagram-core {
+    top: 50%;
+    left: 28%;
+    color: white;
+    z-index: 2;
+  }
+}

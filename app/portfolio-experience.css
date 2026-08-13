@@ -1,0 +1,483 @@
+.portfolio-explore {
+  padding: clamp(7rem, 11vw, 12rem) var(--pad);
+}
+.portfolio-filter-bar {
+  position: sticky;
+  top: 74px;
+  z-index: 10;
+  background: rgba(241, 239, 233, 0.94);
+  backdrop-filter: blur(16px);
+  display: grid;
+  grid-template-columns: 0.35fr 1.65fr;
+  gap: 3vw;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 1.2rem 0;
+}
+.portfolio-filter-bar > div:first-child {
+  display: flex;
+  justify-content: space-between;
+}
+.portfolio-filter-bar small,
+.portfolio-filter-bar strong {
+  font-size: 0.57rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.portfolio-filter-bar strong {
+  color: var(--gold);
+}
+.portfolio-filter-bar > div:last-child {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.5rem;
+}
+.portfolio-filter-bar button {
+  border: 0;
+  background: none;
+  color: var(--dusty);
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.5rem 0;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+}
+.portfolio-filter-bar button.active {
+  color: var(--navy);
+  border-color: var(--gold);
+}
+.portfolio-intro {
+  max-width: 650px;
+  margin: 4rem 0 6rem auto;
+  color: var(--dusty);
+  line-height: 1.8;
+}
+.portfolio-editorial-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 7rem 2.5rem;
+}
+.portfolio-editorial-grid > a {
+  min-width: 0;
+}
+.portfolio-editorial-grid .project-wide {
+  grid-column: 1/-1;
+}
+.portfolio-media {
+  position: relative;
+  overflow: hidden;
+}
+.portfolio-editorial-grid .media {
+  height: clamp(400px, 50vw, 720px);
+  transition: transform 0.7s var(--ease);
+}
+.portfolio-editorial-grid > a:not(.project-wide) .media {
+  height: clamp(350px, 36vw, 560px);
+}
+.portfolio-editorial-grid > a:hover .media {
+  transform: scale(1.015);
+}
+.project-view {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  background: var(--gold);
+  display: grid;
+  place-items: center;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: 0.45s var(--ease);
+}
+.portfolio-editorial-grid > a:hover .project-view {
+  opacity: 1;
+  transform: scale(1);
+}
+.portfolio-card-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.2rem;
+  color: var(--dusty);
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.portfolio-editorial-grid h2 {
+  font-size: clamp(2rem, 3vw, 4rem);
+  margin: 1rem 0;
+}
+.portfolio-editorial-grid > a > p {
+  color: var(--dusty);
+  line-height: 1.7;
+  max-width: 700px;
+}
+.portfolio-metric {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+  margin-top: 2rem;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+}
+.portfolio-metric b {
+  color: var(--gold);
+}
+.case-hero > div:last-child > p {
+  max-width: 650px;
+  color: var(--ivory);
+  line-height: 1.7;
+}
+.case-progress {
+  position: fixed;
+  z-index: 55;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 2px;
+}
+.case-progress span {
+  display: block;
+  height: 100%;
+  background: var(--gold);
+  transition: width 0.45s var(--ease);
+}
+.case-overview {
+  padding: 8rem var(--pad);
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 8vw;
+}
+.case-overview > * {
+  min-width: 0;
+}
+.case-overview > aside {
+  position: sticky;
+  top: 110px;
+  align-self: start;
+  border-top: 1px solid var(--gold);
+}
+.case-overview > aside > small {
+  display: block;
+  margin: 1rem 0 3rem;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.case-overview > aside h2 {
+  font-size: 2rem;
+}
+.case-overview > aside p {
+  color: var(--dusty);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--line);
+  padding: 1rem 0;
+}
+.case-overview > aside b {
+  display: block;
+  color: var(--navy);
+  font-size: 0.9rem;
+  margin-top: 0.4rem;
+  text-transform: none;
+}
+.case-chapters > nav {
+  position: sticky;
+  z-index: 3;
+  top: 74px;
+  background: rgba(241, 239, 233, 0.94);
+  backdrop-filter: blur(15px);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--line);
+}
+.case-chapters > nav a {
+  padding: 1rem 0.5rem;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  color: var(--dusty);
+}
+.case-chapters > nav a span {
+  color: var(--gold);
+  margin-right: 0.4rem;
+}
+.case-chapters > nav a.active {
+  color: var(--navy);
+  background: var(--cream);
+}
+.case-chapter {
+  min-height: 100vh;
+  padding: 7rem 0;
+  scroll-margin-top: 120px;
+  border-bottom: 1px solid var(--line);
+}
+.case-chapter-visual {
+  height: 380px;
+  background: var(--midnight);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 4rem;
+  color: white;
+}
+.case-chapter-visual > span {
+  position: absolute;
+  right: 1.5rem;
+  bottom: -0.2em;
+  font-family: Georgia, serif;
+  font-size: 13rem;
+  color: rgba(255, 255, 255, 0.08);
+}
+.case-chapter-visual i {
+  position: absolute;
+  background: var(--gold);
+  transition: 0.7s;
+}
+.case-chapter-visual i:first-of-type {
+  left: 8%;
+  right: 8%;
+  top: 40%;
+  height: 1px;
+}
+.case-chapter-visual i:last-of-type {
+  top: 8%;
+  bottom: 8%;
+  left: 38%;
+  width: 1px;
+}
+.visual-2 i:first-of-type {
+  transform: rotate(18deg);
+}
+.visual-3 i:last-of-type {
+  left: 65%;
+}
+.visual-4 i:first-of-type {
+  top: 65%;
+}
+.case-chapter > small {
+  color: var(--gold);
+}
+.case-chapter h2 {
+  font-size: clamp(3rem, 6vw, 7rem);
+  margin: 2rem 0;
+}
+.case-chapter > p {
+  font-size: clamp(1.1rem, 1.6vw, 1.5rem);
+  line-height: 1.7;
+  color: var(--dusty);
+  max-width: 780px;
+}
+.case-gallery-section {
+  padding: clamp(7rem, 11vw, 12rem) var(--pad);
+  background: var(--cream);
+}
+.case-gallery-section > div:first-child {
+  display: grid;
+  grid-template-columns: 0.4fr 1.1fr 0.5fr;
+  gap: 3vw;
+  align-items: start;
+  margin-bottom: 5rem;
+}
+.case-gallery-section h2 {
+  font-size: clamp(3rem, 6vw, 7rem);
+}
+.case-gallery-section > div:first-child > p {
+  color: var(--dusty);
+  line-height: 1.8;
+}
+.case-gallery {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 1.5rem;
+}
+.case-gallery button {
+  position: relative;
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  grid-column: span 4;
+}
+.case-gallery button:nth-child(1),
+.case-gallery button:nth-child(5) {
+  grid-column: span 7;
+}
+.case-gallery button:nth-child(2),
+.case-gallery button:nth-child(6) {
+  grid-column: span 5;
+}
+.case-gallery .media {
+  height: 360px;
+}
+.case-gallery button:nth-child(1) .media,
+.case-gallery button:nth-child(5) .media {
+  height: 520px;
+}
+.case-gallery button > span {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  color: var(--gold);
+  font-size: 0.65rem;
+}
+.project-pagination {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--navy);
+  color: white;
+}
+.project-pagination a {
+  padding: 5rem var(--pad);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+}
+.project-pagination small {
+  grid-column: 1/-1;
+  color: var(--gold);
+  text-transform: uppercase;
+  font-size: 0.55rem;
+}
+.project-pagination strong {
+  font-size: clamp(1.5rem, 3vw, 3rem);
+  margin-top: 1rem;
+}
+.project-pagination span {
+  align-self: end;
+  color: var(--gold);
+  font-size: 2rem;
+}
+.lightbox {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  background: rgba(16, 26, 43, 0.98);
+  display: grid;
+  place-items: center;
+  padding: 5rem 10vw;
+  color: white;
+}
+.lightbox > .media {
+  width: min(1100px, 80vw);
+  height: 75vh;
+}
+.lightbox-close {
+  position: absolute;
+  right: 2rem;
+  top: 2rem;
+}
+.lightbox-prev,
+.lightbox-next {
+  position: absolute;
+  top: 50%;
+}
+.lightbox-prev {
+  left: 2rem;
+}
+.lightbox-next {
+  right: 2rem;
+}
+.lightbox button {
+  border: 0;
+  background: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.lightbox > p {
+  position: absolute;
+  bottom: 1.5rem;
+  color: var(--grey);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+}
+@media (max-width: 900px) {
+  .portfolio-filter-bar {
+    top: 74px;
+    display: block;
+  }
+  .portfolio-filter-bar > div:last-child {
+    justify-content: flex-start;
+    overflow: auto;
+    margin-top: 1rem;
+  }
+  .portfolio-editorial-grid {
+    grid-template-columns: 1fr;
+  }
+  .portfolio-editorial-grid .project-wide {
+    grid-column: auto;
+  }
+  .case-overview {
+    grid-template-columns: 1fr;
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+  .case-overview > aside {
+    position: static;
+  }
+  .case-chapters > nav {
+    width: 100%;
+    max-width: calc(100vw - (2 * var(--pad)));
+    overflow: auto;
+    overscroll-behavior-inline: contain;
+  }
+  .case-gallery-section > div:first-child {
+    grid-template-columns: 1fr;
+  }
+  .project-pagination {
+    grid-template-columns: 1fr;
+  }
+  .case-gallery button,
+  .case-gallery button:nth-child(1),
+  .case-gallery button:nth-child(2),
+  .case-gallery button:nth-child(5),
+  .case-gallery button:nth-child(6) {
+    grid-column: span 6;
+  }
+  .lightbox > .media {
+    width: 80vw;
+    height: 65vh;
+  }
+}
+@media (max-width: 600px) {
+  .portfolio-filter-bar > div:last-child {
+    gap: 1rem;
+  }
+  .portfolio-editorial-grid .media,
+  .portfolio-editorial-grid > a:not(.project-wide) .media {
+    height: 360px;
+  }
+  .case-overview {
+    padding-top: 6rem;
+  }
+  .case-chapters > nav {
+    grid-template-columns: repeat(4, 150px);
+  }
+  .case-chapter-visual {
+    height: 260px;
+  }
+  .case-gallery button,
+  .case-gallery button:nth-child(1),
+  .case-gallery button:nth-child(2),
+  .case-gallery button:nth-child(5),
+  .case-gallery button:nth-child(6) {
+    grid-column: 1/-1;
+  }
+  .case-gallery .media,
+  .case-gallery button:nth-child(1) .media,
+  .case-gallery button:nth-child(5) .media {
+    height: 330px;
+  }
+  .lightbox {
+    padding: 4rem 3rem;
+  }
+  .lightbox > .media {
+    width: 100%;
+    height: 65vh;
+  }
+}

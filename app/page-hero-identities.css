@@ -1,0 +1,200 @@
+.hero-identity {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hero-identity > * {
+  position: absolute;
+  transition:
+    transform 1.2s var(--ease),
+    opacity 0.8s;
+}
+.identity-orbit {
+  width: min(62vw, 950px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(187, 195, 210, 0.13);
+  border-radius: 50%;
+  right: -13vw;
+  top: -28vw;
+  box-shadow:
+    0 0 0 8vw rgba(187, 195, 210, 0.025),
+    0 0 0 16vw rgba(187, 195, 210, 0.012);
+}
+.identity-axis {
+  width: min(58vw, 850px);
+  height: 1px;
+  right: -6vw;
+  top: 38%;
+  background: linear-gradient(90deg, transparent, rgba(187, 195, 210, 0.23));
+  transform-origin: right;
+}
+.axis-b {
+  transform: rotate(55deg);
+}
+.axis-c {
+  transform: rotate(-55deg);
+}
+.identity-node {
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  right: 31%;
+  top: 34%;
+}
+.node-b {
+  right: 19%;
+  top: 55%;
+}
+.node-c {
+  right: 42%;
+  top: 65%;
+}
+.identity-frame {
+  display: none;
+}
+
+/* Who We Are — widening perspective and human point of view. */
+.page-hero-perspective .identity-orbit {
+  right: -5vw;
+  top: -17vw;
+  transform: scale(0.8);
+}
+.page-hero-perspective .identity-node {
+  background: var(--gold);
+  box-shadow: 0 0 0 10px rgba(183, 154, 88, 0.08);
+}
+
+/* How We Partner — three independent pathways converging. */
+.page-hero-pathways .identity-orbit {
+  opacity: 0.35;
+  transform: scale(0.58);
+}
+.page-hero-pathways .identity-axis {
+  width: 48vw;
+  right: 4vw;
+  background: linear-gradient(90deg, rgba(183, 154, 88, 0), var(--gold));
+}
+.page-hero-pathways .axis-a {
+  top: 23%;
+  transform: rotate(22deg);
+}
+.page-hero-pathways .axis-b {
+  top: 49%;
+  transform: rotate(0);
+}
+.page-hero-pathways .axis-c {
+  top: 75%;
+  transform: rotate(-22deg);
+}
+.page-hero-pathways .identity-node {
+  right: 7vw;
+  top: 48%;
+  width: 24px;
+  height: 24px;
+  background: var(--navy);
+  box-shadow: 0 0 0 8px rgba(183, 154, 88, 0.09);
+}
+.page-hero-pathways .node-b,
+.page-hero-pathways .node-c {
+  display: none;
+}
+
+/* Portfolio — resolved plots and industrial massing. */
+.page-hero-portfolio .identity-orbit,
+.page-hero-portfolio .identity-node {
+  display: none;
+}
+.page-hero-portfolio .hero-identity {
+  background-image:
+    linear-gradient(rgba(187, 195, 210, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(187, 195, 210, 0.055) 1px, transparent 1px);
+  background-size: 8vw 8vw;
+  mask-image: linear-gradient(90deg, transparent 35%, #000);
+}
+.page-hero-portfolio .identity-axis {
+  right: 5vw;
+  top: 45%;
+  width: 45vw;
+}
+.page-hero-portfolio .axis-a {
+  transform: rotate(-13deg);
+}
+.page-hero-portfolio .axis-b {
+  transform: rotate(21deg);
+}
+.page-hero-portfolio .axis-c {
+  transform: rotate(49deg);
+}
+.page-hero-portfolio .identity-frame {
+  display: block;
+  right: 10vw;
+  top: 18%;
+  width: min(34vw, 540px);
+  height: 56%;
+  border: 1px dashed rgba(183, 154, 88, 0.55);
+  transform: skewY(-5deg) rotate(-4deg);
+  box-shadow:
+    inset 0 0 0 3vw rgba(187, 195, 210, 0.025),
+    inset 0 0 0 7vw rgba(187, 195, 210, 0.018);
+}
+
+/* Insights — signals appearing before the opportunity is obvious. */
+.page-hero-insights .identity-orbit {
+  transform: scale(0.48);
+  opacity: 0.75;
+}
+.page-hero-insights .identity-axis {
+  opacity: 0.6;
+}
+.page-hero-insights .identity-node {
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  border: 0;
+  box-shadow:
+    80px -65px 0 rgba(183, 154, 88, 0.72),
+    -110px 95px 0 rgba(187, 195, 210, 0.5),
+    145px 125px 0 rgba(187, 195, 210, 0.38),
+    -35px -145px 0 rgba(183, 154, 88, 0.45);
+}
+
+@media (max-width: 700px) {
+  .identity-orbit {
+    width: 115vw;
+    right: -60vw;
+    top: -20vw;
+  }
+  .identity-axis {
+    width: 105vw;
+    right: -55vw;
+  }
+  .identity-node {
+    right: 12%;
+    opacity: 0.65;
+  }
+  .page-hero-pathways .identity-axis {
+    width: 80vw;
+    right: -20vw;
+  }
+  .page-hero-pathways .identity-node {
+    right: 7vw;
+  }
+  .page-hero-portfolio .identity-frame {
+    right: -18vw;
+    top: 20%;
+    width: 70vw;
+    height: 38%;
+    opacity: 0.65;
+  }
+  .page-hero-portfolio .hero-identity {
+    background-size: 18vw 18vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-identity > * {
+    transition: none;
+  }
+}

@@ -1,0 +1,205 @@
+.engagement {
+  background: var(--white);
+  overflow: hidden;
+}
+.engagement-heading {
+  display: grid;
+  grid-template-columns: 0.35fr 1.65fr;
+  gap: 4vw;
+  align-items: start;
+  margin-bottom: 5rem;
+}
+.engagement-heading h2 {
+  margin: 0;
+}
+.engagement-panels {
+  display: flex;
+  min-height: 560px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.engagement-panel {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  padding: 2rem;
+  overflow: hidden;
+  border-right: 1px solid var(--line);
+  transition:
+    flex 0.75s var(--ease),
+    background-color 0.45s var(--ease);
+  display: flex;
+  flex-direction: column;
+}
+.engagement-panel:last-child {
+  border-right: 0;
+}
+.engagement-panel.active {
+  flex: 1.5;
+  background: var(--cream);
+}
+.engagement-index {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+.engagement-index span {
+  font-size: 0.65rem;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+}
+.engagement-index i {
+  width: 40px;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0.3);
+  transform-origin: right;
+  transition: 0.6s var(--ease);
+}
+.engagement-panel.active .engagement-index i {
+  transform: scaleX(1);
+}
+.engagement-panel-copy {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  max-width: 470px;
+}
+.engagement-panel-copy small {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--gold);
+  font-size: 0.55rem;
+}
+.engagement-panel-copy h3 {
+  font-size: clamp(1.7rem, 2.5vw, 3rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  margin: 1rem 0;
+}
+.engagement-panel-copy strong {
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.1rem;
+}
+.engagement-panel-copy p {
+  color: var(--dusty);
+  line-height: 1.75;
+  font-size: 0.84rem;
+  margin: 1.25rem 0 2rem;
+  opacity: 0.55;
+  transition: 0.45s;
+}
+.engagement-panel.active .engagement-panel-copy p {
+  opacity: 1;
+}
+.engagement-panel-copy a {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.engagement-panel-copy a b {
+  color: var(--gold);
+}
+.engagement-geometry {
+  position: absolute;
+  inset: 5rem 1.5rem auto;
+  height: 220px;
+  opacity: 0.34;
+  transition: 0.6s var(--ease);
+}
+.engagement-panel.active .engagement-geometry {
+  opacity: 0.75;
+  transform: translateY(-5px);
+}
+.engagement-geometry i {
+  position: absolute;
+  background: var(--dusty);
+}
+.engagement-geometry i:nth-child(1) {
+  left: 5%;
+  right: 5%;
+  top: 50%;
+  height: 1px;
+}
+.engagement-geometry i:nth-child(2) {
+  top: 5%;
+  bottom: 5%;
+  left: 50%;
+  width: 1px;
+}
+.engagement-geometry i:nth-child(3) {
+  width: 120px;
+  height: 120px;
+  border: 1px solid var(--gold);
+  background: transparent;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.engagement-geometry span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: Georgia, serif;
+  font-size: 3rem;
+  color: var(--navy);
+}
+.project-grid > a .media {
+  transition: transform 0.65s var(--ease);
+}
+.project-grid > a:hover .media {
+  transform: scale(0.985);
+}
+.project-grid > a:hover h3 {
+  color: var(--dusty);
+}
+.article-list > a {
+  transition:
+    padding 0.4s var(--ease),
+    background-color 0.4s;
+}
+.article-list > a:hover {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  background: var(--cream);
+}
+@media (max-width: 900px) {
+  .engagement-heading {
+    grid-template-columns: 1fr;
+  }
+  .engagement-panels {
+    display: block;
+  }
+  .engagement-panel,
+  .engagement-panel.active {
+    min-height: 470px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .engagement-panel-copy p {
+    opacity: 1;
+  }
+  .engagement-geometry {
+    height: 170px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .engagement-panel {
+    transition: none;
+  }
+  .engagement-panel.active {
+    flex: 1;
+  }
+  .engagement-panel-copy p {
+    opacity: 1;
+  }
+}
