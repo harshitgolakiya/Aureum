@@ -523,6 +523,7 @@ em {
 }
 .insights {
   background: var(--white);
+  overflow-x: clip;
 }
 .article-list {
   border-top: 1px solid var(--line);

@@ -2,9 +2,11 @@
 
 ## One-command verification
 
-Run `npm run verify` to check TypeScript, ESLint, the production build, representative routes, the branded 404, metadata routes, security headers, Chrome/Edge rendered overflow and accessibility basics, and client-content dependencies.
+Run `npm run verify` to check TypeScript, ESLint, the production build, representative routes, the branded 404, metadata routes, security headers, Chrome/Edge rendering in standard and reduced-motion modes, accessibility structure, core interactions and client-content dependencies.
 
-Run `npm run audit:browsers` to create a fresh production build and repeat the Chrome/Edge checks independently at 390px and 1440px.
+Run `npm run audit:browsers` to create a fresh production build and repeat 72 Chrome/Edge route checks at 390px and 1440px, plus navigation, filtering, lightbox and form-validation smoke tests.
+
+The GitHub Actions quality workflow runs the same verification automatically for every push and pull request targeting `main`.
 
 ## Required production environment
 
