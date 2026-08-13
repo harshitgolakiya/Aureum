@@ -1,6 +1,7 @@
 import { ContactMotion } from "@/components/contact-experience";
 import { ContactForm } from "@/components/contact-form";
 import { Eyebrow } from "@/components/ui";
+import Image from "next/image";
 export const metadata = {
   title: "Contact",
   description:
@@ -11,6 +12,15 @@ export default function Page() {
   return (
     <main>
       <section className="contact-hero">
+        <div className="contact-hero-photo" aria-hidden="true">
+          <Image
+            src="/media/heroes/contact.png"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+          />
+        </div>
         <Eyebrow>Contact Aureum</Eyebrow>
         <h1>
           Every enduring development begins with a{" "}

@@ -84,14 +84,31 @@ export function PageHero({
   title,
   copy,
   identity = "perspective",
+  image,
 }: {
   eyebrow: string;
   title: string;
   copy: string;
   identity?: "perspective" | "pathways" | "portfolio" | "insights";
+  image?: string;
 }) {
+  const heroImages = {
+    perspective: "/media/heroes/who-we-are.png",
+    pathways: "/media/heroes/how-we-partner.png",
+    portfolio: "/media/heroes/portfolio.png",
+    insights: "/media/heroes/insights.png",
+  };
   return (
     <section className={`page-hero page-hero-${identity}`}>
+      <div className="page-hero-photo" aria-hidden="true">
+        <Image
+          src={image || heroImages[identity]}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+        />
+      </div>
       <div className="hero-identity" aria-hidden="true">
         <div className="identity-orbit" />
         <div className="identity-axis axis-a" />

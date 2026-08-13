@@ -2,142 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowLink, Eyebrow } from "./ui";
 import { models, phases, pillars } from "@/data/site";
 
 gsap.registerPlugin(ScrollTrigger);
-
-function useReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const query = matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(query.matches);
-    update();
-    query.addEventListener("change", update);
-    return () => query.removeEventListener("change", update);
-  }, []);
-  return reduced;
-}
-
-export function IndustrialField() {
-  const canvas = useRef<HTMLCanvasElement>(null);
-  const reduced = useReducedMotion();
-  useEffect(() => {
-    const node = canvas.current;
-    if (!node || reduced) return;
-    const context = node.getContext("2d");
-    if (!context) return;
-    let frame = 0;
-    let raf = 0;
-    let pointerX = 0;
-    let pointerY = 0;
-    let inView = true;
-    let resizeFrame = 0;
-    const precisePointer = matchMedia(
-      "(hover: hover) and (pointer: fine)",
-    ).matches;
-    const resize = () => {
-      const ratio = Math.min(devicePixelRatio, 1.5);
-      node.width = innerWidth * ratio;
-      node.height = innerHeight * ratio;
-      node.style.width = `${innerWidth}px`;
-      node.style.height = `${innerHeight}px`;
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-    };
-    const move = (event: PointerEvent) => {
-      pointerX = event.clientX / innerWidth - 0.5;
-      pointerY = event.clientY / innerHeight - 0.5;
-    };
-    const shouldRun = () => inView && !document.hidden;
-    const start = () => {
-      if (!raf && shouldRun()) raf = requestAnimationFrame(draw);
-    };
-    const stop = () => {
-      cancelAnimationFrame(raf);
-      raf = 0;
-    };
-    const visibility = () => (shouldRun() ? start() : stop());
-    const queueResize = () => {
-      cancelAnimationFrame(resizeFrame);
-      resizeFrame = requestAnimationFrame(() => {
-        resize();
-        start();
-      });
-    };
-    const draw = () => {
-      raf = 0;
-      if (!shouldRun()) return;
-      frame += 0.004;
-      context.clearRect(0, 0, innerWidth, innerHeight);
-      context.save();
-      context.translate(
-        innerWidth * 0.58 + pointerX * 16,
-        innerHeight * 0.51 + pointerY * 12,
-      );
-      context.rotate(-0.16);
-      const spacing = Math.max(54, innerWidth / 24);
-      context.strokeStyle = "rgba(187,195,210,.12)";
-      context.lineWidth = 1;
-      for (let x = -innerWidth; x < innerWidth; x += spacing) {
-        context.beginPath();
-        context.moveTo(x, -innerHeight);
-        context.lineTo(x, innerHeight);
-        context.stroke();
-      }
-      for (let y = -innerHeight; y < innerHeight; y += spacing) {
-        context.beginPath();
-        context.moveTo(-innerWidth, y);
-        context.lineTo(innerWidth, y);
-        context.stroke();
-      }
-      context.strokeStyle = "rgba(183,154,88,.55)";
-      for (let i = 0; i < 9; i++) {
-        const x = (i - 4) * spacing * 1.7;
-        const height = 34 + (Math.sin(frame * 2 + i) + 1) * 24;
-        context.strokeRect(x, -height / 2, spacing * 1.05, height);
-      }
-      context.beginPath();
-      context.arc(
-        0,
-        0,
-        Math.min(innerWidth, innerHeight) * 0.27,
-        frame,
-        frame + Math.PI * 1.55,
-      );
-      context.stroke();
-      context.restore();
-      raf = requestAnimationFrame(draw);
-    };
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        inView = entry.isIntersecting;
-        if (shouldRun()) start();
-        else stop();
-      },
-      { rootMargin: "120px 0px" },
-    );
-    resize();
-    observer.observe(node);
-    start();
-    addEventListener("resize", queueResize, { passive: true });
-    if (precisePointer)
-      addEventListener("pointermove", move, { passive: true });
-    document.addEventListener("visibilitychange", visibility);
-    return () => {
-      stop();
-      cancelAnimationFrame(resizeFrame);
-      observer.disconnect();
-      removeEventListener("resize", queueResize);
-      if (precisePointer) removeEventListener("pointermove", move);
-      document.removeEventListener("visibilitychange", visibility);
-    };
-  }, [reduced]);
-  return (
-    <canvas ref={canvas} className="industrial-field" aria-hidden="true" />
-  );
-}
 
 export function HomeHero() {
   const root = useRef<HTMLElement>(null);
@@ -169,9 +40,8 @@ export function HomeHero() {
           scrub: true,
         },
       });
-      gsap.to(".industrial-field", {
-        scale: 1.12,
-        opacity: 0.25,
+      gsap.to(".hero-photo img", {
+        scale: 1.08,
         ease: "none",
         scrollTrigger: {
           trigger: root.current,
@@ -185,7 +55,15 @@ export function HomeHero() {
   }, []);
   return (
     <section ref={root} className="hero">
-      <IndustrialField />
+      <div className="hero-photo" aria-hidden="true">
+        <Image
+          src="/media/heroes/home.png"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+        />
+      </div>
       <div className="hero-grid" />
       <div className="hero-content">
         <div data-hero-follow>
