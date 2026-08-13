@@ -122,8 +122,13 @@ export function CaseStudyExperience({ slug }: { slug: string }) {
   const previous = projects[(index - 1 + projects.length) % projects.length];
   const next = projects[(index + 1) % projects.length];
   const root = useRef<HTMLDivElement>(null);
+  const galleryTrigger = useRef<HTMLButtonElement>(null);
   const [active, setActive] = useState(0);
   const [lightbox, setLightbox] = useState<number | null>(null);
+  function closeLightbox() {
+    setLightbox(null);
+    setTimeout(() => galleryTrigger.current?.focus(), 0);
+  }
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const context = gsap.context(() => {
@@ -153,7 +158,7 @@ export function CaseStudyExperience({ slug }: { slug: string }) {
   useEffect(() => {
     if (lightbox === null) return;
     const key = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setLightbox(null);
+      if (event.key === "Escape") closeLightbox();
       if (event.key === "ArrowRight") setLightbox((lightbox + 1) % 6);
       if (event.key === "ArrowLeft") setLightbox((lightbox + 5) % 6);
       if (event.key === "Tab") {
@@ -242,7 +247,10 @@ export function CaseStudyExperience({ slug }: { slug: string }) {
             <button
               data-cursor="Open"
               key={item}
-              onClick={() => setLightbox(item)}
+              onClick={(event) => {
+                galleryTrigger.current = event.currentTarget;
+                setLightbox(item);
+              }}
               aria-label={`Open gallery placeholder ${item + 1}`}
             >
               <Media label={`project-gallery-0${item + 1}.webp`} />
@@ -270,10 +278,14 @@ export function CaseStudyExperience({ slug }: { slug: string }) {
           role="dialog"
           aria-modal="true"
           aria-label={`Gallery image ${lightbox + 1} of 6`}
+          aria-describedby="gallery-lightbox-caption"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) closeLightbox();
+          }}
         >
           <button
             className="lightbox-close"
-            onClick={() => setLightbox(null)}
+            onClick={closeLightbox}
             autoFocus
           >
             Close ×
@@ -293,7 +305,9 @@ export function CaseStudyExperience({ slug }: { slug: string }) {
           >
             →
           </button>
-          <p>0{lightbox + 1} / 06 &nbsp; Project photography pending</p>
+          <p id="gallery-lightbox-caption">
+            0{lightbox + 1} / 06 &nbsp; Project photography pending
+          </p>
         </div>
       )}
     </div>
