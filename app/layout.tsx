@@ -21,6 +21,7 @@ import "./control-system.css";
 import "./launch-polish.css";
 import { Footer, Header } from "@/components/layout";
 import { RouteExperience } from "@/components/route-experience";
+import { WebVitals } from "@/components/web-vitals";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans" });
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
@@ -85,6 +86,7 @@ export default function RootLayout({
           </div>
           <Footer />
         </RouteExperience>
+        <WebVitals />
       </body>
     </html>
   );

@@ -33,10 +33,23 @@ const routes = [
   "/privacy-policy",
 ];
 const viewports = [
-  ["mobile", 390, 844],
-  ["desktop", 1440, 900],
+  ["phone-375", 375, 812, true, 2],
+  ["phone-430", 430, 932, true, 2],
+  ["tablet-768", 768, 1024, true, 2],
+  ["tablet-1024", 1024, 768, true, 2],
+  ["laptop-short", 1280, 650, false, 1],
+  ["desktop-1440", 1440, 900, false, 1],
+  ["desktop-1920", 1920, 1080, false, 1],
 ];
 const motionModes = ["no-preference", "reduce"];
+const routeFilter = process.env.AUDIT_ROUTES?.split(",").filter(Boolean);
+const viewportFilter = process.env.AUDIT_VIEWPORTS?.split(",").filter(Boolean);
+const selectedRoutes = routeFilter?.length
+  ? routes.filter((route) => routeFilter.includes(route))
+  : routes;
+const selectedViewports = viewportFilter?.length
+  ? viewports.filter(([name]) => viewportFilter.includes(name))
+  : viewports;
 
 async function waitFor(url, attempts = 40) {
   for (let attempt = 0; attempt < attempts; attempt += 1) {
@@ -109,7 +122,13 @@ const auditExpression = `(() => {
   const navigation = performance.getEntriesByType('navigation')[0];
   const resources = performance.getEntriesByType('resource');
   return {
-    overflow: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - innerWidth,
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    viewportWidths: {
+      inner: innerWidth,
+      client: document.documentElement.clientWidth,
+      htmlScroll: document.documentElement.scrollWidth,
+      bodyScroll: document.body.scrollWidth,
+    },
     main: Boolean(document.querySelector('main')),
     duplicateIds: [...new Set(duplicateIds)],
     unlabeledButtons,
@@ -125,6 +144,11 @@ const auditExpression = `(() => {
     decodedResourceBytes: resources.reduce((total, entry) => total + (entry.decodedBodySize || 0), 0),
     overflowElements: [...document.querySelectorAll('body *')]
       .filter(node => { const rect = node.getBoundingClientRect(); return rect.right > innerWidth + 2 || rect.left < -2; })
+      .sort((a, b) => {
+        const aRect = a.getBoundingClientRect();
+        const bRect = b.getBoundingClientRect();
+        return Math.max(aRect.right - innerWidth, -aRect.left) - Math.max(bRect.right - innerWidth, -bRect.left);
+      })
       .slice(0, 8)
       .map(node => ({ tag: node.tagName, className: String(node.className || ''), rect: node.getBoundingClientRect().toJSON() })),
   };
@@ -182,14 +206,18 @@ try {
         await cdp.send("Emulation.setEmulatedMedia", {
           features: [{ name: "prefers-reduced-motion", value: motion }],
         });
-        for (const [viewport, width, height] of viewports) {
+        for (const [viewport, width, height, mobile, deviceScaleFactor] of selectedViewports) {
           await cdp.send("Emulation.setDeviceMetricsOverride", {
             width,
             height,
-            deviceScaleFactor: 1,
-            mobile: viewport === "mobile",
+            deviceScaleFactor,
+            mobile,
           });
-          for (const route of routes) {
+          await cdp.send("Emulation.setTouchEmulationEnabled", {
+            enabled: mobile,
+            maxTouchPoints: mobile ? 5 : 1,
+          });
+          for (const route of selectedRoutes) {
             runtimeErrors = [];
             networkErrors = [];
             await cdp.send("Page.navigate", { url: origin + route });
@@ -220,7 +248,7 @@ try {
             value.networkErrors = networkErrors;
             const label = `${name} ${viewport} ${motion} ${route}`;
             if (pass) console.log(`PASS ${label}`);
-            else console.log(`FAIL ${label}`, value);
+            else console.log(`FAIL ${label}`, JSON.stringify(value));
             if (!pass) failed = true;
           }
         }

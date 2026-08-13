@@ -28,6 +28,15 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        source: "/aureumLogo.svg",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
     ];
   },
 };

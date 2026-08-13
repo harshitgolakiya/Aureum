@@ -134,6 +134,17 @@
   color: var(--ivory);
   line-height: 1.7;
 }
+@media (max-width: 600px) {
+  .case-hero > div:last-child {
+    right: var(--pad);
+    max-width: calc(100% - (2 * var(--pad)));
+    min-width: 0;
+  }
+  .case-hero h1,
+  .case-hero > div:last-child > p {
+    max-width: 100%;
+  }
+}
 .case-progress {
   position: fixed;
   z-index: 55;
@@ -336,6 +347,14 @@
   display: grid;
   grid-template-columns: 1fr auto;
   border-right: 1px solid rgba(255, 255, 255, 0.12);
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+.project-pagination strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 .project-pagination small {
   grid-column: 1/-1;
@@ -419,6 +438,11 @@
   }
   .case-overview > aside {
     position: static;
+  }
+  .case-chapters {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
   }
   .case-chapters > nav {
     width: 100%;

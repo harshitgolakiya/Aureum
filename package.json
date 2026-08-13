@@ -10,11 +10,12 @@
     "typecheck": "tsc --noEmit",
     "test:routes": "node scripts/verify-routes.mjs",
     "audit:content": "node scripts/audit-content.mjs",
+    "audit:source": "node scripts/audit-source.mjs",
     "audit:browsers": "npm run build && npm run audit:browsers:prepared",
     "audit:browsers:prepared": "node scripts/browser-audit.mjs",
     "audit:env": "node scripts/verify-env.mjs",
     "audit:env:production": "node scripts/verify-env.mjs --production",
-    "verify": "npm run typecheck && npm run lint && npm run build && npm run test:routes && npm run audit:browsers:prepared && npm run audit:content"
+    "verify": "npm run typecheck && npm run lint && npm run audit:source && npm run build && npm run test:routes && npm run audit:browsers:prepared && npm run audit:content"
   },
   "dependencies": {
     "gsap": "^3.15.0",

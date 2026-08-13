@@ -22,10 +22,18 @@ const routes = [
   "/how-we-partner",
   "/portfolio",
   "/portfolio/project-1",
+  "/portfolio/project-2",
+  "/portfolio/project-3",
+  "/portfolio/project-4",
   "/insights",
   "/insights/article-1",
+  "/insights/article-2",
+  "/insights/article-3",
   "/contact",
   "/privacy-policy",
+  "/terms",
+  "/cookie-policy",
+  "/aureumLogo.svg",
   "/manifest.webmanifest",
   "/opengraph-image",
   "/robots.txt",
@@ -55,6 +63,9 @@ try {
     "x-content-type-options": "nosniff",
     "x-frame-options": "DENY",
     "referrer-policy": "strict-origin-when-cross-origin",
+    "cross-origin-opener-policy": "same-origin",
+    "permissions-policy":
+      "camera=(), microphone=(), geolocation=(), browsing-topics=()",
   };
   for (const [header, expected] of Object.entries(headers)) {
     const value = landing.headers.get(header);
@@ -63,6 +74,12 @@ try {
     );
     if (value !== expected) failed = true;
   }
+  const logo = await fetch(origin + "/aureumLogo.svg");
+  const logoCached = (logo.headers.get("cache-control") || "").includes(
+    "immutable",
+  );
+  console.log(`${logoCached ? "PASS" : "FAIL"} immutable Aureum logo cache`);
+  if (!logoCached) failed = true;
   const missing = await fetch(origin + "/route-that-does-not-exist");
   console.log(
     `${missing.status === 404 ? "PASS" : "FAIL"} ${missing.status} branded 404`,

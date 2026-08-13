@@ -20,12 +20,17 @@ npm run verify
 - `NEXT_PUBLIC_SITE_URL`: final HTTPS origin.
 - `NEXT_PUBLIC_CONTACT_ENDPOINT`: approved form endpoint.
 - `NEXT_PUBLIC_MAPBOX_TOKEN`: optional Mapbox credential.
+- `NEXT_PUBLIC_VITALS_ENDPOINT`: optional HTTPS receiver for privacy-conscious
+  Core Web Vitals monitoring; disabled when the visitor enables Do Not Track.
 
 Use `npm run audit:env:production` before deployment.
 
 The verification suite also enforces browser-level accessibility, runtime-error,
 network-failure, DOM-size and resource-count budgets across Chrome and Edge in
 standard and reduced-motion modes.
+
+The browser matrix covers 375px and 430px phones, 768px and 1024px tablets,
+a short-height 1280px laptop, 1440px desktop and 1920px wide desktop layouts.
 
 ## Approved media
 
