@@ -22,3 +22,7 @@ npm run verify
 - `NEXT_PUBLIC_MAPBOX_TOKEN`: optional Mapbox credential.
 
 Use `npm run audit:env:production` before deployment.
+
+The verification suite also enforces browser-level accessibility, runtime-error,
+network-failure, DOM-size and resource-count budgets across Chrome and Edge in
+standard and reduced-motion modes.
