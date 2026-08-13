@@ -11,6 +11,7 @@ type Values = {
   interest: string;
   opportunity: string;
   source: string;
+  companyWebsite: string;
 };
 type Errors = Partial<Record<keyof Values, string>>;
 const initial: Values = {
@@ -22,6 +23,7 @@ const initial: Values = {
   interest: "",
   opportunity: "",
   source: "",
+  companyWebsite: "",
 };
 
 function validate(values: Values): Errors {
@@ -46,10 +48,12 @@ async function submitConversation(
 ): Promise<{ ok: boolean; configured: boolean }> {
   const endpoint = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT;
   if (!endpoint) return { ok: false, configured: false };
+  const { companyWebsite: _, ...payload } = values;
+  void _;
   const response = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(values),
+    body: JSON.stringify(payload),
   });
   return { ok: response.ok, configured: true };
 }
@@ -106,6 +110,10 @@ export function ContactForm() {
   }
   async function submit(event: FormEvent) {
     event.preventDefault();
+    if (values.companyWebsite) {
+      setStatus("success");
+      return;
+    }
     const next = validate(values);
     setErrors(next);
     if (Object.keys(next).length) {
@@ -139,6 +147,18 @@ export function ContactForm() {
     );
   return (
     <form className="strategic-form" onSubmit={submit} noValidate>
+      <label className="form-honeypot" htmlFor="companyWebsite">
+        Leave this field empty
+        <input
+          id="companyWebsite"
+          name="companyWebsite"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={values.companyWebsite}
+          onChange={(event) => update("companyWebsite", event.target.value)}
+        />
+      </label>
       {Object.keys(errors).length > 0 && (
         <div ref={summary} className="error-summary" role="alert" tabIndex={-1}>
           <strong>Please review the highlighted fields.</strong>
@@ -167,6 +187,7 @@ export function ContactForm() {
             type={field.type}
             autoComplete={field.autoComplete}
             value={values[field.name]}
+            maxLength={field.name === "email" ? 254 : 120}
             onChange={(event) => update(field.name, event.target.value)}
             aria-invalid={!!errors[field.name]}
             aria-describedby={
@@ -210,6 +231,7 @@ export function ContactForm() {
         <textarea
           id="opportunity"
           rows={4}
+          maxLength={2000}
           value={values.opportunity}
           onChange={(event) => update("opportunity", event.target.value)}
         />

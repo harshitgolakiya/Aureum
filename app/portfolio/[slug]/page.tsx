@@ -33,8 +33,27 @@ export default async function Page({
   const project = projects.find((item) => item.slug === slug);
   if (!project) notFound();
   const display = projectPresentation(project);
+  const approved = !project.name.startsWith("[");
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   return (
     <main>
+      {approved && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Place",
+              additionalType: "Industrial development",
+              name: display.name,
+              description: display.philosophy,
+              url: `${siteUrl}/portfolio/${slug}`,
+              location: display.location,
+              creator: { "@type": "Organization", name: "Aureum Development" },
+            }).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
       <section className="case-hero">
         <Media label="project-hero.webp" />
         <div>

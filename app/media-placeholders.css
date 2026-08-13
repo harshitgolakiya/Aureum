@@ -4,6 +4,14 @@
     linear-gradient(135deg, rgba(255, 255, 255, 0.025), transparent 55%),
     var(--midnight);
 }
+.media-approved > img {
+  object-fit: cover;
+  z-index: 0;
+}
+.media-approved .media-lines,
+.media-approved .media-composition {
+  display: none;
+}
 .media-composition {
   position: absolute;
   z-index: 1;

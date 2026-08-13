@@ -26,3 +26,10 @@ Use `npm run audit:env:production` before deployment.
 The verification suite also enforces browser-level accessibility, runtime-error,
 network-failure, DOM-size and resource-count budgets across Chrome and Edge in
 standard and reduced-motion modes.
+
+## Approved media
+
+Place approved project, leadership and editorial assets in `public/media`, then
+map each existing reservation label in `data/media.ts`. The placeholder is
+replaced automatically, including responsive image optimization and accessible
+alt text. `npm run audit:content` fails if a mapped file is missing.

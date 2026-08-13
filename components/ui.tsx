@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+import { approvedMedia } from "@/data/media";
 export function ArrowLink({
   href,
   children,
@@ -29,6 +31,7 @@ export function Media({
   label: string;
   className?: string;
 }) {
+  const approved = approvedMedia[label];
   const variant = label.includes("portrait")
     ? "portrait"
     : label.includes("insight") || label.includes("article")
@@ -42,11 +45,20 @@ export function Media({
   );
   return (
     <div
-      className={`media media-${variant} ${className}`}
+      className={`media media-${variant} ${approved ? "media-approved" : ""} ${className}`}
       style={
         { "--media-angle": `${(seed % 12) - 6}deg` } as React.CSSProperties
       }
     >
+      {approved && (
+        <Image
+          src={approved.src}
+          alt={approved.alt}
+          fill
+          sizes="(max-width: 900px) 100vw, 60vw"
+          style={{ objectPosition: approved.focalPoint || "50% 50%" }}
+        />
+      )}
       <div className="media-lines" />
       <div className="media-composition" aria-hidden="true">
         <div className="media-horizon" />
@@ -58,10 +70,12 @@ export function Media({
         </div>
         <div className="media-subject" />
       </div>
-      <div className="media-status">
-        <span>Visual asset reserved</span>
-        <small>{label}</small>
-      </div>
+      {!approved && (
+        <div className="media-status">
+          <span>Visual asset reserved</span>
+          <small>{label}</small>
+        </div>
+      )}
     </div>
   );
 }

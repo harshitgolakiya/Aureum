@@ -106,6 +106,8 @@ const auditExpression = `(() => {
     .flatMap(node => ['aria-controls', 'aria-describedby', 'aria-labelledby']
       .flatMap(attribute => (node.getAttribute(attribute) || '').split(/\s+/).filter(Boolean)))
     .filter(id => !document.getElementById(id));
+  const navigation = performance.getEntriesByType('navigation')[0];
+  const resources = performance.getEntriesByType('resource');
   return {
     overflow: Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - innerWidth,
     main: Boolean(document.querySelector('main')),
@@ -119,6 +121,8 @@ const auditExpression = `(() => {
     h1Count: document.querySelectorAll('h1').length,
     domNodes: document.querySelectorAll('*').length,
     resourceCount: performance.getEntriesByType('resource').length,
+    domContentLoaded: navigation ? navigation.domContentLoadedEventEnd : 0,
+    decodedResourceBytes: resources.reduce((total, entry) => total + (entry.decodedBodySize || 0), 0),
     overflowElements: [...document.querySelectorAll('body *')]
       .filter(node => { const rect = node.getBoundingClientRect(); return rect.right > innerWidth + 2 || rect.left < -2; })
       .slice(0, 8)
@@ -201,6 +205,8 @@ try {
               value.h1Count === 1 &&
               value.domNodes <= 2500 &&
               value.resourceCount <= 150 &&
+              value.domContentLoaded <= 4000 &&
+              value.decodedResourceBytes <= 5_000_000 &&
               value.overflow <= 2 &&
               !value.duplicateIds.length &&
               !value.brokenAriaReferences.length &&
@@ -231,6 +237,7 @@ try {
         ["portfolio filter", "/portfolio", `async () => { const button = [...document.querySelectorAll('.portfolio-filter-bar button')].find(node => node.textContent.trim() === 'Logistics'); button?.click(); await new Promise(resolve => setTimeout(resolve, 100)); return button?.getAttribute('aria-pressed') === 'true' && document.querySelectorAll('.portfolio-editorial-grid > a').length > 0; }`],
         ["project lightbox", "/portfolio/project-1", `async () => { const trigger = document.querySelector('.case-gallery button'); trigger?.focus(); trigger?.click(); await new Promise(resolve => setTimeout(resolve, 100)); const dialog = document.querySelector('[role="dialog"]'); const opened = dialog && document.activeElement?.classList.contains('lightbox-close'); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await new Promise(resolve => setTimeout(resolve, 100)); return Boolean(opened && !document.querySelector('[role="dialog"]') && document.activeElement === trigger); }`],
         ["contact validation", "/contact", `async () => { document.querySelector('.strategic-form button[type="submit"]')?.click(); await new Promise(resolve => setTimeout(resolve, 100)); const alert = document.querySelector('.error-summary[role="alert"]'); return Boolean(alert && document.activeElement === alert && document.querySelectorAll('[aria-invalid="true"]').length >= 4); }`],
+        ["contact spam protection", "/contact", `async () => { const input = document.querySelector('#companyWebsite'); const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set; setter?.call(input, 'https://spam.invalid'); input?.dispatchEvent(new Event('input', { bubbles: true })); await new Promise(resolve => setTimeout(resolve, 50)); document.querySelector('.strategic-form button[type="submit"]')?.click(); await new Promise(resolve => setTimeout(resolve, 100)); return Boolean(document.querySelector('.confirmation.success') && !document.querySelector('.error-summary')); }`],
       ];
       for (const [label, route, expression] of interactions) {
         await cdp.send("Page.navigate", { url: origin + route });
