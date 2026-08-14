@@ -8,7 +8,6 @@ export default defineConfig([
   globalIgnores([
     ".next/**",
     ".next-stale/**",
-    ".next-aureum/**",
     "out/**",
     "next-env.d.ts",
   ]),
