@@ -37,7 +37,7 @@ export default async function Page({
         eyebrow="Legal"
         title={pages[legal]}
         copy="Legal content is pending review and approval."
-        image="/media/heroes/home.png"
+        image="/media/heroes/home.webp"
       />
       <section className="legal-copy">
         <aside>

@@ -36,6 +36,18 @@ async function auditAssets(directory) {
     if (info.isDirectory()) await auditAssets(path);
     else if (info.size > 5_000_000)
       failures.push(`${relative(root, path)}: asset exceeds 5 MB`);
+    else if (
+      relative(publicRoot, path).split(/[/\\]/).slice(0, 2).join("/") ===
+        "media/heroes" &&
+      extname(path).toLowerCase() === ".png"
+    )
+      failures.push(`${relative(root, path)}: hero photography must use WebP`);
+    else if (
+      relative(publicRoot, path).split(/[/\\]/).slice(0, 2).join("/") ===
+        "media/heroes" &&
+      info.size > 500_000
+    )
+      failures.push(`${relative(root, path)}: optimized hero exceeds 500 KB`);
   }
 }
 await auditAssets(publicRoot);

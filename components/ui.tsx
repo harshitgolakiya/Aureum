@@ -93,10 +93,10 @@ export function PageHero({
   image?: string;
 }) {
   const heroImages = {
-    perspective: "/media/heroes/who-we-are.png",
-    pathways: "/media/heroes/how-we-partner.png",
-    portfolio: "/media/heroes/portfolio.png",
-    insights: "/media/heroes/insights.png",
+    perspective: "/media/heroes/who-we-are.webp",
+    pathways: "/media/heroes/how-we-partner.webp",
+    portfolio: "/media/heroes/portfolio.webp",
+    insights: "/media/heroes/insights.webp",
   };
   return (
     <section className={`page-hero page-hero-${identity}`}>

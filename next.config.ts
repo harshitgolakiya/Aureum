@@ -11,6 +11,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  distDir: ".next-aureum",
   poweredByHeader: false,
   compress: true,
   async headers() {

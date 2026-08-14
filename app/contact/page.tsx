@@ -14,7 +14,7 @@ export default function Page() {
       <section className="contact-hero">
         <div className="contact-hero-photo" aria-hidden="true">
           <Image
-            src="/media/heroes/contact.png"
+            src="/media/heroes/contact.webp"
             alt=""
             fill
             priority

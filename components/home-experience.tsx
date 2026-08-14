@@ -57,7 +57,7 @@ export function HomeHero() {
     <section ref={root} className="hero">
       <div className="hero-photo" aria-hidden="true">
         <Image
-          src="/media/heroes/home.png"
+          src="/media/heroes/home.webp"
           alt=""
           fill
           priority

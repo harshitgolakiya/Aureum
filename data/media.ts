@@ -8,12 +8,12 @@ export type ApprovedMedia = {
 // here. Every current composition continues to work until its exact asset lands.
 export const approvedMedia: Record<string, ApprovedMedia> = {
   "project-hero.webp": {
-    src: "/media/heroes/portfolio.png",
+    src: "/media/heroes/portfolio.webp",
     alt: "A modern logistics campus illuminated at blue hour",
     focalPoint: "68% 55%",
   },
   "article-hero.webp": {
-    src: "/media/heroes/insights.png",
+    src: "/media/heroes/insights.webp",
     alt: "A logistics and infrastructure corridor at dawn",
     focalPoint: "65% 52%",
   },

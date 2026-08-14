@@ -1,5 +1,7 @@
 node_modules
 .next
+.next-stale
+.next-aureum
 out
 .env*
 !.env.example
@@ -14,6 +16,7 @@ CLAUDE.md
 IMPROVEMENTS.md
 LAUNCH_READINESS.md
 IMAGE_REQUIREMENTS.md
+MISSING_CONTENT.md
 AUREUM NEW WEBSITE CONTENTS (1).md
 AUREUM - SECONDARY COLORS PROPOSAL.pdf
 aureumLogo.svg
