@@ -691,6 +691,8 @@ footer:before,
 .contact-hero h1 {
   max-width: 1120px;
   margin: 3rem 0 2rem;
+  color: #fff;
+  opacity: 1;
 }
 .contact-hero > p {
   margin-left: 0;

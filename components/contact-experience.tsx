@@ -7,15 +7,6 @@ export function ContactMotion() {
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const context = gsap.context(() => {
-      const heroTitle = document.querySelector<HTMLElement>(".contact-hero h1");
-      if (heroTitle) {
-        gsap.from(heroTitle, {
-          opacity: 0,
-          y: 55,
-          duration: 1.1,
-          ease: "power4.out",
-        });
-      }
       const fields = gsap.utils.toArray<HTMLElement>(".strategic-form .field");
       const contactForm = document.querySelector<HTMLElement>(".contact-form");
       if (fields.length && contactForm) {

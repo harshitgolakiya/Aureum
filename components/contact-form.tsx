@@ -200,7 +200,7 @@ export function ContactForm() {
         </label>
       ))}
       <label
-        className={`field ${values.interest ? "has-value" : ""} ${errors.interest ? "invalid" : ""}`}
+        className={`field select-field ${values.interest ? "has-value" : ""} ${errors.interest ? "invalid" : ""}`}
         htmlFor="interest"
       >
         <span>Area of Interest *</span>
@@ -240,7 +240,7 @@ export function ContactForm() {
         </small>
       </label>
       <label
-        className={`field full ${values.source ? "has-value" : ""}`}
+        className={`field full select-field ${values.source ? "has-value" : ""}`}
         htmlFor="source"
       >
         <span>How did you hear about Aureum?</span>
