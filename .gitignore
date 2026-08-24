@@ -9,6 +9,7 @@
 /out/
 /build/
 *.tsbuildinfo
+/next-env.d.ts
 
 # Local environment files and secrets
 .env
