@@ -68,6 +68,7 @@ try {
   }
   const landing = await fetch(origin);
   const headers = {
+    "strict-transport-security": "max-age=31536000",
     "x-content-type-options": "nosniff",
     "x-frame-options": "DENY",
     "referrer-policy": "strict-origin-when-cross-origin",
