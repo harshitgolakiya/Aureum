@@ -7,11 +7,30 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowLink, Eyebrow } from "./ui";
 import { models, phases, pillars } from "@/data/site";
+import { homeHeroMedia } from "@/data/media";
+import type { HomeHeroContent } from "@/lib/cms/schema";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function HomeHero() {
+export function HomeHero({ content }: { content: HomeHeroContent }) {
   const root = useRef<HTMLElement>(null);
+  const video = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const motionPreference = matchMedia("(prefers-reduced-motion: reduce)");
+    const syncPlayback = () => {
+      if (motionPreference.matches) {
+        video.current?.pause();
+        return;
+      }
+      void video.current?.play().catch(() => undefined);
+    };
+
+    syncPlayback();
+    motionPreference.addEventListener("change", syncPlayback);
+    return () => motionPreference.removeEventListener("change", syncPlayback);
+  }, []);
+
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const context = gsap.context(() => {
@@ -40,7 +59,7 @@ export function HomeHero() {
           scrub: true,
         },
       });
-      gsap.to(".hero-photo img", {
+      gsap.to(".hero-photo img, .hero-photo video", {
         scale: 1.08,
         ease: "none",
         scrollTrigger: {
@@ -57,49 +76,77 @@ export function HomeHero() {
     <section ref={root} className="hero">
       <div className="hero-photo" aria-hidden="true">
         <Image
-          src="/media/heroes/home.webp"
+          src={homeHeroMedia.posterSrc}
           alt=""
           fill
           priority
           sizes="100vw"
         />
+        <video
+          ref={video}
+          className="hero-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster={homeHeroMedia.posterSrc}
+          tabIndex={-1}
+          disablePictureInPicture
+          onError={(event) => {
+            event.currentTarget.hidden = true;
+          }}
+        >
+          <source src={homeHeroMedia.videoSrc} type="video/mp4" />
+        </video>
       </div>
       <div className="hero-grid" />
       <div className="hero-content">
-        <div data-hero-follow>
-          <Eyebrow>The 360° Industrial Developer</Eyebrow>
-        </div>
-        <h1 aria-label="With us, industrial opportunities take shape into developments.">
-          <span className="hero-line">
-            <span data-hero-line>With us, industrial opportunities</span>
-          </span>
-          <span className="hero-line">
-            <span data-hero-line>
-              take shape into <em>developments.</em>
-            </span>
-          </span>
-        </h1>
-        <div className="hero-bottom" data-hero-follow>
-          <div>
-            <p>
-              Opportunities begin with clarity, and intelligence informs every
-              stage of industrial development.
-            </p>
-            <p className="hero-subheadline">
-              The 360° Industrial Developer. From opportunity to sustainable
-              long-term performance
-            </p>
+        <div className="hero-main">
+          <div className="hero-kicker" data-hero-follow>
+            <Eyebrow>{content.eyebrow}</Eyebrow>
+            <p>{content.kicker}</p>
           </div>
-          <div>
+          <h1
+            aria-label={`${content.titleLineOne} ${content.titleLineTwo} ${content.titleEmphasis}`}
+          >
+            <span className="hero-line">
+              <span data-hero-line>{content.titleLineOne}</span>
+            </span>
+            <span className="hero-line">
+              <span data-hero-line>
+                {content.titleLineTwo} <em>{content.titleEmphasis}</em>
+              </span>
+            </span>
+          </h1>
+        </div>
+        <div className="hero-dock" data-hero-follow>
+          <div className="hero-summary">
+            <small>Our perspective</small>
+            <p>{content.summary}</p>
+          </div>
+          <div className="hero-actions">
             <ArrowLink href="#system">Explore The Aureum System</ArrowLink>
             <Link href="/contact" className="text-link">
               Start a Conversation ↗
             </Link>
           </div>
+          <ol className="hero-principles" aria-label="The Aureum approach">
+            <li>
+              <span>01</span> Identify
+            </li>
+            <li>
+              <span>02</span> Shape
+            </li>
+            <li>
+              <span>03</span> Deliver
+            </li>
+          </ol>
         </div>
       </div>
       <div className="scroll-cue" data-hero-follow>
-        Scroll to explore <i />
+        <span>Scroll</span>
+        <i />
       </div>
     </section>
   );
@@ -585,41 +632,64 @@ export function HomepageReveals() {
               },
             );
         });
-      gsap.from(".article-list > a", {
-        opacity: 0,
-        x: 35,
-        stagger: 0.1,
-        duration: 0.8,
-        ease: "power3.out",
-        scrollTrigger: { trigger: ".article-list", start: "top 82%" },
-      });
-      gsap.from(".connect > *", {
-        opacity: 0,
-        y: 38,
-        stagger: 0.14,
-        duration: 1,
-        ease: "power3.out",
-        scrollTrigger: { trigger: ".connect", start: "top 75%" },
-      });
-      gsap.from("footer .footer-grid > div", {
-        opacity: 0,
-        y: 24,
-        stagger: 0.12,
-        duration: 0.8,
-        ease: "power3.out",
-        scrollTrigger: { trigger: "footer", start: "top 90%" },
-      });
-      gsap.to(".footer-orbit", {
-        rotation: 35,
-        y: -35,
-        ease: "none",
-        scrollTrigger: {
-          trigger: "footer",
-          start: "top bottom",
-          end: "bottom bottom",
-          scrub: true,
-        },
-      });
+      const articleItems = gsap.utils.toArray<HTMLElement>(
+        ".article-list > a",
+      );
+      if (articleItems.length) {
+        gsap.from(articleItems, {
+          opacity: 0,
+          x: 35,
+          stagger: 0.1,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: articleItems[0].closest(".article-list") ?? articleItems[0],
+            start: "top 82%",
+          },
+        });
+      }
+      const connectItems = gsap.utils.toArray<HTMLElement>(".connect > *");
+      if (connectItems.length) {
+        gsap.from(connectItems, {
+          opacity: 0,
+          y: 38,
+          stagger: 0.14,
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: connectItems[0].closest(".connect") ?? connectItems[0],
+            start: "top 75%",
+          },
+        });
+      }
+      const footer = document.querySelector<HTMLElement>("footer");
+      const footerItems = gsap.utils.toArray<HTMLElement>(
+        "footer .footer-grid > div",
+      );
+      if (footer && footerItems.length) {
+        gsap.from(footerItems, {
+          opacity: 0,
+          y: 24,
+          stagger: 0.12,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: { trigger: footer, start: "top 90%" },
+        });
+      }
+      const footerOrbit = document.querySelector<HTMLElement>(".footer-orbit");
+      if (footer && footerOrbit) {
+        gsap.to(footerOrbit, {
+          rotation: 35,
+          y: -35,
+          ease: "none",
+          scrollTrigger: {
+            trigger: footer,
+            start: "top bottom",
+            end: "bottom bottom",
+            scrub: true,
+          },
+        });
+      }
     });
     return () => context.revert();
   }, []);

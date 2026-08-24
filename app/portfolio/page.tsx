@@ -1,12 +1,14 @@
 import { PortfolioListing } from "@/components/portfolio-experience";
 import { Connect, PageHero } from "@/components/ui";
+import { getProjects } from "@/lib/cms/collections";
 export const metadata = {
   title: "Portfolio",
   description:
     "Explore industrial developments shaped through Aureum's 360° Development Perspective.",
   alternates: { canonical: "/portfolio" },
 };
-export default function Page() {
+export default async function Page() {
+  const projects = await getProjects();
   return (
     <main>
       <PageHero
@@ -15,7 +17,7 @@ export default function Page() {
         title="Where the Aureum 360° Development Perspective takes form."
         copy="Every development reflects a different opportunity, shaped through the Aureum perspective to create lasting industrial value."
       />
-      <PortfolioListing />
+      <PortfolioListing projects={projects} />
       <section className="principle">
         <p>Development approach / 360°</p>
         <h2>

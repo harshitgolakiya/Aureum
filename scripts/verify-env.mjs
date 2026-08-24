@@ -5,6 +5,11 @@ const requirements = [
   ["NEXT_PUBLIC_MAPBOX_TOKEN", "interactive map upgrade", false],
   ["NEXT_PUBLIC_VITALS_ENDPOINT", "privacy-conscious field performance monitoring", false],
 ];
+const privateRequirements = [
+  ["DATABASE_URL", "MySQL CMS storage", (value) => { try { return ["mysql:", "mysqls:"].includes(new URL(value).protocol); } catch { return false; } }],
+  ["NEXT_SERVER_ACTIONS_ENCRYPTION_KEY", "stable server-action encryption across instances", (value) => value.length >= 32],
+  ["CMS_CRON_SECRET", "authenticated scheduled publishing", (value) => value.length >= 32],
+];
 
 let failed = false;
 console.log(`Aureum environment audit${production ? " (production)" : ""}`);
@@ -28,6 +33,12 @@ for (const [name, purpose, required] of requirements) {
       : "optional";
   console.log(`- ${name}: ${status} — ${purpose}`);
   if ((production && required && !value) || (value && !valid)) failed = true;
+}
+for (const [name, purpose, validate] of privateRequirements) {
+  const value = process.env[name]?.trim() ?? "";
+  const valid = Boolean(value) && validate(value);
+  console.log(`- ${name}: ${valid ? "configured" : value ? "invalid" : "required"} — ${purpose}`);
+  if (production && !valid) failed = true;
 }
 if (failed) {
   console.error("Production environment is incomplete.");

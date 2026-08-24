@@ -1,10 +1,8 @@
 import Link from "next/link";
 import { ArrowLink, Connect, Eyebrow, Media } from "@/components/ui";
 import {
-  insightArticles,
   insightPresentation,
   projectPresentation,
-  projects,
 } from "@/data/site";
 import {
   AureumSystemIntroduction,
@@ -15,6 +13,8 @@ import {
   LifecycleStory,
 } from "@/components/home-experience";
 import type { Metadata } from "next";
+import { getCmsContent } from "@/lib/cms/content";
+import { getPosts, getProjects } from "@/lib/cms/collections";
 
 export const metadata: Metadata = {
   title: "The 360° Industrial Developer",
@@ -23,10 +23,15 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-export default function Home() {
+export default async function Home() {
+  const [heroContent, projects, insightArticles] = await Promise.all([
+    getCmsContent("home.hero"),
+    getProjects(),
+    getPosts(),
+  ]);
   return (
     <main>
-      <HomeHero />
+      <HomeHero content={heroContent} />
       <AureumSystemIntroduction />
       <AureumSystemStory />
       <LifecycleStory />
@@ -53,7 +58,7 @@ export default function Home() {
               className={i === 0 ? "featured" : ""}
               key={p.slug}
             >
-              <Media label={`portfolio-project-0${i + 1}.webp`} />
+              <Media label={`portfolio-project-0${i + 1}.webp`} src={p.coverImage} alt={projectPresentation(p, i).name} />
               <span>
                 {p.type} · {projectPresentation(p, i).location}
               </span>
@@ -81,17 +86,9 @@ export default function Home() {
           {insightArticles.map((article, i) => (
             <Link href={`/insights/${article.slug}`} key={article.slug}>
               <span>0{i + 1}</span>
-              <small>
-                {
-                  [
-                    "Market Intelligence",
-                    "Industry Perspective",
-                    "Thought Leadership",
-                  ][i]
-                }
-              </small>
+              <small>{article.category}</small>
               <h3>{insightPresentation(article, i).title}</h3>
-              <p>Two-line summary of the article’s key perspective</p>
+              <p>{insightPresentation(article, i).excerpt}</p>
               <b>Read article ↗</b>
             </Link>
           ))}

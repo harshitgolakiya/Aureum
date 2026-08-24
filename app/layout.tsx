@@ -22,9 +22,11 @@ import "./launch-polish.css";
 import { Footer, Header } from "@/components/layout";
 import { RouteExperience } from "@/components/route-experience";
 import { WebVitals } from "@/components/web-vitals";
+import { getCmsContent } from "@/lib/cms/content";
+import { getSiteOrigin } from "@/lib/site-url";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans" });
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const siteUrl = getSiteOrigin();
 export const metadata: Metadata = {
   title: {
     default: "Aureum — The 360° Industrial Developer",
@@ -52,12 +54,13 @@ export const viewport = {
   colorScheme: "light",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const footerContent = await getCmsContent("site.footer");
   return (
-    <html lang="en">
-      <body className={manrope.variable}>
+    <html lang="en" data-scroll-behavior="smooth">
+      <body className={manrope.variable} suppressHydrationWarning>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -84,7 +87,7 @@ export default function RootLayout({
           <div id="main-content" tabIndex={-1}>
             {children}
           </div>
-          <Footer />
+          <Footer content={footerContent} />
         </RouteExperience>
         <WebVitals />
       </body>

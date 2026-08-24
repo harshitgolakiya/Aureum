@@ -1,7 +1,9 @@
 import type { MetadataRoute } from "next";
-import { insightArticles, projects } from "@/data/site";
-export default function sitemap(): MetadataRoute.Sitemap {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+import { getPosts, getProjects } from "@/lib/cms/collections";
+import { getSiteOrigin } from "@/lib/site-url";
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [projects, insightArticles] = await Promise.all([getProjects(), getPosts()]);
+  const base = getSiteOrigin();
   const routes = [
     "",
     "/who-we-are",
@@ -10,10 +12,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/insights",
     "/contact",
     ...projects
-      .filter((project) => !project.name.startsWith("["))
+      .filter((project) => project.searchIndex && !project.name.startsWith("["))
       .map((project) => `/portfolio/${project.slug}`),
     ...insightArticles
-      .filter((article) => !article.title.startsWith("["))
+      .filter((article) => article.searchIndex && !article.title.startsWith("["))
       .map((article) => `/insights/${article.slug}`),
   ];
   return routes.map((url) => ({

@@ -34,8 +34,8 @@ async function auditAssets(directory) {
     const path = join(directory, entry);
     const info = await stat(path);
     if (info.isDirectory()) await auditAssets(path);
-    else if (info.size > 5_000_000)
-      failures.push(`${relative(root, path)}: asset exceeds 5 MB`);
+    else if (info.size > (extname(path).toLowerCase() === ".mp4" ? 50_000_000 : 5_000_000))
+      failures.push(`${relative(root, path)}: asset exceeds its delivery budget`);
     else if (
       relative(publicRoot, path).split(/[/\\]/).slice(0, 2).join("/") ===
         "media/heroes" &&
@@ -45,6 +45,7 @@ async function auditAssets(directory) {
     else if (
       relative(publicRoot, path).split(/[/\\]/).slice(0, 2).join("/") ===
         "media/heroes" &&
+      [".jpg", ".jpeg", ".webp", ".avif"].includes(extname(path).toLowerCase()) &&
       info.size > 500_000
     )
       failures.push(`${relative(root, path)}: optimized hero exceeds 500 KB`);

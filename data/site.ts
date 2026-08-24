@@ -67,7 +67,70 @@ export const models = [
     body: "We bring together land, occupier requirements and development expertise to connect capital to opportunities for shared long-term value.",
   },
 ];
-export const projects = [
+export type CmsWorkflowStatus = "draft" | "scheduled" | "published" | "unpublished" | "archived";
+
+export type Project = {
+  slug: string;
+  name: string;
+  location: string;
+  type: string;
+  category: string;
+  metric: string;
+  status: string;
+  philosophy: string;
+  engagement: string;
+  coverImage: string;
+  opportunity: string;
+  strategy: string;
+  delivery: string;
+  outcome: string;
+  chapterOrder: string;
+  galleryImages: string;
+  seoTitle: string;
+  seoDescription: string;
+  canonicalUrl: string;
+  searchIndex: boolean;
+  searchFollow: boolean;
+  socialTitle: string;
+  socialDescription: string;
+  socialImage: string;
+  published: boolean;
+  archived: boolean;
+  workflowStatus: CmsWorkflowStatus;
+  scheduledAt: string;
+  sortOrder: number;
+};
+
+export type InsightArticle = {
+  slug: string;
+  category: string;
+  title: string;
+  excerpt: string;
+  author: string;
+  authorTitle: string;
+  date: string;
+  readTime: string;
+  coverImage: string;
+  body: string;
+  bodyDocument: string;
+  pullQuote: string;
+  seoTitle: string;
+  seoDescription: string;
+  canonicalUrl: string;
+  searchIndex: boolean;
+  searchFollow: boolean;
+  socialTitle: string;
+  socialDescription: string;
+  socialImage: string;
+  published: boolean;
+  featured: boolean;
+  archived: boolean;
+  workflowStatus: CmsWorkflowStatus;
+  scheduledAt: string;
+  sortOrder: number;
+};
+
+export const projects: Project[] = [
   {
     slug: "project-1",
     name: "[Project Name]",
@@ -79,6 +142,26 @@ export const projects = [
     philosophy:
       "[One sentence describing how Aureum's thinking shaped this development]",
     engagement: "[Predictive / Management / Partnership]",
+    coverImage: "/media/heroes/portfolio.webp",
+    opportunity: "Approved opportunity context and strategic rationale pending.",
+    strategy: "Approved account of the intelligence, commercial priorities and development strategy pending.",
+    delivery: "Approved delivery, governance and milestone narrative pending.",
+    outcome: "Approved results, performance measures and evidence of value creation pending.",
+    chapterOrder: "opportunity,strategy,delivery,outcome",
+    galleryImages: "",
+    seoTitle: "",
+    seoDescription: "",
+    canonicalUrl: "",
+    searchIndex: true,
+    searchFollow: true,
+    socialTitle: "",
+    socialDescription: "",
+    socialImage: "",
+    published: true,
+    archived: false,
+    workflowStatus: "published",
+    scheduledAt: "",
+    sortOrder: 10,
   },
   {
     slug: "project-2",
@@ -91,6 +174,26 @@ export const projects = [
     philosophy:
       "[One sentence describing how Aureum's thinking shaped this development]",
     engagement: "[Predictive / Management / Partnership]",
+    coverImage: "/media/heroes/portfolio.webp",
+    opportunity: "Approved opportunity context and strategic rationale pending.",
+    strategy: "Approved account of the intelligence, commercial priorities and development strategy pending.",
+    delivery: "Approved delivery, governance and milestone narrative pending.",
+    outcome: "Approved results, performance measures and evidence of value creation pending.",
+    chapterOrder: "opportunity,strategy,delivery,outcome",
+    galleryImages: "",
+    seoTitle: "",
+    seoDescription: "",
+    canonicalUrl: "",
+    searchIndex: true,
+    searchFollow: true,
+    socialTitle: "",
+    socialDescription: "",
+    socialImage: "",
+    published: true,
+    archived: false,
+    workflowStatus: "published",
+    scheduledAt: "",
+    sortOrder: 20,
   },
   {
     slug: "project-3",
@@ -103,6 +206,26 @@ export const projects = [
     philosophy:
       "[One sentence describing how Aureum's thinking shaped this development]",
     engagement: "[Predictive / Management / Partnership]",
+    coverImage: "/media/heroes/portfolio.webp",
+    opportunity: "Approved opportunity context and strategic rationale pending.",
+    strategy: "Approved account of the intelligence, commercial priorities and development strategy pending.",
+    delivery: "Approved delivery, governance and milestone narrative pending.",
+    outcome: "Approved results, performance measures and evidence of value creation pending.",
+    chapterOrder: "opportunity,strategy,delivery,outcome",
+    galleryImages: "",
+    seoTitle: "",
+    seoDescription: "",
+    canonicalUrl: "",
+    searchIndex: true,
+    searchFollow: true,
+    socialTitle: "",
+    socialDescription: "",
+    socialImage: "",
+    published: true,
+    archived: false,
+    workflowStatus: "published",
+    scheduledAt: "",
+    sortOrder: 30,
   },
   {
     slug: "project-4",
@@ -115,6 +238,26 @@ export const projects = [
     philosophy:
       "[One sentence describing how Aureum's thinking shaped this development]",
     engagement: "[Predictive / Management / Partnership]",
+    coverImage: "/media/heroes/portfolio.webp",
+    opportunity: "Approved opportunity context and strategic rationale pending.",
+    strategy: "Approved account of the intelligence, commercial priorities and development strategy pending.",
+    delivery: "Approved delivery, governance and milestone narrative pending.",
+    outcome: "Approved results, performance measures and evidence of value creation pending.",
+    chapterOrder: "opportunity,strategy,delivery,outcome",
+    galleryImages: "",
+    seoTitle: "",
+    seoDescription: "",
+    canonicalUrl: "",
+    searchIndex: true,
+    searchFollow: true,
+    socialTitle: "",
+    socialDescription: "",
+    socialImage: "",
+    published: true,
+    archived: false,
+    workflowStatus: "published",
+    scheduledAt: "",
+    sortOrder: 40,
   },
 ];
 export const articles = [
@@ -122,7 +265,7 @@ export const articles = [
   "[Industry perspective headline]",
   "[Thought leadership headline]",
 ];
-export const insightArticles = [
+export const insightArticles: InsightArticle[] = [
   {
     slug: "article-1",
     category: "Market Intelligence",
@@ -132,6 +275,24 @@ export const insightArticles = [
     authorTitle: "[Author title]",
     date: "[Publication date]",
     readTime: "[Read time]",
+    coverImage: "/media/heroes/insights.webp",
+    body: "Article content has not yet been supplied. This reading template is ready for approved Aureum insight content.",
+    bodyDocument: "",
+    pullQuote: "Approved pull quote pending.",
+    seoTitle: "",
+    seoDescription: "",
+    canonicalUrl: "",
+    searchIndex: true,
+    searchFollow: true,
+    socialTitle: "",
+    socialDescription: "",
+    socialImage: "",
+    published: true,
+    featured: true,
+    archived: false,
+    workflowStatus: "published",
+    scheduledAt: "",
+    sortOrder: 10,
   },
   {
     slug: "article-2",
@@ -142,6 +303,24 @@ export const insightArticles = [
     authorTitle: "[Author title]",
     date: "[Publication date]",
     readTime: "[Read time]",
+    coverImage: "/media/heroes/insights.webp",
+    body: "Article content has not yet been supplied. This reading template is ready for approved Aureum insight content.",
+    bodyDocument: "",
+    pullQuote: "Approved pull quote pending.",
+    seoTitle: "",
+    seoDescription: "",
+    canonicalUrl: "",
+    searchIndex: true,
+    searchFollow: true,
+    socialTitle: "",
+    socialDescription: "",
+    socialImage: "",
+    published: true,
+    featured: false,
+    archived: false,
+    workflowStatus: "published",
+    scheduledAt: "",
+    sortOrder: 20,
   },
   {
     slug: "article-3",
@@ -152,6 +331,24 @@ export const insightArticles = [
     authorTitle: "[Author title]",
     date: "[Publication date]",
     readTime: "[Read time]",
+    coverImage: "/media/heroes/insights.webp",
+    body: "Article content has not yet been supplied. This reading template is ready for approved Aureum insight content.",
+    bodyDocument: "",
+    pullQuote: "Approved pull quote pending.",
+    seoTitle: "",
+    seoDescription: "",
+    canonicalUrl: "",
+    searchIndex: true,
+    searchFollow: true,
+    socialTitle: "",
+    socialDescription: "",
+    socialImage: "",
+    published: true,
+    featured: false,
+    archived: false,
+    workflowStatus: "published",
+    scheduledAt: "",
+    sortOrder: 30,
   },
 ];
 
@@ -160,8 +357,8 @@ export function isPendingContent(value: string) {
 }
 
 export function projectPresentation(
-  project: (typeof projects)[number],
-  index = projects.indexOf(project),
+  project: Project,
+  index = Math.max(0, projects.findIndex((item) => item.slug === project.slug)),
 ) {
   return {
     name: isPendingContent(project.name)
@@ -183,8 +380,8 @@ export function projectPresentation(
 }
 
 export function insightPresentation(
-  article: (typeof insightArticles)[number],
-  index = insightArticles.indexOf(article),
+  article: InsightArticle,
+  index = Math.max(0, insightArticles.findIndex((item) => item.slug === article.slug)),
 ) {
   return {
     title: isPendingContent(article.title)

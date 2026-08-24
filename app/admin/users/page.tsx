@@ -1,0 +1,31 @@
+import { CmsShell } from "../cms-shell";
+import { requireCmsSession } from "@/lib/cms/auth";
+import { getCmsUsers } from "@/lib/cms/users";
+import { changeMyCmsPasswordAction, createCmsUserAction, resetCmsUserPasswordAction, revokeCmsUserSessionsAction, revokeOtherCmsSessionsAction, updateCmsUserAction } from "./actions";
+
+function queryValue(value: string | string[] | undefined) { return Array.isArray(value) ? value[0] ?? "" : value ?? ""; }
+const formatter = new Intl.DateTimeFormat("en-AE", { day: "2-digit", month: "short", year: "numeric", timeZone: "Asia/Dubai" });
+
+export default async function UsersPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const [session, query] = await Promise.all([requireCmsSession(), searchParams]);
+  const users = session.role === "administrator" ? await getCmsUsers() : [];
+  const message = queryValue(query.message);
+  const error = queryValue(query.error);
+  return <CmsShell active="users" email={session.email} role={session.role} eyebrow="Access control" title="Users & security">
+    <div className="cms-users-page">
+      {session.mustChangePassword && <div className="cms-alert cms-alert-error">Your password was reset by an administrator. Change it before continuing editorial work.</div>}
+      {message && <div className="cms-alert cms-alert-success">Security settings were updated successfully.</div>}
+      {error && <div className="cms-alert cms-alert-error">{error === "last-administrator" ? "The final active administrator cannot be removed or downgraded." : error === "invalid-password" ? "Passwords need at least 12 characters with a letter, number, and special character." : error === "current-password" ? "The current password is incorrect." : error === "password-mismatch" ? "The new passwords do not match." : error === "password-required" ? "Change your temporary password before continuing." : error === "ER_DUP_ENTRY" ? "That email address already has an account." : "The security action could not be completed."}</div>}
+
+      <section className="cms-security-grid">
+        <article><p className="cms-eyebrow">Your account</p><h2>Change password</h2><p>Changing your password also revokes every other signed-in device.</p><form action={changeMyCmsPasswordAction} className="cms-security-form"><label><span>Current password</span><input name="currentPassword" type="password" autoComplete="current-password" required /></label><label><span>New password</span><input name="newPassword" type="password" autoComplete="new-password" minLength={12} required /></label><label><span>Confirm new password</span><input name="confirmPassword" type="password" autoComplete="new-password" minLength={12} required /></label><button type="submit">Change password</button></form></article>
+        <article><p className="cms-eyebrow">Active sessions</p><h2>Secure other devices</h2><p>Keep this browser signed in and revoke every other active session connected to your account.</p><form action={revokeOtherCmsSessionsAction}><button className="cms-secondary-action" type="submit">Sign out other devices</button></form><dl><div><dt>Email</dt><dd>{session.email}</dd></div><div><dt>Role</dt><dd>{session.role}</dd></div></dl></article>
+      </section>
+
+      {session.role === "administrator" ? <>
+        <section className="cms-user-create"><div><p className="cms-eyebrow">Administrator controls</p><h2>Add a CMS user</h2><p>New users must replace their temporary password after signing in.</p></div><form action={createCmsUserAction}><label><span>Email</span><input name="email" type="email" required /></label><label><span>Temporary password</span><input name="password" type="password" minLength={12} required /></label><label><span>Role</span><select name="role" defaultValue="editor"><option value="administrator">Administrator</option><option value="editor">Editor</option><option value="viewer">Viewer</option></select></label><button type="submit">Create user</button></form></section>
+        <section className="cms-user-list"><header><div><p className="cms-eyebrow">User directory</p><h2>{users.length} account{users.length === 1 ? "" : "s"}</h2></div><div className="cms-role-legend"><span><strong>Administrator</strong> Full CMS and user security</span><span><strong>Editor</strong> Content and media changes</span><span><strong>Viewer</strong> Read-only CMS access</span></div></header>{users.map((user) => <article key={user.id}><div className="cms-user-identity"><span>{user.email.slice(0, 2).toUpperCase()}</span><div><strong>{user.email}</strong><small>Created {formatter.format(user.createdAt)} · {user.lastLoginAt ? `Last login ${formatter.format(user.lastLoginAt)}` : "Never signed in"}</small></div></div><div className="cms-user-session"><strong>{user.activeSessions}</strong><span>active session{user.activeSessions === 1 ? "" : "s"}</span>{user.mustChangePassword && <em>Password change required</em>}</div><form action={updateCmsUserAction} className="cms-user-role-form"><input type="hidden" name="userId" value={user.id} /><select aria-label={`Role for ${user.email}`} name="role" defaultValue={user.role}><option value="administrator">Administrator</option><option value="editor">Editor</option><option value="viewer">Viewer</option></select><label><input name="active" type="checkbox" defaultChecked={user.active} /> Active</label><button type="submit">Save access</button></form><details className="cms-user-security"><summary>Password & sessions</summary><div><form action={resetCmsUserPasswordAction}><input type="hidden" name="userId" value={user.id} /><input aria-label={`Temporary password for ${user.email}`} name="password" type="password" minLength={12} placeholder="New temporary password" required /><button type="submit">Reset password</button></form><form action={revokeCmsUserSessionsAction}><input type="hidden" name="userId" value={user.id} /><button className="is-danger" type="submit">Revoke all sessions</button></form></div></details></article>)}</section>
+      </> : <section className="cms-library-empty"><h2>User administration is restricted.</h2><p>Your {session.role} account can change its password and secure its own sessions. Only administrators can manage other users.</p></section>}
+    </div>
+  </CmsShell>;
+}

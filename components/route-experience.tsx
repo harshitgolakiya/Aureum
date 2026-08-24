@@ -4,11 +4,19 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
 
+const ROUTE_HERO_TARGETS =
+  ".page-hero .eyebrow, .page-hero h1, .page-hero > p, .contact-hero .eyebrow, .contact-hero h1, .contact-hero > p";
+
 export function RouteExperience({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const isAdmin = pathname.startsWith("/admin");
   const [loading, setLoading] = useState(true);
   const shell = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    if (isAdmin) {
+      const frame = requestAnimationFrame(() => setLoading(false));
+      return () => cancelAnimationFrame(frame);
+    }
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const seen = sessionStorage.getItem("aureum-intro-seen");
     if (seen || reduced) {
@@ -45,27 +53,32 @@ export function RouteExperience({ children }: { children: React.ReactNode }) {
     return () => {
       timeline.kill();
     };
-  }, []);
+  }, [isAdmin]);
   useEffect(() => {
-    if (loading) return;
+    if (loading || isAdmin) return;
+    const heroTargets = shell.current
+      ? Array.from(
+          shell.current.querySelectorAll<HTMLElement>(ROUTE_HERO_TARGETS),
+        )
+      : [];
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      gsap.set(
-        ".page-hero .eyebrow, .page-hero h1, .page-hero > p, .contact-hero .eyebrow, .contact-hero h1, .contact-hero > p",
-        { clearProps: "all" },
-      );
+      if (heroTargets.length) gsap.set(heroTargets, { clearProps: "all" });
       return;
     }
     const context = gsap.context(() => {
+      const routeWipe = shell.current?.querySelector<HTMLElement>(".route-wipe");
+      if (!routeWipe) return;
       const timeline = gsap.timeline();
       timeline
-        .set(".route-wipe", { display: "block", clipPath: "inset(0 0 0 0)" })
-        .to(".route-wipe", {
+        .set(routeWipe, { display: "block", clipPath: "inset(0 0 0 0)" })
+        .to(routeWipe, {
           clipPath: "inset(0 0 100% 0)",
           duration: 0.75,
           ease: "power4.inOut",
-        })
-        .from(
-          ".page-hero .eyebrow, .page-hero h1, .page-hero > p, .contact-hero .eyebrow, .contact-hero h1, .contact-hero > p",
+        });
+      if (heroTargets.length) {
+        timeline.from(
+          heroTargets,
           {
             opacity: 0,
             y: 35,
@@ -74,15 +87,17 @@ export function RouteExperience({ children }: { children: React.ReactNode }) {
             ease: "power3.out",
           },
           "-=.35",
-        )
-        .set(".route-wipe", { display: "none" });
+        );
+      }
+      timeline.set(routeWipe, { display: "none" });
     }, shell);
     return () => context.revert();
-  }, [pathname, loading]);
+  }, [pathname, loading, isAdmin]);
   const pageName =
     pathname === "/"
       ? "Aureum"
       : pathname.split("/").filter(Boolean).at(-1)?.replaceAll("-", " ");
+  if (isAdmin) return <div ref={shell} className="route-shell route-shell-admin">{children}</div>;
   return (
     <div ref={shell} className="route-shell">
       <div className="route-wipe" aria-hidden="true">

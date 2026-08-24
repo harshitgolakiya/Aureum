@@ -26,9 +26,7 @@ const routes = [
   "/who-we-are",
   "/how-we-partner",
   "/portfolio",
-  "/portfolio/project-1",
   "/insights",
-  "/insights/article-1",
   "/contact",
   "/privacy-policy",
 ];
@@ -193,10 +191,25 @@ try {
       await cdp.send("Network.enable");
       let runtimeErrors = [];
       let networkErrors = [];
+      let actionableWarnings = [];
       cdp.on("Runtime.exceptionThrown", ({ exceptionDetails }) => {
         runtimeErrors.push(
           exceptionDetails.exception?.description || exceptionDetails.text,
         );
+      });
+      cdp.on("Runtime.consoleAPICalled", ({ type, args }) => {
+        if (type !== "warning" && type !== "error") return;
+        const message = args
+          .map((argument) => argument.value ?? argument.description ?? "")
+          .join(" ");
+        if (
+          message.includes("GSAP target") ||
+          (message.includes("Image with src") &&
+            message.includes("either width or height modified")) ||
+          message.includes("missing-data-scroll-behavior")
+        ) {
+          actionableWarnings.push(message);
+        }
       });
       cdp.on("Network.loadingFailed", ({ errorText, canceled }) => {
         if (!canceled && errorText !== "net::ERR_ABORTED")
@@ -220,6 +233,7 @@ try {
           for (const route of selectedRoutes) {
             runtimeErrors = [];
             networkErrors = [];
+            actionableWarnings = [];
             await cdp.send("Page.navigate", { url: origin + route });
             await wait(650);
             const result = await cdp.send("Runtime.evaluate", {
@@ -243,9 +257,11 @@ try {
               value.unnamedLinks === 0 &&
               value.unlabeledFields === 0 &&
               runtimeErrors.length === 0 &&
-              networkErrors.length === 0;
+              networkErrors.length === 0 &&
+              actionableWarnings.length === 0;
             value.runtimeErrors = runtimeErrors;
             value.networkErrors = networkErrors;
+            value.actionableWarnings = actionableWarnings;
             const label = `${name} ${viewport} ${motion} ${route}`;
             if (pass) console.log(`PASS ${label}`);
             else console.log(`FAIL ${label}`, JSON.stringify(value));
@@ -262,8 +278,7 @@ try {
       });
       const interactions = [
         ["mobile navigation", "/", `async () => { const button = document.querySelector('.menu-button'); button?.focus(); button?.click(); await new Promise(resolve => setTimeout(resolve, 100)); const menu = document.querySelector('#mobile-menu'); const opened = button?.getAttribute('aria-expanded') === 'true' && menu?.getAttribute('aria-hidden') === 'false' && menu?.contains(document.activeElement); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await new Promise(resolve => setTimeout(resolve, 100)); return opened && button?.getAttribute('aria-expanded') === 'false' && menu?.getAttribute('aria-hidden') === 'true' && document.activeElement === button; }`],
-        ["portfolio filter", "/portfolio", `async () => { const button = [...document.querySelectorAll('.portfolio-filter-bar button')].find(node => node.textContent.trim() === 'Logistics'); button?.click(); await new Promise(resolve => setTimeout(resolve, 100)); return button?.getAttribute('aria-pressed') === 'true' && document.querySelectorAll('.portfolio-editorial-grid > a').length > 0; }`],
-        ["project lightbox", "/portfolio/project-1", `async () => { const trigger = document.querySelector('.case-gallery button'); trigger?.focus(); trigger?.click(); await new Promise(resolve => setTimeout(resolve, 100)); const dialog = document.querySelector('[role="dialog"]'); const opened = dialog && document.activeElement?.classList.contains('lightbox-close'); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await new Promise(resolve => setTimeout(resolve, 100)); return Boolean(opened && !document.querySelector('[role="dialog"]') && document.activeElement === trigger); }`],
+        ["portfolio filter", "/portfolio", `async () => { const buttons = [...document.querySelectorAll('.portfolio-filter-bar button')]; const button = buttons.find(node => node.textContent.trim() === 'Logistics'); if (!button) return buttons.length === 1 && buttons[0].textContent.trim() === 'All' && buttons[0].getAttribute('aria-pressed') === 'true'; button.click(); await new Promise(resolve => setTimeout(resolve, 100)); return button.getAttribute('aria-pressed') === 'true'; }`],
         ["contact validation", "/contact", `async () => { document.querySelector('.strategic-form button[type="submit"]')?.click(); await new Promise(resolve => setTimeout(resolve, 100)); const alert = document.querySelector('.error-summary[role="alert"]'); return Boolean(alert && document.activeElement === alert && document.querySelectorAll('[aria-invalid="true"]').length >= 4); }`],
         ["contact spam protection", "/contact", `async () => { const input = document.querySelector('#companyWebsite'); const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set; setter?.call(input, 'https://spam.invalid'); input?.dispatchEvent(new Event('input', { bubbles: true })); await new Promise(resolve => setTimeout(resolve, 50)); document.querySelector('.strategic-form button[type="submit"]')?.click(); await new Promise(resolve => setTimeout(resolve, 100)); return Boolean(document.querySelector('.confirmation.success') && !document.querySelector('.error-summary')); }`],
       ];

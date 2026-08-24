@@ -5,10 +5,11 @@ import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowLink, Eyebrow, Media } from "./ui";
+import type { LeaderContent } from "@/lib/cms/schema";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function WhoNarrative() {
+export function WhoNarrative({ leaders }: { leaders: readonly LeaderContent[] }) {
   const root = useRef<HTMLDivElement>(null);
   const [person, setPerson] = useState<number | null>(null);
   useEffect(() => {
@@ -34,12 +35,12 @@ export function WhoNarrative() {
           scrub: true,
         },
       });
-      gsap.from(".founder-quote span", {
+      gsap.from(".collective-statement span", {
         yPercent: 110,
         stagger: 0.1,
         duration: 1.1,
         ease: "power4.out",
-        scrollTrigger: { trigger: ".founder-feature", start: "top 65%" },
+        scrollTrigger: { trigger: ".collective-feature", start: "top 65%" },
       });
     }, root);
     return () => context.revert();
@@ -72,6 +73,14 @@ export function WhoNarrative() {
       document.body.style.overflow = "";
     };
   }, [person]);
+  const selectedBiography =
+    person === null
+      ? []
+      : [
+          leaders[person].biographyOne,
+          leaders[person].biographyTwo,
+          leaders[person].biographyThree,
+        ].filter(Boolean);
   return (
     <div ref={root}>
       <section className="who-shift">
@@ -116,34 +125,32 @@ export function WhoNarrative() {
           </blockquote>
         </div>
       </section>
-      <section className="founder-feature">
-        <div className="founder-portrait">
-          <Media label="founder-editorial-portrait.webp" />
-          <span>Portrait pending</span>
+      <section className="collective-feature">
+        <div className="collective-portrait">
+          <Media label="leadership-group-portrait.webp" />
+          <span>Aureum Leadership</span>
         </div>
         <div>
-          <Eyebrow>A Founder&apos;s Perspective</Eyebrow>
-          <blockquote className="founder-quote">
-            <span>“Development is a</span>
-            <span>responsibility beyond</span>
-            <span>the asset.”</span>
-          </blockquote>
-          <div className="founder-copy" data-who-reveal>
+          <Eyebrow>A Leadership Perspective</Eyebrow>
+          <h2 className="collective-statement">
+            <span>Three perspectives.</span>
+            <span>One standard for</span>
+            <span>development.</span>
+          </h2>
+          <div className="collective-copy" data-who-reveal>
             <p>
-              Industrial development is increasingly central to how economies
-              grow, businesses scale and regions compete. In the UAE, the
-              opportunity is particularly significant as industrial, logistics
-              and trade infrastructure continue to evolve.
+              Industrial development demands more than one discipline. Aureum’s
+              leadership brings executive oversight, investment strategy and
+              real estate development together around one shared approach.
             </p>
             <p>
-              For us, development carries a responsibility beyond the asset
-              itself. It is about understanding what the opportunity enables,
-              how the development performs over time, and the value it creates
-              for the businesses, industries and communities around it.
+              Their collective perspective connects commercial ambition,
+              development realities and disciplined execution, creating clarity
+              from the earliest opportunity through long-term performance.
             </p>
             <p>
-              That perspective shapes how we approach every opportunity at
-              Aureum.
+              Together, they guide how Aureum evaluates, shapes and delivers
+              every development.
             </p>
           </div>
         </div>
@@ -162,15 +169,30 @@ export function WhoNarrative() {
             industrial development.
           </small>
         </div>
-        <div className="leadership-list">
-          {[0, 1, 2].map((index) => (
-            <button key={index} onClick={() => setPerson(index)}>
-              <span>0{index + 1}</span>
-              <div>
-                <strong>Leadership Profile 0{index + 1}</strong>
-                <small>Role pending approval</small>
+        <div className="leadership-list" data-who-reveal>
+          {leaders.map((leader, index) => (
+            <button
+              className="leadership-card"
+              type="button"
+              key={leader.name}
+              onClick={() => setPerson(index)}
+              aria-label={`View ${leader.name}'s profile`}
+            >
+              <div className="leadership-card-visual">
+                <Media label={leader.portrait} />
+                <span className="leadership-card-index">0{index + 1}</span>
+                <span className="leadership-card-discipline">
+                  {leader.visualLabel}
+                </span>
               </div>
-              <b>View profile ↗</b>
+              <div className="leadership-card-body">
+                <small>{leader.role}</small>
+                <strong>{leader.name}</strong>
+                <div>
+                  <span>{leader.discipline}</span>
+                  <b aria-hidden="true">View profile ↗</b>
+                </div>
+              </div>
             </button>
           ))}
         </div>
@@ -190,20 +212,26 @@ export function WhoNarrative() {
             Close ×
           </button>
           <div className="bio-visual">
-            <Media label={`leadership-portrait-0${person + 1}.webp`} />
+            <Media label={leaders[person].portrait} />
           </div>
-          <div>
+          <div className="bio-copy">
             <small>Leadership / 0{person + 1}</small>
-            <h2 id="bio-title">Leadership Profile 0{person + 1}</h2>
-            <h3>Role pending approval</h3>
+            <h2 id="bio-title">{leaders[person].name}</h2>
+            <h3>{leaders[person].role}</h3>
             <p className="pending-profile-line">
-              Discipline and contribution statement pending approval.
+              {leaders[person].discipline}
             </p>
-            <p>
-              Approved three-paragraph professional biography pending. This
-              panel is ready for supplied leadership content and will not invent
-              professional history.
-            </p>
+            {selectedBiography.length ? (
+              selectedBiography.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))
+            ) : (
+              <p>
+                Approved professional biography pending. This panel is ready
+                for supplied leadership content and will not invent
+                professional history.
+              </p>
+            )}
           </div>
         </div>
       )}

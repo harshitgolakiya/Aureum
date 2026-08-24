@@ -21,14 +21,7 @@ const routes = [
   "/who-we-are",
   "/how-we-partner",
   "/portfolio",
-  "/portfolio/project-1",
-  "/portfolio/project-2",
-  "/portfolio/project-3",
-  "/portfolio/project-4",
   "/insights",
-  "/insights/article-1",
-  "/insights/article-2",
-  "/insights/article-3",
   "/contact",
   "/privacy-policy",
   "/terms",
@@ -38,6 +31,15 @@ const routes = [
   "/opengraph-image",
   "/robots.txt",
   "/sitemap.xml",
+];
+const unpublishedPlaceholderRoutes = [
+  "/portfolio/project-1",
+  "/portfolio/project-2",
+  "/portfolio/project-3",
+  "/portfolio/project-4",
+  "/insights/article-1",
+  "/insights/article-2",
+  "/insights/article-3",
 ];
 
 async function ready() {
@@ -57,6 +59,12 @@ try {
     const response = await fetch(origin + route);
     console.log(`${response.ok ? "PASS" : "FAIL"} ${response.status} ${route}`);
     if (!response.ok) failed = true;
+  }
+  for (const route of unpublishedPlaceholderRoutes) {
+    const response = await fetch(origin + route);
+    const pass = response.status === 404;
+    console.log(`${pass ? "PASS" : "FAIL"} ${response.status} unpublished ${route}`);
+    if (!pass) failed = true;
   }
   const landing = await fetch(origin);
   const headers = {

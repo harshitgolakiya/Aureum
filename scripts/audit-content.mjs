@@ -32,7 +32,7 @@ console.log(`- Insight records awaiting approved authors/copy: ${articles}`);
 console.log(`- Project metrics awaiting approval: ${metrics}`);
 console.log(`- Approved media mappings installed: ${approvedAssets.length}`);
 console.log(
-  "- Legal, leadership, contact, map and final media remain client-controlled.",
+  "- Legal copy, final social URLs, map integration and final project media remain client-controlled.",
 );
 if (missingAssets.length) {
   console.error(`Missing approved media files: ${missingAssets.join(", ")}`);

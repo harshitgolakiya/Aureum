@@ -2,13 +2,15 @@ import { ContactMotion } from "@/components/contact-experience";
 import { ContactForm } from "@/components/contact-form";
 import { Eyebrow } from "@/components/ui";
 import Image from "next/image";
+import { getCmsContent } from "@/lib/cms/content";
 export const metadata = {
   title: "Contact",
   description:
     "Start a conversation with Aureum about industrial development, investment, expansion or strategic partnership opportunities.",
   alternates: { canonical: "/contact" },
 };
-export default function Page() {
+export default async function Page() {
+  const contact = await getCmsContent("site.footer");
   return (
     <main>
       <section className="contact-hero">
@@ -54,41 +56,34 @@ export default function Page() {
           </h2>
           <div className="office-details">
             <p>
-              <small>Office</small>Aureum Development
+              <small>Office</small>
+              {contact.addressOne}
               <br />
-              <span className="pending-value">
-                Full address pending approval
-              </span>
+              {contact.addressTwo}
+              <br />
+              {contact.addressThree}
+              <br />
+              {contact.addressFour}
             </p>
             <p>
               <small>Contact</small>
               <span className="pending-contact-row">
-                General <b>Email pending approval</b>
+                Investment <b><a href={`mailto:${contact.primaryEmail}`}>{contact.primaryEmail}</a></b>
               </span>
               <br />
               <span className="pending-contact-row">
-                Partnerships <b>Email pending approval</b>
+                Partnerships <b><a href={`mailto:${contact.secondaryEmail}`}>{contact.secondaryEmail}</a></b>
               </span>
               <br />
               <span className="pending-contact-row">
-                Media <b>Email pending approval</b>
+                Telephone <b><a href={`tel:${contact.phoneHref}`}>{contact.phoneDisplay}</a></b>
               </span>
-              <br />
-              <span className="pending-contact-row">
-                Telephone <b>Number pending approval</b>
-              </span>
-            </p>
-            <p>
-              <small>Working hours</small>Sunday to Thursday: 9:00 AM – 6:00 PM
-              (GST)
-              <br />
-              Friday and Saturday: Closed
             </p>
           </div>
         </div>
         <div
           className="map"
-          aria-label="Map placeholder for Aureum office in Dubai"
+          aria-label="Map illustration showing Aureum's Dubai office"
         >
           <div className="map-grid" />
           <div className="map-road road-primary" />
@@ -109,9 +104,9 @@ export default function Page() {
             </span>
           </div>
           <div className="map-status">
-            <i /> Map integration reserved
+            <i /> Dubai office
           </div>
-          <p>Interactive map pending approved location and Mapbox token</p>
+          <p>Interactive map available when Mapbox integration is enabled</p>
         </div>
       </section>
       <section className="alternative-contact">

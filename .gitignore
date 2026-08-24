@@ -1,21 +1,85 @@
-node_modules
-.next
-.next-stale
-out
-.env*
-!.env.example
-npm-debug.log*
-.qa-server.log
-.qa-shots/
+# Dependencies
+/node_modules/
+/.pnp/
+.pnp.*
+
+# Next.js and generated build output
+/.next/
+/.next-stale/
+/out/
+/build/
 *.tsbuildinfo
 
+# Local environment files and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Logs and process files
+*.log
+*.log.*
+*.pid
+*.pid.lock
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Test, coverage, and QA artifacts
+/coverage/
+/.nyc_output/
+/playwright-report/
+/test-results/
+/.qa-shots/
+/.qa-server.log
+
+# Local caches and temporary files
+/.cache/
+/.turbo/
+/tmp/
+/temp/
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+
+# Hosting-provider state
+/.vercel/
+/.netlify/
+
+# CMS runtime data and database exports
+/storage/media/*
+!/storage/media/.gitkeep
+/backups/
+*.sqlite
+*.sqlite3
+*.db
+*.sql.gz
+
+# Raw working assets; optimized public assets remain tracked
+/source-assets/
+
+# Operating-system and editor metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
+/.idea/
+/.vscode/
+*.code-workspace
+
 # Local AI/project working files
-AGENTS.md
-CLAUDE.md
-IMPROVEMENTS.md
-LAUNCH_READINESS.md
-IMAGE_REQUIREMENTS.md
-MISSING_CONTENT.md
-AUREUM NEW WEBSITE CONTENTS (1).md
-AUREUM - SECONDARY COLORS PROPOSAL.pdf
-aureumLogo.svg
+/AGENTS.md
+/CLAUDE.md
+/IMPROVEMENTS.md
+/LAUNCH_READINESS.md
+/IMAGE_REQUIREMENTS.md
+/MISSING_CONTENT.md
+/AUREUM NEW WEBSITE CONTENTS (1).md
+/AUREUM - SECONDARY COLORS PROPOSAL.pdf
+/aureumLogo.svg

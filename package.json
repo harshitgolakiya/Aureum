@@ -2,12 +2,15 @@
   "name": "aureum-website",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=22 <25"
+  },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
+    "dev": "node ./node_modules/next/dist/bin/next dev",
+    "build": "node ./node_modules/next/dist/bin/next build",
+    "start": "node ./node_modules/next/dist/bin/next start",
+    "lint": "node ./node_modules/eslint/bin/eslint.js .",
+    "typecheck": "node ./node_modules/typescript/bin/tsc --noEmit",
     "test:routes": "node scripts/verify-routes.mjs",
     "audit:content": "node scripts/audit-content.mjs",
     "audit:source": "node scripts/audit-source.mjs",
@@ -15,13 +18,24 @@
     "audit:browsers:prepared": "node scripts/browser-audit.mjs",
     "audit:env": "node scripts/verify-env.mjs",
     "audit:env:production": "node scripts/verify-env.mjs --production",
+    "cms:backup": "node --env-file=.env.local scripts/cms-backup.mjs",
+    "cms:restore": "node --env-file=.env.local scripts/cms-restore.mjs",
+    "cms:verify-public": "node --env-file=.env.local scripts/verify-public-cms.mjs",
+    "cms:migrate-public": "node --env-file=.env.local scripts/migrate-public-cms.mjs",
+    "cms:audit:launch": "node --env-file=.env.local scripts/cms-launch-audit.mjs",
+    "cms:audit:browsers": "node --env-file=.env.local scripts/cms-browser-audit.mjs",
+    "cms:verify-restore": "node --env-file=.env.local scripts/verify-cms-restore.mjs",
+    "cms:publish-due": "node --env-file=.env.local scripts/run-publisher.mjs",
+    "cms:verify-scheduler": "node --env-file=.env.local scripts/verify-scheduler.mjs",
     "verify": "npm run typecheck && npm run lint && npm run audit:source && npm run build && npm run test:routes && npm run audit:browsers:prepared && npm run audit:content"
   },
   "dependencies": {
     "gsap": "^3.15.0",
+    "mysql2": "^3.23.4",
     "next": "^16.3.0",
     "react": "19.1.1",
-    "react-dom": "19.1.1"
+    "react-dom": "19.1.1",
+    "sharp": "^0.35.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.1",

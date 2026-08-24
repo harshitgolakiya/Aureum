@@ -109,37 +109,48 @@
 .who-philosophy blockquote {
   font-size: clamp(1.8rem, 3vw, 3.3rem);
 }
-.founder-feature {
+.collective-feature {
   background: var(--navy);
   color: white;
   padding: clamp(7rem, 11vw, 12rem) var(--pad);
   display: grid;
-  grid-template-columns: 0.8fr 1.2fr;
-  gap: 7vw;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: clamp(3rem, 5vw, 5rem);
 }
-.founder-portrait {
+.collective-portrait {
   position: sticky;
   top: 110px;
   align-self: start;
 }
-.founder-portrait .media {
-  height: 70vh;
-  max-height: 780px;
+.collective-portrait .media {
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 8011 / 5663;
 }
-.founder-portrait > span {
+.collective-portrait .media-approved > img {
+  object-fit: cover;
+}
+.collective-portrait > span {
   font-size: 0.55rem;
   color: var(--grey);
   text-transform: uppercase;
 }
-.founder-quote {
+.collective-statement {
   color: white;
   margin: 4rem 0;
+  font-family: Georgia, serif;
+  font-size: clamp(2.75rem, 4vw, 4.8rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.04;
+  letter-spacing: -0.04em;
 }
-.founder-quote span {
+.collective-statement span {
   display: block;
   overflow: hidden;
 }
-.founder-copy {
+.collective-copy {
   max-width: 680px;
   margin-left: auto;
   color: var(--ivory);
@@ -147,52 +158,158 @@
 }
 .leadership {
   padding: clamp(7rem, 11vw, 12rem) var(--pad);
+  background: var(--warm);
+}
+.leadership-heading {
   display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
-  gap: 8vw;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.65fr);
+  column-gap: 8vw;
+}
+.leadership-heading .eyebrow,
+.leadership-heading h2 {
+  grid-column: 1;
+}
+.leadership-heading h2 {
+  margin: 3rem 0 0;
 }
 .leadership-heading > p {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: end;
   font-size: 1.2rem;
   line-height: 1.6;
 }
 .leadership-heading > small {
+  grid-column: 2;
+  align-self: start;
+  margin-top: 1.5rem;
   display: block;
   color: var(--dusty);
   line-height: 1.8;
 }
 .leadership-list {
-  border-top: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.8rem, 1.5vw, 1.5rem);
+  margin-top: clamp(4rem, 7vw, 7rem);
 }
 .leadership-list button {
   width: 100%;
-  display: grid;
-  grid-template-columns: 55px 1fr auto;
-  align-items: center;
+  display: block;
   text-align: left;
-  border: 0;
-  border-bottom: 1px solid var(--line);
-  background: transparent;
-  padding: 2rem 0;
+  border: 1px solid var(--line);
+  background: var(--white);
+  padding: 0;
   color: var(--navy);
   cursor: pointer;
-  transition: 0.35s;
+  overflow: hidden;
+  transition:
+    transform 0.45s var(--ease),
+    box-shadow 0.45s var(--ease),
+    border-color 0.45s;
 }
 .leadership-list button:hover,
 .leadership-list button:focus-visible {
-  padding-left: 1rem;
-  background: var(--cream);
+  transform: translateY(-8px);
+  border-color: rgba(183, 154, 88, 0.7);
+  box-shadow: 0 24px 55px rgba(16, 26, 43, 0.13);
+  outline: none;
 }
-.leadership-list button > span,
-.leadership-list button > b {
+.leadership-card-visual {
+  position: relative;
+  aspect-ratio: 0.9;
+  overflow: hidden;
+  background: var(--midnight);
+}
+.leadership-card-visual .media {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  transition: transform 0.7s var(--ease);
+}
+.leadership-card-visual .media-approved > img {
+  transform: scale(1.12);
+  transform-origin: center top;
+  transition: transform 0.7s var(--ease);
+}
+.leadership-card:hover .leadership-card-visual .media,
+.leadership-card:focus-visible .leadership-card-visual .media {
+  transform: scale(1.035);
+}
+.leadership-card:hover .leadership-card-visual .media-approved > img,
+.leadership-card:focus-visible .leadership-card-visual .media-approved > img {
+  transform: scale(1.16);
+}
+.leadership-card-index {
+  position: absolute;
+  z-index: 4;
+  top: 1.25rem;
+  left: 1.25rem;
+  display: grid;
+  place-items: center;
+  width: 2.65rem;
+  height: 2.65rem;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 50%;
+  background: rgba(16, 26, 43, 0.3);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+}
+.leadership-card-discipline {
+  position: absolute;
+  z-index: 4;
+  right: 0.8rem;
+  bottom: 1.1rem;
+  max-height: calc(100% - 2rem);
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: clamp(1.5rem, 2.7vw, 3.15rem);
+  font-weight: 700;
+  line-height: 0.86;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-shadow: 0 2px 18px rgba(8, 20, 36, 0.3);
+}
+.leadership-card-body {
+  padding: clamp(1.25rem, 2vw, 2rem);
+}
+.leadership-card-body > small {
+  display: block;
   font-size: 0.6rem;
   color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 .leadership-list strong {
   display: block;
-  font-size: 1.2rem;
+  margin-top: 0.65rem;
+  font-size: clamp(1.15rem, 1.5vw, 1.5rem);
+  font-weight: 500;
 }
-.leadership-list small {
+.leadership-card-body > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+.leadership-card-body > div span {
+  max-width: 145px;
   color: var(--dusty);
+  font-size: 0.64rem;
+  line-height: 1.5;
+}
+.leadership-card-body b {
+  color: var(--gold);
+  font-size: 0.58rem;
+  font-weight: 600;
+  white-space: nowrap;
 }
 .bio-overlay {
   position: fixed;
@@ -207,8 +324,19 @@
   align-items: center;
   animation: bio-in 0.55s var(--ease);
 }
+.bio-visual {
+  display: grid;
+  place-items: center;
+}
 .bio-visual .media {
-  height: 70vh;
+  width: min(100%, 34rem);
+  height: auto;
+  aspect-ratio: 7184 / 10238;
+}
+.bio-copy {
+  max-height: 72vh;
+  overflow-y: auto;
+  padding-right: clamp(0.5rem, 1.5vw, 1.5rem);
 }
 .bio-overlay h2 {
   font-size: clamp(3rem, 6vw, 7rem);
@@ -465,7 +593,7 @@
 @media (max-width: 900px) {
   .who-shift,
   .who-philosophy,
-  .founder-feature,
+  .collective-feature,
   .leadership,
   .partner-journey,
   .partner-convergence {
@@ -480,18 +608,43 @@
   .philosophy-index {
     min-height: 420px;
   }
-  .founder-portrait {
+  .collective-portrait {
     position: static;
   }
-  .founder-portrait .media {
-    height: 500px;
+  .collective-portrait .media {
+    height: auto;
+  }
+  .leadership-heading {
+    grid-template-columns: 1fr;
+  }
+  .leadership-heading .eyebrow,
+  .leadership-heading h2,
+  .leadership-heading > p,
+  .leadership-heading > small {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .leadership-heading > p {
+    margin-top: 2rem;
+  }
+  .leadership-heading > small {
+    max-width: 620px;
+  }
+  .leadership-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .bio-overlay {
     grid-template-columns: 1fr;
     overflow: auto;
   }
   .bio-visual .media {
-    height: 40vh;
+    width: min(100%, 24rem);
+    height: auto;
+  }
+  .bio-copy {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
   }
   .partner-visual {
     position: relative;
@@ -512,7 +665,7 @@
 @media (max-width: 600px) {
   .who-shift,
   .who-philosophy,
-  .founder-feature,
+  .collective-feature,
   .leadership {
     padding-top: 6rem;
     padding-bottom: 6rem;
@@ -524,14 +677,14 @@
     width: 150px;
     height: 150px;
   }
-  .founder-portrait .media {
-    height: 400px;
+  .collective-portrait .media {
+    height: auto;
   }
-  .leadership-list button {
-    grid-template-columns: 40px 1fr;
+  .leadership-list {
+    grid-template-columns: 1fr;
   }
-  .leadership-list button > b {
-    display: none;
+  .leadership-card-visual {
+    aspect-ratio: 1 / 1.04;
   }
   .partner-chapter > div {
     grid-template-columns: 1fr;

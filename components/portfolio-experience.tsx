@@ -5,20 +5,13 @@ import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Media } from "./ui";
-import { projectPresentation, projects } from "@/data/site";
+import { projectPresentation, type Project } from "@/data/site";
 
 gsap.registerPlugin(ScrollTrigger);
-const filters = [
-  "All",
-  "Logistics",
-  "Industrial Parks",
-  "Distribution",
-  "Mixed-Use",
-];
-
-export function PortfolioListing() {
+export function PortfolioListing({ projects }: { projects: Project[] }) {
   const [filter, setFilter] = useState("All");
   const grid = useRef<HTMLDivElement>(null);
+  const filters = ["All", ...new Set(projects.map((project) => project.category))];
   const visible =
     filter === "All"
       ? projects
@@ -26,8 +19,10 @@ export function PortfolioListing() {
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (!grid.current) return;
+    const cards = Array.from(grid.current.children);
+    if (!cards.length) return;
     gsap.fromTo(
-      grid.current.children,
+      cards,
       { opacity: 0, y: 32 },
       { opacity: 1, y: 0, stagger: 0.08, duration: 0.65, ease: "power3.out" },
     );
@@ -70,7 +65,7 @@ export function PortfolioListing() {
               key={project.slug}
             >
               <div className="portfolio-media" data-cursor="View">
-                <Media label={`portfolio-${project.slug}.webp`} />
+                <Media label={`portfolio-${project.slug}.webp`} src={project.coverImage} alt={display.name} />
                 <span className="project-view">View</span>
               </div>
               <div className="portfolio-card-meta">
@@ -93,38 +88,27 @@ export function PortfolioListing() {
   );
 }
 
-const chapters = [
-  [
-    "01",
-    "The Opportunity",
-    "Approved opportunity context and strategic rationale pending.",
-  ],
-  [
-    "02",
-    "The Strategy",
-    "Approved account of the intelligence, commercial priorities and development strategy pending.",
-  ],
-  [
-    "03",
-    "The Delivery",
-    "Approved delivery, governance and milestone narrative pending.",
-  ],
-  [
-    "04",
-    "The Outcome",
-    "Approved results, performance measures and evidence of value creation pending.",
-  ],
-] as const;
-
-export function CaseStudyExperience({ slug }: { slug: string }) {
-  const project = projects.find((item) => item.slug === slug)!;
-  const index = projects.findIndex((item) => item.slug === slug);
+export function CaseStudyExperience({ project, projects }: { project: Project; projects: Project[] }) {
+  const index = projects.findIndex((item) => item.slug === project.slug);
   const previous = projects[(index - 1 + projects.length) % projects.length];
   const next = projects[(index + 1) % projects.length];
   const root = useRef<HTMLDivElement>(null);
   const galleryTrigger = useRef<HTMLButtonElement>(null);
   const [active, setActive] = useState(0);
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const chapterContent = {
+    opportunity: ["The Opportunity", project.opportunity],
+    strategy: ["The Strategy", project.strategy],
+    delivery: ["The Delivery", project.delivery],
+    outcome: ["The Outcome", project.outcome],
+  } as const;
+  const chapterKeys = project.chapterOrder
+    .split(",")
+    .filter((key): key is keyof typeof chapterContent => key in chapterContent);
+  const chapters = [...new Set([...chapterKeys, ...Object.keys(chapterContent) as Array<keyof typeof chapterContent>])]
+    .map((key, chapterIndex) => [String(chapterIndex + 1).padStart(2, "0"), ...chapterContent[key]] as const);
+  const galleryImages = project.galleryImages.split(/\r?\n/).map((item) => item.trim()).filter(Boolean);
+  const galleryCount = galleryImages.length || 6;
   function closeLightbox() {
     setLightbox(null);
     setTimeout(() => galleryTrigger.current?.focus(), 0);
@@ -159,8 +143,8 @@ export function CaseStudyExperience({ slug }: { slug: string }) {
     if (lightbox === null) return;
     const key = (event: KeyboardEvent) => {
       if (event.key === "Escape") closeLightbox();
-      if (event.key === "ArrowRight") setLightbox((lightbox + 1) % 6);
-      if (event.key === "ArrowLeft") setLightbox((lightbox + 5) % 6);
+      if (event.key === "ArrowRight") setLightbox((lightbox + 1) % galleryCount);
+      if (event.key === "ArrowLeft") setLightbox((lightbox + galleryCount - 1) % galleryCount);
       if (event.key === "Tab") {
         const dialog = document.querySelector<HTMLElement>(".lightbox");
         const focusable = dialog?.querySelectorAll<HTMLElement>("button");
@@ -182,7 +166,7 @@ export function CaseStudyExperience({ slug }: { slug: string }) {
       removeEventListener("keydown", key);
       document.body.style.overflow = "";
     };
-  }, [lightbox]);
+  }, [lightbox, galleryCount]);
   return (
     <div ref={root}>
       <div className="case-progress">
@@ -193,11 +177,10 @@ export function CaseStudyExperience({ slug }: { slug: string }) {
           <small>Development / {project.category}</small>
           <h2>Key metrics</h2>
           {[
-            ["Total GFA", "Pending approval"],
-            ["Development Period", "Pending approval"],
-            ["Occupancy", "Pending approval"],
+            ["Defining metric", project.metric],
+            ["Status", project.status],
             ["Asset Type", project.type],
-            ["Engagement Model", "Pending approval"],
+            ["Engagement Model", project.engagement],
           ].map(([label, value]) => (
             <p key={label}>
               {label}
@@ -237,13 +220,12 @@ export function CaseStudyExperience({ slug }: { slug: string }) {
           <small>Development Gallery</small>
           <h2>From masterplan to operation.</h2>
           <p>
-            Six approved project images will document aerial scale,
-            architecture, interiors, operations, masterplanning and engineering
-            detail.
+            Explore the development through approved project photography and
+            supporting visual documentation.
           </p>
         </div>
         <div className="case-gallery">
-          {[0, 1, 2, 3, 4, 5].map((item) => (
+          {Array.from({ length: galleryCount }, (_, item) => (
             <button
               data-cursor="Open"
               key={item}
@@ -253,7 +235,7 @@ export function CaseStudyExperience({ slug }: { slug: string }) {
               }}
               aria-label={`Open gallery placeholder ${item + 1}`}
             >
-              <Media label={`project-gallery-0${item + 1}.webp`} />
+              <Media label={`project-gallery-0${item + 1}.webp`} src={galleryImages[item]} alt={`${project.name} gallery image ${item + 1}`} />
               <span>0{item + 1}</span>
             </button>
           ))}
@@ -292,21 +274,21 @@ export function CaseStudyExperience({ slug }: { slug: string }) {
           </button>
           <button
             className="lightbox-prev"
-            onClick={() => setLightbox((lightbox + 5) % 6)}
+            onClick={() => setLightbox((lightbox + galleryCount - 1) % galleryCount)}
             aria-label="Previous image"
           >
             ←
           </button>
-          <Media label={`project-gallery-0${lightbox + 1}.webp`} />
+          <Media label={`project-gallery-0${lightbox + 1}.webp`} src={galleryImages[lightbox]} alt={`${project.name} gallery image ${lightbox + 1}`} />
           <button
             className="lightbox-next"
-            onClick={() => setLightbox((lightbox + 1) % 6)}
+            onClick={() => setLightbox((lightbox + 1) % galleryCount)}
             aria-label="Next image"
           >
             →
           </button>
           <p id="gallery-lightbox-caption">
-            0{lightbox + 1} / 06 &nbsp; Project photography pending
+            {String(lightbox + 1).padStart(2, "0")} / {String(galleryCount).padStart(2, "0")} &nbsp; {project.name}
           </p>
         </div>
       )}

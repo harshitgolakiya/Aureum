@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Media } from "./ui";
-import { insightArticles, insightPresentation } from "@/data/site";
+import { insightPresentation, type InsightArticle } from "@/data/site";
+import { isSafeInsightHref, parseInsightDocument } from "@/lib/cms/insight-document";
 
 gsap.registerPlugin(ScrollTrigger);
 const categoryCopy = [
@@ -26,24 +28,24 @@ const categoryCopy = [
   ],
 ] as const;
 
-export function InsightsLanding() {
+export function InsightsLanding({ articles }: { articles: InsightArticle[] }) {
   const [filter, setFilter] = useState("All");
   const [featured, setFeatured] = useState(0);
   const root = useRef<HTMLDivElement>(null);
-  const filters = [
-    "All",
-    "Market Intelligence",
-    "Industry Perspective",
-    "Thought Leadership",
-  ];
+  const filters = ["All", ...new Set(articles.map((article) => article.category))];
   const visible =
     filter === "All"
-      ? insightArticles
-      : insightArticles.filter((article) => article.category === filter);
+      ? articles
+      : articles.filter((article) => article.category === filter);
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!root.current || !articles.length) return;
     const context = gsap.context(() => {
-      gsap.from(".insight-category", {
+      const categories = root.current?.querySelectorAll<HTMLElement>(
+        ".insight-category",
+      );
+      if (!categories?.length) return;
+      gsap.from(categories, {
         opacity: 0,
         y: 45,
         stagger: 0.12,
@@ -53,22 +55,29 @@ export function InsightsLanding() {
       });
     }, root);
     return () => context.revert();
-  }, []);
+  }, [articles.length]);
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    gsap.fromTo(
+    const results = root.current?.querySelectorAll<HTMLElement>(
       ".insight-result",
+    );
+    if (!results?.length) return;
+    gsap.fromTo(
+      results,
       { opacity: 0, y: 25 },
       { opacity: 1, y: 0, stagger: 0.08, duration: 0.6, ease: "power3.out" },
     );
-  }, [filter]);
-  const article = insightArticles[featured];
+  }, [filter, articles.length]);
+  const article = articles[featured];
+  if (!article) {
+    return <section className="insight-library"><p>No published insights yet.</p></section>;
+  }
   return (
     <div ref={root}>
       <section className="featured-insight">
         <div className="featured-insight-media" data-cursor="Explore">
-          <Media label={`insight-featured-0${featured + 1}.webp`} />
-          <div className="featured-index">0{featured + 1} / 03</div>
+          <Media label={`insight-featured-0${featured + 1}.webp`} src={article.coverImage} alt={insightPresentation(article, featured).title} />
+          <div className="featured-index">{String(featured + 1).padStart(2, "0")} / {String(articles.length).padStart(2, "0")}</div>
         </div>
         <div className="featured-insight-copy">
           <small>Featured / {article.category}</small>
@@ -84,7 +93,7 @@ export function InsightsLanding() {
             </Link>
           </div>
           <nav aria-label="Choose featured insight">
-            {insightArticles.map((item, index) => (
+            {articles.map((item, index) => (
               <button
                 aria-label={`Feature ${insightPresentation(item, index).title}`}
                 aria-pressed={featured === index}
@@ -113,7 +122,7 @@ export function InsightsLanding() {
             <small>Insight Library</small>
             <strong>
               {visible.length.toString().padStart(2, "0")} /{" "}
-              {insightArticles.length.toString().padStart(2, "0")}
+              {articles.length.toString().padStart(2, "0")}
             </strong>
           </div>
           <div role="group" aria-label="Filter insights">
@@ -158,11 +167,10 @@ export function InsightsLanding() {
   );
 }
 
-export function ArticleExperience({ slug }: { slug: string }) {
-  const article = insightArticles.find((item) => item.slug === slug)!;
-  const index = insightArticles.findIndex((item) => item.slug === slug);
+export function ArticleExperience({ article, articles }: { article: InsightArticle; articles: InsightArticle[] }) {
+  const index = articles.findIndex((item) => item.slug === article.slug);
   const display = insightPresentation(article, index);
-  const next = insightArticles[(index + 1) % insightArticles.length];
+  const next = articles[(index + 1) % articles.length];
   const root = useRef<HTMLElement>(null);
   const [progress, setProgress] = useState(0);
   const [copied, setCopied] = useState(false);
@@ -194,7 +202,7 @@ export function ArticleExperience({ slug }: { slug: string }) {
         <h1>{display.title}</h1>
         <p>{display.excerpt}</p>
       </header>
-      <Media label="article-hero.webp" />
+      <Media label="article-hero.webp" src={article.coverImage} alt={display.title} />
       <div className="article-layout">
         <aside>
           <div className="article-author">
@@ -215,40 +223,26 @@ export function ArticleExperience({ slug }: { slug: string }) {
           </div>
         </aside>
         <div className="article-content">
-          <p className="article-intro">
-            Article content has not yet been supplied. This reading template is
-            ready for approved Aureum insight content.
-          </p>
-          <h2>Article content pending</h2>
-          <p>
-            The approved long-form article body will appear here. The content
-            system supports editorial text, supporting imagery, pull quotes and
-            data visualisations without changing the reading layout.
-          </p>
-          <blockquote>“Approved pull quote pending.”</blockquote>
-          <div className="data-placeholder">
-            <span>Data visualisation</span>
-            <div>
-              <i />
-              <i />
-              <i />
-              <i />
-            </div>
-            <small>Approved dataset and source pending</small>
-          </div>
-          <h2>Supporting perspective</h2>
-          <p>
-            Related analysis, cited market evidence and Aureum&apos;s approved
-            perspective will be placed here once supplied. No market statistics
-            or claims have been invented.
-          </p>
+          {parseInsightDocument(article.bodyDocument, article.body).map((block, blockIndex) => {
+            if (block.type === "heading") return block.level === 3 ? <h3 key={block.id}>{block.text}</h3> : <h2 key={block.id}>{block.text}</h2>;
+            if (block.type === "list") {
+              const items = (block.items ?? []).filter(Boolean).map((item, index) => <li key={`${block.id}-${index}`}>{item}</li>);
+              return block.style === "ordered" ? <ol key={block.id}>{items}</ol> : <ul key={block.id}>{items}</ul>;
+            }
+            if (block.type === "quote") return <blockquote key={block.id}>“{block.text}”</blockquote>;
+            if (block.type === "link" && block.href && isSafeInsightHref(block.href)) return <p key={block.id}><a href={block.href}>{block.text}</a></p>;
+            if (block.type === "image" && block.src) return <figure key={block.id}><Image src={block.src} alt={block.alt ?? ""} width={1200} height={800} /><figcaption>{block.caption}</figcaption></figure>;
+            if (block.type === "divider") return <hr key={block.id} />;
+            return <p className={blockIndex === 0 ? "article-intro" : undefined} key={block.id}>{block.text}</p>;
+          })}
+          {article.pullQuote && <blockquote>“{article.pullQuote}”</blockquote>}
         </div>
       </div>
       <section className="related-insights">
         <small>Related Insights</small>
         <div>
-          {insightArticles
-            .filter((item) => item.slug !== slug)
+          {articles
+            .filter((item) => item.slug !== article.slug)
             .map((item) => (
               <Link href={`/insights/${item.slug}`} key={item.slug}>
                 <span>{item.category}</span>
@@ -258,11 +252,11 @@ export function ArticleExperience({ slug }: { slug: string }) {
             ))}
         </div>
       </section>
-      <Link className="next-insight" href={`/insights/${next.slug}`}>
+      {next && <Link className="next-insight" href={`/insights/${next.slug}`}>
         <small>Continue reading / {next.category}</small>
         <h2>{insightPresentation(next).title}</h2>
         <span>Next insight →</span>
-      </Link>
+      </Link>}
     </article>
   );
 }

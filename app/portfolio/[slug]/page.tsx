@@ -1,27 +1,36 @@
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { CaseStudyExperience } from "@/components/portfolio-experience";
 import { Media } from "@/components/ui";
-import { projectPresentation, projects } from "@/data/site";
+import { projectPresentation } from "@/data/site";
+import { getCmsRedirect, getProjectBySlug, getProjects } from "@/lib/cms/collections";
+import { getSiteOrigin } from "@/lib/site-url";
 import type { Metadata } from "next";
-export function generateStaticParams() {
-  return projects.map((project) => ({ slug: project.slug }));
-}
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const project = projects.find((item) => item.slug === slug);
-  if (!project) return { title: "Development not found" };
+  const project = await getProjectBySlug(slug);
+  if (!project) {
+    const destination = await getCmsRedirect("project", slug);
+    if (destination) permanentRedirect(`/portfolio/${destination}`);
+    return { title: "Development not found" };
+  }
   const display = projectPresentation(project);
+  const canonical = project.canonicalUrl || `/portfolio/${slug}`;
+  const title = project.seoTitle || `${display.name} | Portfolio`;
+  const description = project.seoDescription || `${project.type}. ${display.philosophy}`;
+  const socialTitle = project.socialTitle || title;
+  const socialDescription = project.socialDescription || description;
+  const socialImage = project.socialImage || project.coverImage;
   return {
-    title: `${display.name} | Portfolio`,
-    description: `${project.type}. ${display.philosophy}`,
-    alternates: { canonical: `/portfolio/${slug}` },
-    robots: project.name.startsWith("[")
-      ? { index: false, follow: true }
-      : undefined,
+    title,
+    description,
+    alternates: { canonical },
+    robots: { index: project.searchIndex && !project.name.startsWith("["), follow: project.searchFollow },
+    openGraph: { title: socialTitle, description: socialDescription, url: canonical, siteName: "Aureum", type: "website", images: socialImage ? [{ url: socialImage }] : [] },
+    twitter: { card: "summary_large_image", title: socialTitle, description: socialDescription, images: socialImage ? [socialImage] : [] },
   };
 }
 export default async function Page({
@@ -30,11 +39,15 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const project = projects.find((item) => item.slug === slug);
-  if (!project) notFound();
+  const [project, projects] = await Promise.all([getProjectBySlug(slug), getProjects()]);
+  if (!project) {
+    const destination = await getCmsRedirect("project", slug);
+    if (destination) permanentRedirect(`/portfolio/${destination}`);
+    notFound();
+  }
   const display = projectPresentation(project);
   const approved = !project.name.startsWith("[");
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = getSiteOrigin();
   return (
     <main>
       {approved && (
@@ -47,7 +60,7 @@ export default async function Page({
               additionalType: "Industrial development",
               name: display.name,
               description: display.philosophy,
-              url: `${siteUrl}/portfolio/${slug}`,
+              url: new URL(project.canonicalUrl || `/portfolio/${slug}`, siteUrl).toString(),
               location: display.location,
               creator: { "@type": "Organization", name: "Aureum Development" },
             }).replace(/</g, "\\u003c"),
@@ -55,7 +68,7 @@ export default async function Page({
         />
       )}
       <section className="case-hero">
-        <Media label="project-hero.webp" />
+        <Media label="project-hero.webp" src={project.coverImage} alt={display.name} />
         <div>
           <small>
             {display.location} / {project.type}
@@ -64,7 +77,7 @@ export default async function Page({
           <p>{display.philosophy}</p>
         </div>
       </section>
-      <CaseStudyExperience slug={slug} />
+      <CaseStudyExperience project={project} projects={projects} />
     </main>
   );
 }

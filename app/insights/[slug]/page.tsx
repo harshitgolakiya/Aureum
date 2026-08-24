@@ -1,26 +1,35 @@
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { ArticleExperience } from "@/components/insights-experience";
-import { insightArticles, insightPresentation } from "@/data/site";
+import { insightPresentation } from "@/data/site";
+import { getCmsRedirect, getPostBySlug, getPosts } from "@/lib/cms/collections";
+import { getSiteOrigin } from "@/lib/site-url";
 import type { Metadata } from "next";
-export function generateStaticParams() {
-  return insightArticles.map((article) => ({ slug: article.slug }));
-}
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const article = insightArticles.find((item) => item.slug === slug);
-  if (!article) return { title: "Insight not found" };
+  const article = await getPostBySlug(slug);
+  if (!article) {
+    const destination = await getCmsRedirect("insight", slug);
+    if (destination) permanentRedirect(`/insights/${destination}`);
+    return { title: "Insight not found" };
+  }
   const display = insightPresentation(article);
+  const canonical = article.canonicalUrl || `/insights/${slug}`;
+  const title = article.seoTitle || display.title;
+  const description = article.seoDescription || display.excerpt;
+  const socialTitle = article.socialTitle || title;
+  const socialDescription = article.socialDescription || description;
+  const socialImage = article.socialImage || article.coverImage;
   return {
-    title: display.title,
-    description: display.excerpt,
-    alternates: { canonical: `/insights/${slug}` },
-    robots: article.title.startsWith("[")
-      ? { index: false, follow: true }
-      : undefined,
+    title,
+    description,
+    alternates: { canonical },
+    robots: { index: article.searchIndex && !article.title.startsWith("["), follow: article.searchFollow },
+    openGraph: { title: socialTitle, description: socialDescription, url: canonical, siteName: "Aureum", type: "article", authors: [article.author], images: socialImage ? [{ url: socialImage }] : [] },
+    twitter: { card: "summary_large_image", title: socialTitle, description: socialDescription, images: socialImage ? [socialImage] : [] },
   };
 }
 export default async function Page({
@@ -29,11 +38,15 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const article = insightArticles.find((item) => item.slug === slug);
-  if (!article) notFound();
+  const [article, insightArticles] = await Promise.all([getPostBySlug(slug), getPosts()]);
+  if (!article) {
+    const destination = await getCmsRedirect("insight", slug);
+    if (destination) permanentRedirect(`/insights/${destination}`);
+    notFound();
+  }
   const display = insightPresentation(article);
   const approved = !article.title.startsWith("[");
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const siteUrl = getSiteOrigin();
   return (
     <main>
       {approved && (
@@ -45,14 +58,14 @@ export default async function Page({
               "@type": "Article",
               headline: display.title,
               description: display.excerpt,
-              url: `${siteUrl}/insights/${slug}`,
+              url: new URL(article.canonicalUrl || `/insights/${slug}`, siteUrl).toString(),
               author: { "@type": "Person", name: display.author },
               publisher: { "@type": "Organization", name: "Aureum Development" },
             }).replace(/</g, "\\u003c"),
           }}
         />
       )}
-      <ArticleExperience slug={slug} />
+      <ArticleExperience article={article} articles={insightArticles} />
     </main>
   );
 }

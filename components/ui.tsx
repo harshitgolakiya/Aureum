@@ -27,11 +27,15 @@ export function Eyebrow({ children }: { children: React.ReactNode }) {
 export function Media({
   label,
   className = "",
+  src,
+  alt,
 }: {
   label: string;
   className?: string;
+  src?: string;
+  alt?: string;
 }) {
-  const approved = approvedMedia[label];
+  const approved = src ? { src, alt: alt || "", focalPoint: "50% 50%" } : approvedMedia[label];
   const variant = label.includes("portrait")
     ? "portrait"
     : label.includes("insight") || label.includes("article")
