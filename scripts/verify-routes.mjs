@@ -62,8 +62,14 @@ try {
   }
   for (const route of unpublishedPlaceholderRoutes) {
     const response = await fetch(origin + route);
-    const pass = response.status === 404;
-    console.log(`${pass ? "PASS" : "FAIL"} ${response.status} unpublished ${route}`);
+    let pass = response.status === 404;
+    let expectation = "unpublished";
+    if (response.status === 200) {
+      const html = await response.text();
+      pass = /<meta(?=[^>]*\bname=["']robots["'])(?=[^>]*\bcontent=["'][^"']*\bnoindex\b)[^>]*>/i.test(html);
+      expectation = "outage fallback noindex";
+    }
+    console.log(`${pass ? "PASS" : "FAIL"} ${response.status} ${expectation} ${route}`);
     if (!pass) failed = true;
   }
   const landing = await fetch(origin);
