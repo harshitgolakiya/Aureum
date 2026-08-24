@@ -82,8 +82,8 @@ not recorded in this report.
   have not been supplied. Legal routes remain noindex and clearly marked as
   awaiting approval; unset social networks are hidden until their HTTPS URLs
   are added in CMS settings.
-- The approved Aureum address, investment email, partnerships email, and phone
-  number are now shared by the footer, Contact page, and CMS settings.
+- The approved Aureum address, general email, and office phone number are now
+  shared by the footer, Contact page, and CMS settings.
 
 ## Launch checklist
 

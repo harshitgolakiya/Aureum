@@ -64,16 +64,22 @@ export default async function Page() {
               {contact.addressThree}
               <br />
               {contact.addressFour}
+              <br />
+              {contact.addressFive}
             </p>
             <p>
               <small>Contact</small>
               <span className="pending-contact-row">
-                Investment <b><a href={`mailto:${contact.primaryEmail}`}>{contact.primaryEmail}</a></b>
+                Email <b><a href={`mailto:${contact.primaryEmail}`}>{contact.primaryEmail}</a></b>
               </span>
-              <br />
-              <span className="pending-contact-row">
-                Partnerships <b><a href={`mailto:${contact.secondaryEmail}`}>{contact.secondaryEmail}</a></b>
-              </span>
+              {contact.secondaryEmail && (
+                <>
+                  <br />
+                  <span className="pending-contact-row">
+                    Secondary <b><a href={`mailto:${contact.secondaryEmail}`}>{contact.secondaryEmail}</a></b>
+                  </span>
+                </>
+              )}
               <br />
               <span className="pending-contact-row">
                 Telephone <b><a href={`tel:${contact.phoneHref}`}>{contact.phoneDisplay}</a></b>

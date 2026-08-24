@@ -256,12 +256,16 @@ export function Footer({ content }: { content: FooterContent }) {
             {content.addressThree}
             <br />
             {content.addressFour}
+            <br />
+            {content.addressFive}
           </address>
         </div>
         <div className="footer-contact footer-column">
           <small className="footer-label">Contact</small>
           <a href={`mailto:${content.primaryEmail}`}>{content.primaryEmail}</a>
-          <a href={`mailto:${content.secondaryEmail}`}>{content.secondaryEmail}</a>
+          {content.secondaryEmail && (
+            <a href={`mailto:${content.secondaryEmail}`}>{content.secondaryEmail}</a>
+          )}
           <a href={`tel:${content.phoneHref}`}>{content.phoneDisplay}</a>
         </div>
       </div>

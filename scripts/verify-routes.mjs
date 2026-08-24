@@ -1,4 +1,4 @@
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { once } from "node:events";
 import { setTimeout as wait } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
@@ -67,6 +67,25 @@ try {
     if (!pass) failed = true;
   }
   const landing = await fetch(origin);
+  const landingHtml = await landing.text();
+  const footerDetails = [
+    "Aureum Asset Management LLC. FZ",
+    "602, Capricorn Tower",
+    "Trade Center Second",
+    "Dubai,",
+    "United Arab Emirates",
+    "info@aureum.ae",
+    "04 234 8818",
+    'href="mailto:info@aureum.ae"',
+    'href="tel:+97142348818"',
+  ];
+  const footerDetailsPass = footerDetails.every((detail) =>
+    landingHtml.includes(detail),
+  );
+  console.log(
+    `${footerDetailsPass ? "PASS" : "FAIL"} approved footer address and contact links`,
+  );
+  if (!footerDetailsPass) failed = true;
   const headers = {
     "strict-transport-security": "max-age=31536000",
     "x-content-type-options": "nosniff",
@@ -95,7 +114,14 @@ try {
   );
   if (missing.status !== 404) failed = true;
 } finally {
-  server.kill("SIGTERM");
+  if (process.platform === "win32") {
+    spawnSync("taskkill", ["/pid", String(server.pid), "/T", "/F"], {
+      stdio: "ignore",
+      windowsHide: true,
+    });
+  } else {
+    server.kill("SIGTERM");
+  }
   await Promise.race([once(server, "exit"), wait(2000)]);
 }
 if (failed) process.exitCode = 1;

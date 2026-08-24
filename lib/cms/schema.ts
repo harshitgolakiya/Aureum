@@ -30,6 +30,7 @@ export type FooterContent = {
   addressTwo: string;
   addressThree: string;
   addressFour: string;
+  addressFive: string;
   primaryEmail: string;
   secondaryEmail: string;
   phoneDisplay: string;
@@ -179,8 +180,9 @@ export const CMS_DEFINITIONS = [
       { name: "addressTwo", label: "Address — line two", maxLength: 120 },
       { name: "addressThree", label: "Address — line three", maxLength: 120 },
       { name: "addressFour", label: "Address — line four", maxLength: 160 },
+      { name: "addressFive", label: "Address — line five", maxLength: 160 },
       { name: "primaryEmail", label: "Primary email", kind: "email", maxLength: 180 },
-      { name: "secondaryEmail", label: "Secondary email", kind: "email", maxLength: 180 },
+      { name: "secondaryEmail", label: "Secondary email", kind: "email", maxLength: 180, required: false },
       { name: "phoneDisplay", label: "Phone — displayed", kind: "tel", maxLength: 80 },
       { name: "phoneHref", label: "Phone — international link", kind: "tel", maxLength: 40 },
       { name: "linkedinUrl", label: "LinkedIn URL", kind: "url", maxLength: 300 },
@@ -190,13 +192,14 @@ export const CMS_DEFINITIONS = [
     fallback: {
       brandStatement: "Intelligence, strategy and disciplined execution for enduring industrial developments.",
       addressOne: "Aureum Asset Management LLC. FZ",
-      addressTwo: "P.O. Box: 9305",
-      addressThree: "Nad Al Sheba",
-      addressFour: "Dubai, United Arab Emirates",
-      primaryEmail: "invest@aureum.ae",
-      secondaryEmail: "akhilesh@aureum.ae",
-      phoneDisplay: "+971 56 657 9898",
-      phoneHref: "+971566579898",
+      addressTwo: "602, Capricorn Tower",
+      addressThree: "Trade Center Second",
+      addressFour: "Dubai,",
+      addressFive: "United Arab Emirates",
+      primaryEmail: "info@aureum.ae",
+      secondaryEmail: "",
+      phoneDisplay: "04 234 8818",
+      phoneHref: "+97142348818",
       linkedinUrl: "https://www.linkedin.com/company/www.aureum.ae/",
       instagramUrl: "",
       facebookUrl: "",
