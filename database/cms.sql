@@ -180,6 +180,20 @@ CREATE TABLE IF NOT EXISTS cms_users (
   KEY cms_users_role_active (role, active)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS cms_enquiry_comments (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  enquiry_id BIGINT UNSIGNED NOT NULL,
+  author_user_id CHAR(36) NULL,
+  author_email VARCHAR(255) NOT NULL,
+  comment_text TEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY cms_enquiry_comments_enquiry (enquiry_id, created_at, id),
+  KEY cms_enquiry_comments_author (author_user_id, created_at),
+  CONSTRAINT cms_enquiry_comments_enquiry_fk FOREIGN KEY (enquiry_id) REFERENCES cms_contact_submissions(id) ON DELETE CASCADE,
+  CONSTRAINT cms_enquiry_comments_author_fk FOREIGN KEY (author_user_id) REFERENCES cms_users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS cms_sessions (
   token_hash CHAR(64) NOT NULL,
   user_id CHAR(36) NOT NULL,

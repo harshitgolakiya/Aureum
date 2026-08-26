@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { recordCmsAudit } from "@/lib/cms/audit";
 import { requireCmsRole } from "@/lib/cms/auth";
 import { getCmsContent } from "@/lib/cms/content";
-import { ENQUIRY_STATUSES, getCmsEnquiryById, updateCmsEnquiryStatus, type EnquiryStatus } from "@/lib/cms/enquiries";
+import { addCmsEnquiryComment, ENQUIRY_STATUSES, getCmsEnquiryById, updateCmsEnquiryStatus, type EnquiryStatus } from "@/lib/cms/enquiries";
 import { sendEnquiryNotification } from "@/lib/cms/enquiry-notifications";
 
 function enquiryId(formData: FormData) {
@@ -37,4 +37,17 @@ export async function retryEnquiryNotificationAction(formData: FormData) {
   await recordCmsAudit(session, "edit", "enquiry", String(id), enquiry.name, { operation: "retry_notification", result: result.status });
   revalidatePath("/admin/enquiries");
   redirect(`/admin/enquiries?notification=${result.status}`);
+}
+
+export async function addEnquiryCommentAction(formData: FormData) {
+  const session = await requireCmsRole("administrator", "editor");
+  const id = enquiryId(formData);
+  const comment = String(formData.get("comment") || "").trim();
+  if (!id || !comment || comment.length > 2000) redirect(`/admin/enquiries?error=invalid${id ? `&open=${id}` : ""}`);
+  const enquiry = await getCmsEnquiryById(id);
+  if (!enquiry) redirect("/admin/enquiries?error=not-found");
+  await addCmsEnquiryComment(id, session, comment);
+  await recordCmsAudit(session, "edit", "enquiry", String(id), enquiry.name, { operation: "comment_added" });
+  revalidatePath("/admin/enquiries");
+  redirect(`/admin/enquiries?commented=${id}&open=${id}#enquiry-${id}`);
 }

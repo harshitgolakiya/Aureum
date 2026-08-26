@@ -3,7 +3,7 @@ import path from "node:path";
 import process from "node:process";
 import mysql from "mysql2/promise";
 
-const tableOrder = ["cms_entries", "cms_contact_submissions", "cms_projects", "cms_posts", "cms_media", "cms_users", "cms_media_files", "cms_sessions", "cms_revisions", "cms_redirects", "cms_audit_log", "cms_login_attempts", "cms_migrations"];
+const tableOrder = ["cms_entries", "cms_contact_submissions", "cms_projects", "cms_posts", "cms_media", "cms_users", "cms_enquiry_comments", "cms_media_files", "cms_sessions", "cms_revisions", "cms_redirects", "cms_audit_log", "cms_login_attempts", "cms_migrations"];
 const args = process.argv.slice(2);
 const backupArgument = args.find((argument) => !argument.startsWith("--"));
 const verifyOnly = args.includes("--verify");

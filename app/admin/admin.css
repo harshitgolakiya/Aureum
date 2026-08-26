@@ -577,6 +577,9 @@
 .cms-notification-status.is-not_configured { color: #886a1b; }
 .cms-enquiry-details > summary { border: 1px solid #d7dbdd; color: var(--cms-ink); cursor: pointer; font-size: 9px; list-style: none; padding: 9px 10px; text-align: center; }
 .cms-enquiry-details > summary::-webkit-details-marker { display: none; }
+.cms-enquiry-details { interpolate-size: allow-keywords; }
+.cms-enquiry-details::details-content { block-size: 0; opacity: 0; overflow: hidden; transition: block-size .32s ease, content-visibility .32s allow-discrete, opacity .2s ease; }
+.cms-enquiry-details[open]::details-content { block-size: auto; opacity: 1; }
 .cms-enquiry-details[open] { grid-column: 1 / -1; }
 .cms-enquiry-details[open] > summary { background: var(--cms-navy); color: #fff; margin-left: auto; width: 58px; }
 .cms-enquiry-details > div { background: #f6f7f7; border: 1px solid #d9dddf; margin-top: 12px; padding: 20px; }
@@ -594,6 +597,31 @@
 .cms-enquiry-actions select { background: #fff; border: 1px solid #d5dadd; font: inherit; font-size: 10px; height: 36px; padding: 0 10px; }
 .cms-enquiry-actions button { background: var(--cms-navy); border: 0; color: #fff; cursor: pointer; font-size: 8px; font-weight: 700; height: 36px; letter-spacing: .05em; padding: 0 13px; text-transform: uppercase; }
 .cms-enquiry-actions form:last-child button { background: transparent; border: 1px solid var(--cms-navy); color: var(--cms-navy); }
+.cms-enquiry-comments { border-top: 1px solid #d8dddf; margin-top: 22px; padding-top: 20px; }
+.cms-enquiry-comments-heading { align-items: end; display: flex; justify-content: space-between; }
+.cms-enquiry-comments-heading small { color: var(--cms-gold); font-size: 8px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.cms-enquiry-comments-heading h3 { font-size: 20px; font-weight: 500; margin: 4px 0 0; }
+.cms-enquiry-comments-heading > span { color: var(--cms-muted); font-size: 9px; }
+.cms-enquiry-comment-list { display: grid; gap: 8px; margin-top: 14px; }
+.cms-enquiry-comment-list article { background: #fff; border: 1px solid #d9dddf; display: grid; gap: 5px 16px; grid-template-columns: minmax(0, 1fr) auto; padding: 13px 14px; }
+.cms-enquiry-comment-list strong,
+.cms-enquiry-comment-list small { display: block; }
+.cms-enquiry-comment-list strong { font-size: 11px; font-weight: 600; }
+.cms-enquiry-comment-list small,
+.cms-enquiry-comment-list time { color: var(--cms-muted); font-size: 8px; }
+.cms-enquiry-comment-list p { font-size: 11px; grid-column: 1 / -1; line-height: 1.65; margin: 6px 0 0; white-space: pre-wrap; }
+.cms-enquiry-comments-empty { color: var(--cms-muted); font-size: 10px; margin: 14px 0; }
+.cms-enquiry-comment-form { align-items: end; display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr) auto; margin-top: 14px; }
+.cms-enquiry-comment-form label { display: grid; gap: 7px; }
+.cms-enquiry-comment-form label > span { color: var(--cms-muted); font-size: 9px; }
+.cms-enquiry-comment-form label > span strong { color: var(--cms-ink); font-weight: 600; }
+.cms-enquiry-comment-form textarea { background: #fff; border: 1px solid #d5dadd; color: var(--cms-ink); font: inherit; font-size: 11px; line-height: 1.55; min-height: 76px; padding: 10px 12px; resize: vertical; }
+.cms-enquiry-comment-form textarea:focus { border-color: var(--cms-gold); outline: 2px solid rgba(185,152,82,.16); }
+.cms-enquiry-comment-form button { background: var(--cms-gold); border: 0; color: var(--cms-navy); cursor: pointer; font-size: 8px; font-weight: 700; height: 38px; letter-spacing: .05em; padding: 0 16px; text-transform: uppercase; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cms-enquiry-details::details-content { transition: none; }
+}
 
 @media (max-width: 1240px) {
   .cms-library-filters { grid-template-columns: repeat(4, minmax(0, 1fr)); }
@@ -641,6 +669,8 @@
   .cms-enquiry-detail-grid { grid-template-columns: 1fr; }
   .cms-enquiry-actions,
   .cms-enquiry-actions form { align-items: stretch; display: grid; width: 100%; }
+  .cms-enquiry-comment-form { grid-template-columns: 1fr; }
+  .cms-enquiry-comment-form button { width: fit-content; }
 }
 
 /* Feature 03: project editor */

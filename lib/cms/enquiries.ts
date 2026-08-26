@@ -28,6 +28,13 @@ export type CmsEnquiry = ContactSubmissionInput & {
   submittedAt: Date;
   updatedAt: Date;
 };
+export type CmsEnquiryComment = {
+  id: number;
+  enquiryId: number;
+  authorEmail: string;
+  comment: string;
+  createdAt: Date;
+};
 
 type EnquiryRow = RowDataPacket & {
   id: number;
@@ -179,4 +186,33 @@ export async function updateEnquiryNotification(id: number, status: EnquiryNotif
     "UPDATE cms_contact_submissions SET notification_status = ?, notification_message_id = ?, notification_error = ? WHERE id = ?",
     [status, messageId.slice(0, 191), error.slice(0, 500), id],
   );
+}
+
+export async function addCmsEnquiryComment(enquiryId: number, author: { userId: string; email: string }, commentInput: string) {
+  const comment = commentInput.trim();
+  if (!comment || comment.length > 2000) throw new Error("Comment must be between 1 and 2,000 characters.");
+  const database = databaseOrThrow();
+  await ensureCmsSchema();
+  await database.execute(
+    "INSERT INTO cms_enquiry_comments (enquiry_id, author_user_id, author_email, comment_text) VALUES (?, ?, ?, ?)",
+    [enquiryId, author.userId, author.email, comment],
+  );
+}
+
+export async function getCmsEnquiryComments(enquiryIds: number[]) {
+  const grouped = new Map<number, CmsEnquiryComment[]>();
+  const ids = [...new Set(enquiryIds.filter((id) => Number.isSafeInteger(id) && id > 0))];
+  if (!ids.length) return grouped;
+  const database = databaseOrThrow();
+  await ensureCmsSchema();
+  const placeholders = ids.map(() => "?").join(",");
+  const [rows] = await database.execute<(RowDataPacket & { id: number; enquiry_id: number; author_email: string; comment_text: string; created_at: Date })[]>(
+    `SELECT id, enquiry_id, author_email, comment_text, created_at FROM cms_enquiry_comments WHERE enquiry_id IN (${placeholders}) ORDER BY created_at ASC, id ASC`,
+    ids,
+  );
+  for (const row of rows) {
+    const comment = { id: Number(row.id), enquiryId: Number(row.enquiry_id), authorEmail: row.author_email, comment: row.comment_text, createdAt: row.created_at };
+    grouped.set(comment.enquiryId, [...(grouped.get(comment.enquiryId) ?? []), comment]);
+  }
+  return grouped;
 }
