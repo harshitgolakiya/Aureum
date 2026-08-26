@@ -53,7 +53,7 @@ export default async function RecoveryPage({ searchParams }: { searchParams: Pro
       <section className="cms-audit-heading"><div><p className="cms-eyebrow">Audit log</p><h2>Every important content change.</h2></div><p>{total} matching event{total === 1 ? "" : "s"}</p></section>
       <form className="cms-audit-filters" method="get">
         <label><span>User</span><select name="user" defaultValue={filters.user}><option value="">All users</option>{options.users.map((user) => <option value={user} key={user}>{user}</option>)}</select></label>
-        <label><span>Content type</span><select name="type" defaultValue={filters.contentType}><option value="">All types</option><option value="project">Project</option><option value="insight">Insight</option><option value="page">Page</option><option value="settings">Settings</option></select></label>
+        <label><span>Content type</span><select name="type" defaultValue={filters.contentType}><option value="">All types</option><option value="project">Project</option><option value="insight">Insight</option><option value="page">Page</option><option value="settings">Settings</option><option value="enquiry">Enquiry</option></select></label>
         <label><span>Action</span><select name="action" defaultValue={filters.action}><option value="">All actions</option>{options.actions.map((action) => <option value={action} key={action}>{action.replaceAll("_", " ")}</option>)}</select></label>
         <label className="is-wide"><span>Record</span><input name="record" defaultValue={filters.record} placeholder="Title or slug" /></label>
         <label><span>From</span><input type="date" name="from" defaultValue={filters.from} /></label>

@@ -201,7 +201,7 @@ export const CMS_DEFINITIONS = [
       phoneDisplay: "04 234 8818",
       phoneHref: "+97142348818",
       linkedinUrl: "https://www.linkedin.com/company/www.aureum.ae/",
-      instagramUrl: "",
+      instagramUrl: "https://www.instagram.com/aureum.ae/",
       facebookUrl: "",
     },
   },

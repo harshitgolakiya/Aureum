@@ -3,7 +3,7 @@ import path from "node:path";
 import process from "node:process";
 import mysql from "mysql2/promise";
 
-const tables = ["cms_entries", "cms_projects", "cms_posts", "cms_media", "cms_users", "cms_media_files", "cms_sessions", "cms_revisions", "cms_redirects", "cms_audit_log", "cms_login_attempts", "cms_migrations"];
+const tables = ["cms_entries", "cms_contact_submissions", "cms_projects", "cms_posts", "cms_media", "cms_users", "cms_media_files", "cms_sessions", "cms_revisions", "cms_redirects", "cms_audit_log", "cms_login_attempts", "cms_migrations"];
 const databaseUrl = process.env.DATABASE_URL?.trim();
 if (!databaseUrl) throw new Error("DATABASE_URL is required.");
 

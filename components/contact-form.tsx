@@ -45,17 +45,13 @@ function validate(values: Values): Errors {
 
 async function submitConversation(
   values: Values,
-): Promise<{ ok: boolean; configured: boolean }> {
-  const endpoint = process.env.NEXT_PUBLIC_CONTACT_ENDPOINT;
-  if (!endpoint) return { ok: false, configured: false };
-  const { companyWebsite: _, ...payload } = values;
-  void _;
-  const response = await fetch(endpoint, {
+): Promise<{ ok: boolean }> {
+  const response = await fetch("/api/contact", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(values),
   });
-  return { ok: response.ok, configured: true };
+  return { ok: response.ok };
 }
 
 const fields = [
@@ -100,7 +96,7 @@ export function ContactForm() {
   const [values, setValues] = useState(initial);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<
-    "idle" | "sending" | "success" | "unconfigured" | "failed"
+    "idle" | "sending" | "success" | "failed"
   >("idle");
   const summary = useRef<HTMLDivElement>(null);
   function update(name: keyof Values, value: string) {
@@ -123,9 +119,7 @@ export function ContactForm() {
     setStatus("sending");
     try {
       const result = await submitConversation(values);
-      setStatus(
-        result.ok ? "success" : result.configured ? "failed" : "unconfigured",
-      );
+      setStatus(result.ok ? "success" : "failed");
     } catch {
       setStatus("failed");
     }
@@ -268,21 +262,12 @@ export function ContactForm() {
         </button>
         <p>Required fields are marked with an asterisk.</p>
       </div>
-      {status === "unconfigured" && (
-        <div className="submission-notice" role="status">
-          <strong>Your details are valid, but no message was sent.</strong>
-          <p>
-            The secure form endpoint has not yet been connected. Add{" "}
-            <code>NEXT_PUBLIC_CONTACT_ENDPOINT</code> to enable live submission.
-          </p>
-        </div>
-      )}
       {status === "failed" && (
         <div className="submission-notice error" role="alert">
           <strong>We couldn&apos;t send your message.</strong>
           <p>
-            Please try again later or contact Aureum directly once official
-            contact details are supplied.
+            Please try again later or contact Aureum using the email address in
+            the footer.
           </p>
         </div>
       )}

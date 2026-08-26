@@ -11,6 +11,16 @@ export const metadata = {
 };
 export default async function Page() {
   const contact = await getCmsContent("site.footer");
+  const officeAddress = [
+    contact.addressTwo,
+    contact.addressThree,
+    contact.addressFour,
+    contact.addressFive,
+  ].filter(Boolean).map((line) => line.trim().replace(/,\s*$/, "")).join(", ");
+  const encodedOfficeAddress = encodeURIComponent(officeAddress);
+  const mapEmbedUrl = `https://www.google.com/maps?q=${encodedOfficeAddress}&output=embed`;
+  const mapSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodedOfficeAddress}`;
+
   return (
     <main>
       <section className="contact-hero">
@@ -87,32 +97,22 @@ export default async function Page() {
             </p>
           </div>
         </div>
-        <div
-          className="map"
-          aria-label="Map illustration showing Aureum's Dubai office"
-        >
-          <div className="map-grid" />
-          <div className="map-road road-primary" />
-          <div className="map-road road-secondary" />
-          <div className="map-coordinate">
-            <span>Dubai / UAE</span>
-            <strong>
-              25.2048° N<br />
-              55.2708° E
-            </strong>
+        <div className="map" aria-label="Map showing Aureum's Dubai office">
+          <iframe
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            src={mapEmbedUrl}
+            title="Aureum office at Capricorn Tower, Dubai"
+          />
+          <div className="map-location-card">
+            <span>Dubai office</span>
+            <strong>{contact.addressTwo}</strong>
+            <small>{[contact.addressThree, contact.addressFour, contact.addressFive].filter(Boolean).map((line) => line.trim().replace(/,\s*$/, "")).join(", ")}</small>
+            <a href={mapSearchUrl} rel="noreferrer" target="_blank">
+              Open in Google Maps ↗
+            </a>
           </div>
-          <div className="map-marker">
-            <i />
-            <span>
-              Aureum
-              <br />
-              Development
-            </span>
-          </div>
-          <div className="map-status">
-            <i /> Dubai office
-          </div>
-          <p>Interactive map available when Mapbox integration is enabled</p>
         </div>
       </section>
       <section className="alternative-contact">

@@ -8,6 +8,29 @@ CREATE TABLE IF NOT EXISTS cms_entries (
   UNIQUE KEY cms_entries_content_key_unique (content_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS cms_contact_submissions (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(120) NOT NULL,
+  organisation VARCHAR(120) NOT NULL,
+  role_title VARCHAR(120) NOT NULL,
+  email VARCHAR(254) NOT NULL,
+  phone VARCHAR(80) NOT NULL DEFAULT '',
+  interest VARCHAR(120) NOT NULL,
+  opportunity TEXT NOT NULL,
+  source VARCHAR(120) NOT NULL DEFAULT '',
+  status ENUM('new','in_progress','closed','spam') NOT NULL DEFAULT 'new',
+  notification_status ENUM('pending','sent','failed','not_configured') NOT NULL DEFAULT 'pending',
+  notification_message_id VARCHAR(191) NOT NULL DEFAULT '',
+  notification_error VARCHAR(500) NOT NULL DEFAULT '',
+  client_hash CHAR(64) NOT NULL,
+  submitted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY cms_contact_status_submitted (status, submitted_at),
+  KEY cms_contact_email (email),
+  KEY cms_contact_client_recent (client_hash, submitted_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS cms_projects (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   slug VARCHAR(191) NOT NULL,

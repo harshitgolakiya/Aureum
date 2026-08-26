@@ -120,6 +120,7 @@ export function ProjectEditor({ project, redirects = [] }: { project?: Project &
 
   return (
     <form
+      autoComplete="off"
       className="cms-project-editor"
       ref={formRef}
       onChange={() => setDirty(true)}
@@ -166,12 +167,13 @@ export function ProjectEditor({ project, redirects = [] }: { project?: Project &
           </div>
         </EditorSection>
 
-        <EditorSection id="media" number="04" title="Media" copy="Choose optimized assets from the media library or enter an existing public asset path.">
-          <label className="cms-editor-field is-wide"><span>Cover image</span><div className="cms-cover-editor"><div>{coverImage.startsWith("/") && <Image src={coverImage} alt="" fill sizes="180px" />}</div><span><input name="coverImage" value={coverImage} onChange={(event) => setCoverImage(event.target.value)} /><MediaPicker onSelect={(asset) => { setCoverImage(asset.publicPath); setDirty(true); }} /></span></div>{errors.coverImage && <em>{errors.coverImage}</em>}</label>
+        <EditorSection id="media" number="04" title="Media" copy="Assign a cover image and an ordered set of gallery images. Each picker applies the selected asset to the field that opened it.">
+          <label className="cms-editor-field is-wide"><span>Cover image <small>Used on portfolio cards and as the project-page hero</small></span><div className="cms-cover-editor"><div>{coverImage.startsWith("/") && <Image src={coverImage} alt="" fill sizes="180px" />}</div><span><input aria-label="Cover image path" autoComplete="off" name="coverImage" placeholder="/media/projects/cover-image.webp" spellCheck={false} value={coverImage} onChange={(event) => setCoverImage(event.target.value)} /><MediaPicker label="Choose cover image" type="image" onSelect={(asset) => { setCoverImage(asset.publicPath); setDirty(true); }} /></span></div>{errors.coverImage && <em>{errors.coverImage}</em>}</label>
           <div className="cms-gallery-editor is-wide">
-            <div className="cms-gallery-add"><input aria-label="Gallery image path" value={galleryDraft} onChange={(event) => setGalleryDraft(event.target.value)} placeholder="/media/projects/gallery-image.webp" /><button type="button" onClick={() => { const path = galleryDraft.trim(); if (!path) return; setGallery((items) => [...items, path]); setGalleryDraft(""); setDirty(true); }}>Add path</button><MediaPicker label="Choose media" onSelect={(asset) => { setGallery((items) => [...items, asset.publicPath]); setDirty(true); }} /></div>
+            <div className="cms-media-role"><strong>Project gallery</strong><small>Shown on the project detail page in the order below. Use the arrows to reorder images.</small></div>
+            <div className="cms-gallery-add"><input aria-label="Gallery image path" autoComplete="off" spellCheck={false} value={galleryDraft} onChange={(event) => setGalleryDraft(event.target.value)} placeholder="Optional: paste a public image path" /><button type="button" onClick={() => { const path = galleryDraft.trim(); if (!path) return; setGallery((items) => [...items, path]); setGalleryDraft(""); setDirty(true); }}>Add pasted path</button><MediaPicker label="Add gallery image" type="image" onSelect={(asset) => { setGallery((items) => [...items, asset.publicPath]); setDirty(true); }} /></div>
             {errors.galleryImages && <em>{errors.galleryImages}</em>}
-            <div>{gallery.map((item, index) => <article key={`${item}-${index}`}><div>{item.startsWith("/") && <Image src={item} alt="" fill sizes="120px" />}</div><p>{item}</p><span><button type="button" onClick={() => moveGallery(index, -1)} disabled={index === 0}>↑</button><button type="button" onClick={() => moveGallery(index, 1)} disabled={index === gallery.length - 1}>↓</button><button type="button" onClick={() => { setGallery((items) => items.filter((_, itemIndex) => itemIndex !== index)); setDirty(true); }}>Remove</button></span></article>)}</div>
+            <div>{gallery.map((item, index) => <article key={`${item}-${index}`}><div>{item.startsWith("/") && <Image src={item} alt="" fill sizes="120px" />}</div><p><strong>Gallery {String(index + 1).padStart(2, "0")}</strong><code>{item}</code></p><span><button aria-label={`Move gallery image ${index + 1} up`} type="button" onClick={() => moveGallery(index, -1)} disabled={index === 0}>↑</button><button aria-label={`Move gallery image ${index + 1} down`} type="button" onClick={() => moveGallery(index, 1)} disabled={index === gallery.length - 1}>↓</button><button type="button" onClick={() => { setGallery((items) => items.filter((_, itemIndex) => itemIndex !== index)); setDirty(true); }}>Remove</button></span></article>)}</div>
             {!gallery.length && <p className="cms-gallery-empty">No gallery images added yet.</p>}
           </div>
         </EditorSection>

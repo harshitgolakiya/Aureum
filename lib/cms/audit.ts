@@ -17,7 +17,7 @@ export type CmsAuditAction =
   | "feature"
   | "unfeature";
 
-export type CmsAuditContentType = "project" | "insight" | "page" | "settings";
+export type CmsAuditContentType = "project" | "insight" | "page" | "settings" | "enquiry";
 
 export type CmsAuditEntry = {
   id: number;
@@ -82,7 +82,7 @@ export async function getCmsAuditLog(filters: CmsAuditFilters = {}) {
   const clauses: string[] = [];
   const values: Array<string | number> = [];
   if (filters.user?.trim()) { clauses.push("actor_email = ?"); values.push(filters.user.trim().toLowerCase()); }
-  if (filters.contentType && ["project", "insight", "page", "settings"].includes(filters.contentType)) { clauses.push("content_type = ?"); values.push(filters.contentType); }
+  if (filters.contentType && ["project", "insight", "page", "settings", "enquiry"].includes(filters.contentType)) { clauses.push("content_type = ?"); values.push(filters.contentType); }
   if (filters.action?.trim()) { clauses.push("action = ?"); values.push(filters.action.trim()); }
   if (filters.record?.trim()) { clauses.push("(content_slug LIKE ? OR record_label LIKE ?)"); const term = `%${filters.record.trim()}%`; values.push(term, term); }
   if (validDate(filters.from)) { clauses.push("created_at >= ?"); values.push(`${filters.from} 00:00:00`); }

@@ -3,6 +3,7 @@ import { logoutAction } from "./actions";
 
 export type CmsArea =
   | "dashboard"
+  | "enquiries"
   | "projects"
   | "insights"
   | "media"
@@ -18,13 +19,14 @@ const navigation: Array<{
   shortLabel: string;
 }> = [
   { area: "dashboard", href: "/admin", label: "Dashboard", shortLabel: "01" },
-  { area: "projects", href: "/admin/projects", label: "Projects", shortLabel: "02" },
-  { area: "insights", href: "/admin/insights", label: "Insights", shortLabel: "03" },
-  { area: "media", href: "/admin/media", label: "Media", shortLabel: "04" },
-  { area: "pages", href: "/admin/pages", label: "Pages", shortLabel: "05" },
-  { area: "users", href: "/admin/users", label: "Users", shortLabel: "06" },
-  { area: "recovery", href: "/admin/recovery", label: "Audit & recovery", shortLabel: "07" },
-  { area: "settings", href: "/admin/settings", label: "Settings", shortLabel: "08" },
+  { area: "enquiries", href: "/admin/enquiries", label: "Enquiries", shortLabel: "02" },
+  { area: "projects", href: "/admin/projects", label: "Projects", shortLabel: "03" },
+  { area: "insights", href: "/admin/insights", label: "Insights", shortLabel: "04" },
+  { area: "media", href: "/admin/media", label: "Media", shortLabel: "05" },
+  { area: "pages", href: "/admin/pages", label: "Pages", shortLabel: "06" },
+  { area: "users", href: "/admin/users", label: "Users", shortLabel: "07" },
+  { area: "recovery", href: "/admin/recovery", label: "Audit & recovery", shortLabel: "08" },
+  { area: "settings", href: "/admin/settings", label: "Settings", shortLabel: "09" },
 ];
 
 function Navigation({ active, onMobile = false }: { active: CmsArea; onMobile?: boolean }) {

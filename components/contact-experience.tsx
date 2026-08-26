@@ -19,21 +19,6 @@ export function ContactMotion() {
           scrollTrigger: { trigger: contactForm, start: "top 70%" },
         });
       }
-      const mapGrid = document.querySelector<HTMLElement>(".map-grid");
-      const office = document.querySelector<HTMLElement>(".office");
-      if (mapGrid && office) {
-        gsap.to(mapGrid, {
-          x: 22,
-          y: -18,
-          ease: "none",
-          scrollTrigger: {
-            trigger: office,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
-          },
-        });
-      }
     });
     return () => context.revert();
   }, []);
