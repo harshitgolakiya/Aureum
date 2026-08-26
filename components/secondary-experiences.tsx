@@ -212,7 +212,7 @@ export function WhoNarrative({ leaders }: { leaders: readonly LeaderContent[] })
             Close ×
           </button>
           <div className="bio-visual">
-            <Media label={leaders[person].portrait} />
+            <Media label={`leadership-profile-portrait-0${person + 1}.webp`} />
           </div>
           <div className="bio-copy">
             <small>Leadership / 0{person + 1}</small>

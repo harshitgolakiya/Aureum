@@ -99,7 +99,7 @@ export default async function Home() {
           </ArrowLink>
         </div>
       </section>
-      <Connect />
+      <Connect compact />
       <HomepageReveals />
     </main>
   );

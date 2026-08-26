@@ -132,6 +132,44 @@ export type InsightArticle = {
 
 export const projects: Project[] = [
   {
+    slug: "aureum-logistics-campus-demo",
+    name: "Aureum Logistics Campus — Demo",
+    location: "Dubai, UAE",
+    type: "Grade A Logistics Campus",
+    category: "Logistics",
+    metric: "500,000 sq ft",
+    status: "Concept Demonstration",
+    philosophy:
+      "A conceptual logistics campus demonstrating how commercial intelligence, operational planning and disciplined delivery can shape long-term industrial performance.",
+    engagement: "Development Management",
+    coverImage: "/media/heroes/portfolio.webp",
+    opportunity:
+      "The demonstration begins with a growing requirement for modern logistics capacity positioned close to major transport corridors. The opportunity is framed around occupier efficiency, flexible expansion and a development strategy capable of responding to changing distribution needs.",
+    strategy:
+      "The proposed strategy brings land planning, commercial modelling and operational requirements into one coordinated framework. Building orientation, circulation and phasing are considered together to create a campus that can adapt as occupier requirements evolve.",
+    delivery:
+      "A structured development-management approach aligns design, approvals, procurement and construction around clearly defined performance outcomes. Each stage is governed through coordinated decision-making, programme controls and transparent reporting.",
+    outcome:
+      "The concept demonstrates a scalable logistics environment designed for efficient movement, operational resilience and long-term asset value. It represents the type of integrated thinking Aureum applies when shaping an industrial opportunity.",
+    chapterOrder: "opportunity,strategy,delivery,outcome",
+    galleryImages: "",
+    seoTitle: "Aureum Logistics Campus Demo | Portfolio",
+    seoDescription:
+      "A conceptual Aureum logistics campus demonstrating integrated industrial development thinking.",
+    canonicalUrl: "/portfolio/aureum-logistics-campus-demo",
+    searchIndex: false,
+    searchFollow: false,
+    socialTitle: "Aureum Logistics Campus — Demo",
+    socialDescription:
+      "A conceptual logistics campus shaped through Aureum's integrated development approach.",
+    socialImage: "/media/heroes/portfolio.webp",
+    published: true,
+    archived: false,
+    workflowStatus: "published",
+    scheduledAt: "",
+    sortOrder: 1,
+  },
+  {
     slug: "project-1",
     name: "[Project Name]",
     location: "[City, UAE]",

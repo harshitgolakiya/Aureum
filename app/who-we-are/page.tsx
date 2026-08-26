@@ -24,6 +24,7 @@ export default async function Page() {
       />
       <WhoNarrative leaders={[aasim, akhilesh, anish]} />
       <Connect
+        compact
         title="The next opportunity starts with a conversation."
         copy="Every significant development begins with a conversation about ambition, opportunity and long-term value. Whether exploring investment or expansion, Aureum welcomes discussions that begin with possibilities and evolve into enduring partnerships."
       />

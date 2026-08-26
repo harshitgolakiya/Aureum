@@ -594,6 +594,16 @@ em {
 .connect .button {
   justify-self: end;
 }
+.connect.connect-compact {
+  padding-top: clamp(4.5rem, 6vw, 6.5rem);
+  padding-bottom: clamp(4.5rem, 6vw, 6.5rem);
+}
+.connect.connect-compact h2 {
+  max-width: 980px;
+  margin: clamp(2rem, 3vw, 3rem) 0 clamp(2.5rem, 4vw, 4rem);
+  font-size: clamp(2.75rem, 4vw, 4.75rem);
+  line-height: 1.02;
+}
 footer {
   background: var(--footer);
   color: var(--grey);

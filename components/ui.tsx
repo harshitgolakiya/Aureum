@@ -133,12 +133,14 @@ export function PageHero({
 export function Connect({
   title = "The right development starts with the right conversation.",
   copy = "Whether you're exploring an opportunity, planning a development or considering what's next, Aureum brings the intelligence, perspective and development expertise to help shape the right path forward.",
+  compact = false,
 }: {
   title?: string;
   copy?: string;
+  compact?: boolean;
 }) {
   return (
-    <section className="connect">
+    <section className={`connect${compact ? " connect-compact" : ""}`}>
       <Eyebrow>Begin a conversation</Eyebrow>
       <h2>{title}</h2>
       <div>

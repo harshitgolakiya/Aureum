@@ -447,8 +447,19 @@
   .case-chapters > nav {
     width: 100%;
     max-width: calc(100vw - (2 * var(--pad)));
-    overflow: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
     overscroll-behavior-inline: contain;
+    scroll-snap-type: inline proximity;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .case-chapters > nav::-webkit-scrollbar {
+    display: none;
+  }
+  .case-chapters > nav a {
+    scroll-snap-align: start;
   }
   .case-gallery-section > div:first-child {
     grid-template-columns: 1fr;

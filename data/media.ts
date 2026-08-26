@@ -18,17 +18,32 @@ export const approvedMedia: Record<string, ApprovedMedia> = {
     focalPoint: "50% 50%",
   },
   "leadership-portrait-01.webp": {
-    src: "/leadership/aasim.webp",
+    src: "/leadership/aasim 1.webp",
     alt: "Portrait of Aasim Ameer, Chief Executive Officer",
     focalPoint: "50% 0%",
   },
   "leadership-portrait-02.webp": {
-    src: "/leadership/akhi.webp",
+    src: "/leadership/akhi 1.webp",
     alt: "Portrait of Akhilesh Padinhare, Executive Director in Investment and Strategy",
     focalPoint: "50% 0%",
   },
   "leadership-portrait-03.webp": {
-    src: "/leadership/anish.webp",
+    src: "/leadership/anish 1.webp",
+    alt: "Portrait of Anish Kasim, Executive Director at Real Estate Development",
+    focalPoint: "50% 0%",
+  },
+  "leadership-profile-portrait-01.webp": {
+    src: "/leadership/aasim inner.webp",
+    alt: "Portrait of Aasim Ameer, Chief Executive Officer",
+    focalPoint: "50% 0%",
+  },
+  "leadership-profile-portrait-02.webp": {
+    src: "/leadership/akhi inner.webp",
+    alt: "Portrait of Akhilesh Padinhare, Executive Director in Investment and Strategy",
+    focalPoint: "50% 0%",
+  },
+  "leadership-profile-portrait-03.webp": {
+    src: "/leadership/anish inner.webp",
     alt: "Portrait of Anish Kasim, Executive Director at Real Estate Development",
     focalPoint: "50% 0%",
   },

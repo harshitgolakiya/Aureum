@@ -691,6 +691,7 @@ footer:before,
 .contact-hero h1 {
   max-width: 1120px;
   margin: 3rem 0 2rem;
+  font-size: clamp(3.5rem, 7vw, 8rem);
   color: #fff;
   opacity: 1;
 }
@@ -728,4 +729,199 @@ footer:before,
 .page-hero,
 .contact-hero {
   padding-inline: var(--page-inset);
+}
+
+/* Editorial scale and rhythm: reserve the largest type for route heroes. */
+:is(.page-hero, .contact-hero, .case-hero, .article-header) h1 {
+  width: min(100%, 1200px);
+  max-width: 100%;
+  font-size: clamp(3.25rem, 6vw, 7rem);
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+:is(
+  .section,
+  .who-shift,
+  .who-philosophy,
+  .collective-feature,
+  .leadership,
+  .partner-convergence,
+  .portfolio-explore,
+  .case-gallery-section,
+  .featured-insight,
+  .insight-categories,
+  .insight-library,
+  .related-insights,
+  .next-insight,
+  .editorial,
+  .partner-block,
+  .contact-form,
+  .office,
+  .case-study,
+  .listing,
+  .insight-grid,
+  .principle,
+  .founder,
+  .article,
+  .legal-copy
+) {
+  padding-block: clamp(5.5rem, 8vw, 8.5rem);
+}
+
+.who-shift {
+  min-height: auto;
+}
+
+:is(
+  .section-heading,
+  .engagement-heading,
+  .leadership-heading,
+  .case-gallery-section > div:first-child
+) {
+  margin-bottom: clamp(3rem, 5vw, 4.5rem);
+}
+
+:is(
+  .section-heading,
+  .engagement-heading,
+  .system-introduction,
+  .who-shift,
+  .who-philosophy,
+  .leadership-heading,
+  .partner-convergence,
+  .featured-insight-copy,
+  .case-chapter,
+  .case-gallery-section,
+  .next-insight,
+  .confirmation
+) h2 {
+  font-size: clamp(2.75rem, 4.8vw, 5.5rem);
+}
+
+:is(.editorial, .partner-block, .office, .partner-chapter) h2 {
+  font-size: clamp(2.6rem, 4.4vw, 5.1rem);
+}
+
+.section-heading h2 {
+  margin: clamp(2.25rem, 3vw, 3rem) 0 1.5rem;
+}
+
+.engagement-heading h2 {
+  max-width: 1160px;
+}
+
+@media (min-width: 901px) {
+  .system-introduction {
+    min-height: auto;
+    padding-block: clamp(6rem, 8vw, 8.5rem);
+  }
+
+  .system-introduction > div:last-child {
+    align-self: center;
+    padding-bottom: 0;
+  }
+
+  .system-introduction h2 {
+    margin-top: 2.5rem;
+  }
+}
+
+@media (max-width: 900px) {
+  :is(
+    .section-heading,
+    .engagement-heading,
+    .system-copy,
+    .lifecycle-top,
+    .who-shift,
+    .who-philosophy,
+    .leadership-heading,
+    .partner-chapter,
+    .partner-convergence,
+    .featured-insight-copy,
+    .case-chapter,
+    .case-gallery-section,
+    .next-insight,
+    .confirmation
+  ) h2 {
+    font-size: clamp(2.5rem, 8.5vw, 3.8rem);
+    line-height: 1;
+  }
+
+  .engagement-heading {
+    gap: 2.25rem;
+  }
+}
+
+@media (max-width: 600px) {
+  :is(.page-hero, .contact-hero, .case-hero, .article-header) h1 {
+    font-size: clamp(2.65rem, 11vw, 3.35rem);
+    line-height: 1;
+    overflow-wrap: anywhere;
+  }
+
+  :is(
+    .section,
+    .who-shift,
+    .who-philosophy,
+    .collective-feature,
+    .leadership,
+    .partner-convergence,
+    .portfolio-explore,
+    .case-gallery-section,
+    .featured-insight,
+    .insight-categories,
+    .insight-library,
+    .related-insights,
+    .next-insight,
+    .editorial,
+    .partner-block,
+    .contact-form,
+    .office,
+    .case-study,
+    .listing,
+    .insight-grid,
+    .principle,
+    .founder,
+    .article,
+    .legal-copy
+  ) {
+    padding-block: 4.75rem;
+  }
+
+  :is(.system-story, .lifecycle) {
+    padding-block: 5rem;
+  }
+
+  :is(
+    .section-heading,
+    .engagement-heading,
+    .system-copy,
+    .lifecycle-top,
+    .who-shift,
+    .who-philosophy,
+    .leadership-heading,
+    .partner-chapter,
+    .partner-convergence,
+    .featured-insight-copy,
+    .case-chapter,
+    .case-gallery-section,
+    .next-insight,
+    .confirmation
+  ) h2 {
+    font-size: clamp(2.35rem, 10.5vw, 3.15rem);
+  }
+
+  :is(
+    .section-heading,
+    .engagement-heading,
+    .leadership-heading,
+    .case-gallery-section > div:first-child
+  ) {
+    margin-bottom: 2.75rem;
+  }
+
+  .section-heading h2 {
+    margin-top: 2rem;
+  }
 }

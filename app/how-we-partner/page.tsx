@@ -21,6 +21,7 @@ export default function Page() {
       <PartnerJourney />
       <PartnerConvergence />
       <Connect
+        compact
         title="The right conversation shapes the right outcome."
         copy="Meaningful partnerships begin with understanding the opportunity, not prescribing the solution. Every engagement starts by defining success before determining the path."
       />

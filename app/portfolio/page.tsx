@@ -30,6 +30,7 @@ export default async function Page() {
         </p>
       </section>
       <Connect
+        compact
         title="Tomorrow’s developments begin with today’s conversations."
         copy="Every future development starts with a shared ambition and the willingness to explore what is possible. Aureum welcomes conversations that lead to enduring partnerships and meaningful outcomes."
       />
