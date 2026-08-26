@@ -134,6 +134,23 @@
 .legal-copy > div {
   max-width: 820px;
 }
+.legal-sections > section {
+  padding: 2rem 0;
+  border-top: 1px solid var(--line);
+}
+.legal-sections > section:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.legal-sections > section h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.35rem, 2.5vw, 2rem);
+}
+.legal-sections > section p {
+  margin: 0;
+  color: var(--dusty);
+  line-height: 1.85;
+  max-width: 680px;
+}
 .legal-copy h2 {
   margin: 2rem 0;
 }
