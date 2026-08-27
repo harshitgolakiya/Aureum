@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowLink, Eyebrow, Media } from "./ui";
@@ -249,6 +250,8 @@ const partnerships = [
     how: "We identify and evaluate opportunities through market intelligence, commercial assessment and development insight and bring the right conditions together to determine what should be developed and why.",
     who: "For those seeking to unlock an industrial opportunity as an occupier, landowner, investor or strategic partner.",
     cta: "Discuss an Opportunity",
+    image: "/how-we-1.webp",
+    visualCue: "Opportunity identified",
   },
   {
     n: "02",
@@ -259,6 +262,8 @@ const partnerships = [
     how: "We align site, commercial, design, engineering and delivery decisions around the occupier's operational requirements, creating a development purpose-built for how the business needs to perform.",
     who: "For occupiers and businesses seeking industrial space developed around their operational requirements, expansion plans and long-term needs.",
     cta: "Explore Development Management",
+    image: "/how-we-2.webp",
+    visualCue: "Requirements coordinated",
   },
   {
     n: "03",
@@ -269,6 +274,8 @@ const partnerships = [
     how: "We structure partnerships around the strengths and objectives of each party, creating a clear alignment between the opportunity, the development model and the interests invested in its success.",
     who: "For investors, landowners, occupiers and strategic partners seeking to unlock industrial development opportunities together.",
     cta: "Discuss a Partnership",
+    image: "/how-we-3.webp",
+    visualCue: "Interests aligned",
   },
 ];
 
@@ -290,14 +297,6 @@ export function PartnerJourney() {
             },
           }),
         );
-      gsap.from(".partner-path line", {
-        scaleX: 0,
-        transformOrigin: "left",
-        stagger: 0.15,
-        duration: 1,
-        ease: "power3.out",
-        scrollTrigger: { trigger: root.current, start: "top 65%" },
-      });
     }, root);
     return () => context.revert();
   }, []);
@@ -308,23 +307,26 @@ export function PartnerJourney() {
           <span>Aureum / Engagement Pathways</span>
           <b>0{active + 1} / 03</b>
         </div>
-        <div className={`partner-path path-${active + 1}`}>
-          <i />
-          <i />
-          <i />
-          <span className="node land">Land</span>
-          <span className="node intelligence">Intelligence</span>
-          <span className="node requirements">Requirements</span>
-          <span className="node capital">Capital</span>
-          <strong>
-            Aureum<small>One standard</small>
-          </strong>
-          <svg viewBox="0 0 600 420" aria-hidden="true">
-            <line x1="80" y1="80" x2="300" y2="210" />
-            <line x1="520" y1="80" x2="300" y2="210" />
-            <line x1="80" y1="340" x2="300" y2="210" />
-            <line x1="520" y1="340" x2="300" y2="210" />
-          </svg>
+        <div className="partner-media" aria-hidden="true">
+          {partnerships.map((item, index) => (
+            <div
+              className={`partner-media-image ${active === index ? "active" : ""}`}
+              key={item.image}
+            >
+              <Image
+                src={item.image}
+                alt=""
+                fill
+                sizes="(max-width: 900px) 100vw, 50vw"
+                quality={75}
+              />
+            </div>
+          ))}
+          <div className="partner-media-shade" />
+          <div className="partner-media-label" key={active}>
+            <small>{partnerships[active].n} / 03</small>
+            <b>{partnerships[active].visualCue}</b>
+          </div>
         </div>
         <p>
           {
@@ -339,12 +341,23 @@ export function PartnerJourney() {
       <div className="partner-chapters">
         {partnerships.map((item) => (
           <article className="partner-chapter" key={item.n}>
+            <div className="partner-chapter-media" aria-hidden="true">
+              <Image
+                src={item.image}
+                alt=""
+                fill
+                sizes="100vw"
+                quality={75}
+              />
+              <div className="partner-chapter-media-shade" />
+              <span>{item.n} / 03</span>
+            </div>
             <Eyebrow>
               {item.n} / {item.title}
             </Eyebrow>
             <h2>{item.headline}</h2>
             <p className="large-copy">{item.overview}</p>
-            <div>
+            <div className="partner-chapter-details">
               <section>
                 <small>How it works</small>
                 <p>{item.how}</p>
