@@ -6,6 +6,8 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowLink, Eyebrow, Media } from "./ui";
+import { PartnerSystemGraphic } from "./partner-system-graphic";
+import { PhilosophyDecisionEngine } from "./philosophy-decision-engine";
 import type { LeaderContent } from "@/lib/cms/schema";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -36,6 +38,18 @@ export function WhoNarrative({ leaders }: { leaders: readonly LeaderContent[] })
           scrub: true,
         },
       });
+      const philosophyEngine = root.current?.querySelector(".philosophy-engine");
+      if (philosophyEngine) {
+        ScrollTrigger.create({
+          trigger: philosophyEngine,
+          start: "top 78%",
+          end: "bottom 18%",
+          onEnter: () => philosophyEngine.classList.add("is-active"),
+          onEnterBack: () => philosophyEngine.classList.add("is-active"),
+          onLeave: () => philosophyEngine.classList.remove("is-active"),
+          onLeaveBack: () => philosophyEngine.classList.remove("is-active"),
+        });
+      }
       gsap.from(".collective-statement span", {
         yPercent: 110,
         stagger: 0.1,
@@ -91,7 +105,7 @@ export function WhoNarrative({ leaders }: { leaders: readonly LeaderContent[] })
           <span>Perspective</span>
         </div>
         <div data-who-reveal>
-          <Eyebrow>01 / Our Perspective</Eyebrow>
+          <Eyebrow>Our Perspective</Eyebrow>
           <h2>
             Industrial opportunity is changing. So is the way it needs to be
             developed.
@@ -105,14 +119,9 @@ export function WhoNarrative({ leaders }: { leaders: readonly LeaderContent[] })
         </p>
       </section>
       <section className="who-philosophy">
-        <div className="philosophy-index" aria-hidden="true">
-          <span>Commercial</span>
-          <span>Technical</span>
-          <span>Strategic</span>
-          <b>One system</b>
-        </div>
+        <PhilosophyDecisionEngine />
         <div data-who-reveal>
-          <Eyebrow>02 / Our Philosophy</Eyebrow>
+          <Eyebrow>Our Philosophy</Eyebrow>
           <h2>A different view demands a different way of thinking.</h2>
           <p>
             The Aureum System provides a consistent institutional framework for
@@ -158,7 +167,7 @@ export function WhoNarrative({ leaders }: { leaders: readonly LeaderContent[] })
       </section>
       <section className="leadership">
         <div className="leadership-heading" data-who-reveal>
-          <Eyebrow>03 / Leadership</Eyebrow>
+          <Eyebrow>Leadership</Eyebrow>
           <h2>Different perspectives, shared conviction.</h2>
           <p>
             Together, we bring the experience, judgement and perspective to
@@ -216,7 +225,7 @@ export function WhoNarrative({ leaders }: { leaders: readonly LeaderContent[] })
             <Media label={`leadership-profile-portrait-0${person + 1}.webp`} />
           </div>
           <div className="bio-copy">
-            <small>Leadership / 0{person + 1}</small>
+            <small>Leadership profile</small>
             <h2 id="bio-title">{leaders[person].name}</h2>
             <h3>{leaders[person].role}</h3>
             <p className="pending-profile-line">
@@ -305,7 +314,6 @@ export function PartnerJourney() {
       <div className="partner-visual">
         <div className="partner-visual-meta">
           <span>Aureum / Engagement Pathways</span>
-          <b>0{active + 1} / 03</b>
         </div>
         <div className="partner-media" aria-hidden="true">
           {partnerships.map((item, index) => (
@@ -324,7 +332,6 @@ export function PartnerJourney() {
           ))}
           <div className="partner-media-shade" />
           <div className="partner-media-label" key={active}>
-            <small>{partnerships[active].n} / 03</small>
             <b>{partnerships[active].visualCue}</b>
           </div>
         </div>
@@ -350,7 +357,7 @@ export function PartnerJourney() {
                 quality={75}
               />
               <div className="partner-chapter-media-shade" />
-              <span>{item.n} / 03</span>
+              <span>{item.visualCue}</span>
             </div>
             <Eyebrow>
               {item.n} / {item.title}
@@ -378,14 +385,25 @@ export function PartnerJourney() {
 }
 
 export function PartnerConvergence() {
+  const root = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const section = root.current;
+    const graphic = section?.querySelector(".partner-system-graphic");
+    if (!section || !graphic) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const trigger = ScrollTrigger.create({
+      trigger: section,
+      start: "top 72%",
+      once: true,
+      onEnter: () => graphic.classList.add("is-active"),
+    });
+    return () => trigger.kill();
+  }, []);
+
   return (
-    <section className="partner-convergence">
-      <div className="convergence-lines" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-        <span>A</span>
-      </div>
+    <section ref={root} className="partner-convergence">
+      <PartnerSystemGraphic />
       <div>
         <Eyebrow>The Aureum System in Action</Eyebrow>
         <h2>Different pathways. One Aureum standard.</h2>

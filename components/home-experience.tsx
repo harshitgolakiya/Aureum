@@ -157,7 +157,7 @@ export function AureumSystemIntroduction() {
   return (
     <section className="system-introduction">
       <div>
-        <Eyebrow>01 / The Aureum System</Eyebrow>
+        <Eyebrow>The Aureum System</Eyebrow>
         <h2>
           Better development starts with <em>integrated thinking.</em>
         </h2>
@@ -241,7 +241,7 @@ export function LifecycleStory() {
     <section ref={root} className="lifecycle">
       <div className="lifecycle-top">
         <div>
-          <Eyebrow>02 / Development Perspective</Eyebrow>
+          <Eyebrow>Development Perspective</Eyebrow>
           <h2>
             Development looks different when you see the <em>whole picture.</em>
           </h2>
@@ -258,7 +258,6 @@ export function LifecycleStory() {
               } as React.CSSProperties
             }
           />
-          <b>0{active + 1} / 06</b>
         </div>
       </div>
       <div className="lifecycle-mobile-progress" aria-hidden="true">
@@ -267,7 +266,7 @@ export function LifecycleStory() {
             <i className={index <= active ? "active" : ""} key={n} />
           ))}
         </div>
-        <span>0{active + 1} / 06</span>
+        <span>Development phases</span>
       </div>
       <div ref={track} className="lifecycle-track">
         {phases.map(([n, title, body], index) => (
@@ -276,7 +275,7 @@ export function LifecycleStory() {
               <span>{n}</span>
               <i style={{ transform: `rotate(${index * 60}deg)` }} />
             </div>
-            <small>Phase {n}</small>
+            <small>Development phase {n}</small>
             <h3>{title}</h3>
             <p>{body}</p>
           </article>
@@ -313,7 +312,7 @@ export function EngagementModels() {
   return (
     <section ref={root} className="engagement section">
       <div className="engagement-heading">
-        <Eyebrow>03 / How We Partner</Eyebrow>
+        <Eyebrow>How We Partner</Eyebrow>
         <h2>
           The right development approach is never predefined.{" "}
           <em>The opportunity shapes the way we develop.</em>
@@ -328,7 +327,6 @@ export function EngagementModels() {
             onFocus={() => setActive(index)}
           >
             <div className="engagement-index">
-              <span>{model.n}</span>
               <i />
             </div>
             <div className="engagement-panel-copy">

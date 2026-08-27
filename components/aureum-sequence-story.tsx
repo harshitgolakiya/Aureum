@@ -280,11 +280,10 @@ export function AureumSequenceStory() {
           <span className="aureum-sequence-visual-label">Opportunity → Asset</span>
         </div>
         <div className="aureum-sequence-copy">
-          <Eyebrow>01 / The Aureum System</Eyebrow>
+          <Eyebrow>From Opportunity to Asset</Eyebrow>
           <div className="aureum-sequence-stage-stack" aria-live="polite">
             {pillars.map((pillar, index) => (
               <article className={activeStage === index ? "is-active" : ""} aria-hidden={activeStage !== index} key={pillar.n}>
-                <small>{pillar.n} / 03</small>
                 <h2>{pillar.title}</h2>
                 <p>{pillar.body}</p>
               </article>

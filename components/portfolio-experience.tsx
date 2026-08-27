@@ -204,11 +204,10 @@ export function CaseStudyExperience({ project, projects }: { project: Project; p
           {chapters.map(([n, title, body], chapterIndex) => (
             <article id={`chapter-${n}`} className="case-chapter" key={n}>
               <div className={`case-chapter-visual visual-${chapterIndex + 1}`}>
-                <span>{n}</span>
                 <i />
                 <i />
               </div>
-              <small>{n} / 04</small>
+              <small>Development chapter</small>
               <h2>{title}</h2>
               <p>{body}</p>
             </article>

@@ -40,15 +40,10 @@
 }
 .engagement-index {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   position: relative;
   z-index: 2;
-}
-.engagement-index span {
-  font-size: 0.65rem;
-  color: var(--gold);
-  letter-spacing: 0.12em;
 }
 .engagement-index i {
   width: 40px;

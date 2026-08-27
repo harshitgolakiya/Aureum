@@ -899,13 +899,40 @@ footer:before,
 }
 
 /* Public typography hierarchy: display, section, supporting and editorial titles. */
+:root {
+  --type-display-title: clamp(4.2rem, 6.8vw, 8rem);
+  --type-page-title: clamp(3.25rem, 6vw, 7rem);
+  --type-section-title: clamp(2.5rem, 4.4vw, 5rem);
+  --type-supporting-title: clamp(2.4rem, 3.8vw, 4.5rem);
+  --type-editorial-title: clamp(2rem, 3vw, 3.5rem);
+  --type-section-label: 0.65rem;
+}
+
+/* Keep every public section label on one typographic standard. */
+p.eyebrow {
+  align-items: center;
+  display: flex;
+  font-size: var(--type-section-label);
+  font-weight: 700;
+  gap: 0.7rem;
+  letter-spacing: 0.16em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+p.eyebrow > span:first-child {
+  flex: 0 0 32px;
+  height: 1px;
+  width: 32px;
+}
+
 .hero h1 {
-  font-size: clamp(4.2rem, 6.8vw, 8rem);
+  font-size: var(--type-display-title);
 }
 
 :is(.page-hero, .contact-hero, .case-hero, .article-header) h1,
 .status-copy h1 {
-  font-size: clamp(3.25rem, 6vw, 7rem);
+  font-size: var(--type-page-title);
 }
 
 :is(
@@ -928,28 +955,37 @@ footer:before,
   .office
 ) h2,
 .collective-statement,
-body .system-story .system-copy h2 {
-  font-size: clamp(2.5rem, 4.4vw, 5rem);
+body .system-story .system-copy h2,
+.aureum-sequence-stage-stack h2 {
+  font-size: var(--type-section-title);
 }
 
 :is(.next-insight, .confirmation, .bio-overlay) h2,
 .connect h2,
 .connect.connect-compact h2 {
-  font-size: clamp(2.4rem, 3.8vw, 4.5rem);
+  font-size: var(--type-supporting-title);
 }
 
 :is(.legal-copy, .article-content, .portfolio-editorial-grid) h2 {
-  font-size: clamp(2rem, 3vw, 3.5rem);
+  font-size: var(--type-editorial-title);
 }
 
 @media (max-width: 900px) {
+  :root {
+    --type-display-title: clamp(3.15rem, 12vw, 4.75rem);
+    --type-page-title: clamp(2.85rem, 10vw, 3.75rem);
+    --type-section-title: clamp(2.25rem, 8vw, 3.25rem);
+    --type-supporting-title: clamp(2.2rem, 7.4vw, 3rem);
+    --type-editorial-title: clamp(1.85rem, 6.5vw, 2.65rem);
+  }
+
   .hero h1 {
-    font-size: clamp(3.15rem, 12vw, 4.75rem);
+    font-size: var(--type-display-title);
   }
 
   :is(.page-hero, .contact-hero, .case-hero, .article-header) h1,
   .status-copy h1 {
-    font-size: clamp(2.85rem, 10vw, 3.75rem);
+    font-size: var(--type-page-title);
   }
 
   :is(
@@ -972,29 +1008,36 @@ body .system-story .system-copy h2 {
     .office
   ) h2,
   .collective-statement,
-  body .system-story .system-copy h2 {
-    font-size: clamp(2.25rem, 8vw, 3.25rem);
+  body .system-story .system-copy h2,
+  .aureum-sequence-stage-stack h2 {
+    font-size: var(--type-section-title);
   }
 
   :is(.next-insight, .confirmation, .bio-overlay) h2,
   .connect h2,
   .connect.connect-compact h2 {
-    font-size: clamp(2.2rem, 7.4vw, 3rem);
+    font-size: var(--type-supporting-title);
   }
 
   :is(.legal-copy, .article-content, .portfolio-editorial-grid) h2 {
-    font-size: clamp(1.85rem, 6.5vw, 2.65rem);
+    font-size: var(--type-editorial-title);
   }
 }
 
 @media (max-width: 600px) {
+  :root {
+    --type-display-title: clamp(3rem, 12.5vw, 3.75rem);
+    --type-page-title: clamp(2.65rem, 10.5vw, 3.35rem);
+    --type-section-title: clamp(2.15rem, 8.5vw, 2.85rem);
+  }
+
   .hero h1 {
-    font-size: clamp(3rem, 12.5vw, 3.75rem);
+    font-size: var(--type-display-title);
   }
 
   :is(.page-hero, .contact-hero, .case-hero, .article-header) h1,
   .status-copy h1 {
-    font-size: clamp(2.65rem, 10.5vw, 3.35rem);
+    font-size: var(--type-page-title);
   }
 
   :is(
@@ -1017,7 +1060,8 @@ body .system-story .system-copy h2 {
     .office
   ) h2,
   .collective-statement,
-  body .system-story .system-copy h2 {
-    font-size: clamp(2.15rem, 8.5vw, 2.85rem);
+  body .system-story .system-copy h2,
+  .aureum-sequence-stage-stack h2 {
+    font-size: var(--type-section-title);
   }
 }

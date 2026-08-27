@@ -38,7 +38,7 @@ export default async function Home() {
       <EngagementModels />
       <section className="work section">
         <div className="section-heading">
-          <Eyebrow>04 / Selected Developments</Eyebrow>
+          <Eyebrow>Selected Developments</Eyebrow>
           <h2>
             Every development reflects the <em>thinking behind it...</em>
           </h2>
@@ -73,7 +73,7 @@ export default async function Home() {
       </section>
       <section className="insights section">
         <div className="section-heading">
-          <Eyebrow>05 / Intelligence</Eyebrow>
+          <Eyebrow>Intelligence</Eyebrow>
           <h2>
             Insight creates advantage <em>before action.</em>
           </h2>

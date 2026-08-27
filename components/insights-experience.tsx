@@ -77,7 +77,6 @@ export function InsightsLanding({ articles }: { articles: InsightArticle[] }) {
       <section className="featured-insight">
         <div className="featured-insight-media" data-cursor="Explore">
           <Media label={`insight-featured-0${featured + 1}.webp`} src={article.coverImage} alt={insightPresentation(article, featured).title} />
-          <div className="featured-index">{String(featured + 1).padStart(2, "0")} / {String(articles.length).padStart(2, "0")}</div>
         </div>
         <div className="featured-insight-copy">
           <small>Featured / {article.category}</small>
