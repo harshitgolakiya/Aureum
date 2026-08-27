@@ -670,3 +670,251 @@
     display: none;
   }
 }
+
+/* Scroll-scrubbed Aureum System sequence. The existing system story remains below it. */
+.aureum-sequence-story {
+  background: var(--cream);
+  min-height: 400vh;
+  position: relative;
+}
+.aureum-sequence-sticky {
+  align-items: center;
+  display: grid;
+  gap: clamp(2.5rem, 5vw, 6.5rem);
+  grid-template-columns: minmax(0, 1.5fr) minmax(330px, 0.85fr);
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  padding: calc(92px + clamp(1rem, 2.4vw, 2.5rem)) var(--page-inset) clamp(2rem, 4vw, 4.5rem);
+  position: sticky;
+  top: 0;
+}
+.aureum-sequence-visual {
+  aspect-ratio: 16 / 9;
+  background: #c9c7c3;
+  border-bottom: 1px solid rgba(16, 26, 43, 0.24);
+  border-top: 1px solid rgba(16, 26, 43, 0.24);
+  min-width: 0;
+  overflow: hidden;
+  position: relative;
+}
+.aureum-sequence-visual canvas,
+.aureum-sequence-poster {
+  height: 100%;
+  inset: 0;
+  object-fit: cover;
+  position: absolute;
+  width: 100%;
+}
+.aureum-sequence-visual canvas {
+  display: block;
+  z-index: 1;
+}
+.aureum-sequence-poster {
+  opacity: 1;
+  transition: opacity 0.35s ease;
+  z-index: 2;
+}
+.aureum-sequence-visual.is-ready .aureum-sequence-poster {
+  opacity: 0;
+}
+.aureum-sequence-shade {
+  background: linear-gradient(180deg, rgba(16, 26, 43, 0.02), transparent 60%, rgba(16, 26, 43, 0.16));
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 3;
+}
+.aureum-sequence-visual-label {
+  bottom: 1rem;
+  color: rgba(251, 250, 246, 0.9);
+  font-size: 0.55rem;
+  font-weight: 700;
+  left: 1.15rem;
+  letter-spacing: 0.14em;
+  position: absolute;
+  text-transform: uppercase;
+  z-index: 4;
+}
+.aureum-sequence-copy {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding-top: clamp(1rem, 5vh, 4rem);
+}
+.aureum-sequence-copy > .eyebrow {
+  margin-bottom: clamp(2rem, 5vh, 4rem);
+}
+.aureum-sequence-stage-stack {
+  min-height: clamp(300px, 40vh, 440px);
+  position: relative;
+}
+.aureum-sequence-stage-stack article {
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  transform: translateY(24px);
+  transition: opacity 0.55s var(--ease), transform 0.7s var(--ease);
+  visibility: hidden;
+  width: 100%;
+}
+.aureum-sequence-stage-stack article.is-active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  visibility: visible;
+}
+.aureum-sequence-stage-stack article:before {
+  background: linear-gradient(90deg, var(--gold), rgba(183, 154, 88, 0.12));
+  content: "";
+  display: block;
+  height: 1px;
+  margin-bottom: clamp(1.5rem, 3vh, 2.5rem);
+  width: 100%;
+}
+.aureum-sequence-stage-stack small {
+  color: var(--gold);
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  margin-bottom: 1.7rem;
+}
+.aureum-sequence-stage-stack h2 {
+  font-size: clamp(2.7rem, 4.2vw, 5.4rem);
+  letter-spacing: -0.055em;
+  line-height: 0.96;
+  margin: 0 0 clamp(1.5rem, 3vh, 2.5rem);
+  max-width: 760px;
+}
+.aureum-sequence-stage-stack p {
+  color: var(--dusty);
+  font-size: clamp(0.83rem, 1vw, 1rem);
+  line-height: 1.8;
+  margin: 0;
+  max-width: 650px;
+}
+.aureum-sequence-progress {
+  border-top: 1px solid var(--line);
+  margin-top: auto;
+  padding-top: 1rem;
+  position: relative;
+}
+.aureum-sequence-progress > span {
+  --sequence-progress: 0%;
+  background: var(--gold);
+  height: 1px;
+  left: 0;
+  position: absolute;
+  top: -1px;
+  width: var(--sequence-progress);
+}
+.aureum-sequence-progress > div {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+.aureum-sequence-progress b {
+  font: 400 1.65rem/1 Georgia, serif;
+}
+.aureum-sequence-progress small {
+  color: var(--dusty);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1100px) {
+  .aureum-sequence-sticky {
+    gap: 3rem;
+    grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+  }
+  .aureum-sequence-stage-stack h2 {
+    font-size: clamp(2.6rem, 4.6vw, 4rem);
+  }
+}
+
+@media (max-width: 800px) {
+  .aureum-sequence-story {
+    min-height: 340vh;
+  }
+  .aureum-sequence-sticky {
+    align-content: start;
+    display: grid;
+    gap: clamp(1.6rem, 4vh, 2.6rem);
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    padding: calc(72px + 1rem) var(--pad) 1.5rem;
+  }
+  .aureum-sequence-visual {
+    align-self: start;
+    width: 100%;
+  }
+  .aureum-sequence-copy {
+    justify-content: start;
+    padding-top: 0;
+  }
+  .aureum-sequence-copy > .eyebrow {
+    margin-bottom: 1.35rem;
+  }
+  .aureum-sequence-stage-stack {
+    min-height: min(35vh, 300px);
+  }
+  .aureum-sequence-stage-stack article:before {
+    margin-bottom: 1rem;
+  }
+  .aureum-sequence-stage-stack small {
+    margin-bottom: 0.8rem;
+  }
+  .aureum-sequence-stage-stack h2 {
+    font-size: clamp(2.1rem, 9vw, 3.5rem);
+    margin-bottom: 1rem;
+  }
+  .aureum-sequence-stage-stack p {
+    font-size: 0.78rem;
+    line-height: 1.65;
+  }
+  .aureum-sequence-progress {
+    margin-top: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .aureum-sequence-sticky {
+    gap: 1.3rem;
+    padding-inline: 0;
+  }
+  .aureum-sequence-visual {
+    border-top: 0;
+  }
+  .aureum-sequence-copy {
+    padding-inline: var(--pad);
+  }
+  .aureum-sequence-stage-stack {
+    min-height: min(38vh, 310px);
+  }
+  .aureum-sequence-stage-stack p {
+    max-width: 42ch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aureum-sequence-story {
+    min-height: auto;
+  }
+  .aureum-sequence-sticky {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100svh;
+    position: relative;
+  }
+  .aureum-sequence-poster,
+  .aureum-sequence-stage-stack article {
+    transition: none;
+  }
+}

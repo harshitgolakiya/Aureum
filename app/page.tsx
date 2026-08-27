@@ -12,6 +12,7 @@ import {
   HomepageReveals,
   LifecycleStory,
 } from "@/components/home-experience";
+import { AureumSequenceStory } from "@/components/aureum-sequence-story";
 import type { Metadata } from "next";
 import { getCmsContent } from "@/lib/cms/content";
 import { getPosts, getProjects } from "@/lib/cms/collections";
@@ -23,6 +24,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
+const showLegacySystemStory = false;
+
 export default async function Home() {
   const [heroContent, projects, insightArticles] = await Promise.all([
     getCmsContent("home.hero"),
@@ -33,7 +36,8 @@ export default async function Home() {
     <main>
       <HomeHero content={heroContent} />
       <AureumSystemIntroduction />
-      <AureumSystemStory />
+      <AureumSequenceStory />
+      {showLegacySystemStory && <AureumSystemStory />}
       <LifecycleStory />
       <EngagementModels />
       <section className="work section">
