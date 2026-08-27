@@ -671,7 +671,7 @@
   }
 }
 
-/* Scroll-scrubbed Aureum System sequence. The existing system story remains below it. */
+/* Scroll-scrubbed Aureum System sequence. */
 .aureum-sequence-story {
   background: var(--cream);
   min-height: 400vh;

@@ -207,7 +207,7 @@ export function AureumSequenceStory() {
   }, []);
 
   return (
-    <section ref={root} id="system-sequence" className="aureum-sequence-story" aria-label="The Aureum System development journey">
+    <section ref={root} id="system" className="aureum-sequence-story" aria-label="The Aureum System development journey">
       <div className="aureum-sequence-sticky">
         <div ref={visual} className={`aureum-sequence-visual${canvasReady ? " is-ready" : ""}`} aria-hidden="true">
           <Image className="aureum-sequence-poster" src={POSTER} alt="" fill sizes="(max-width: 900px) 100vw, 62vw" />

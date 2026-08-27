@@ -6,7 +6,6 @@ import {
 } from "@/data/site";
 import {
   AureumSystemIntroduction,
-  AureumSystemStory,
   EngagementModels,
   HomeHero,
   HomepageReveals,
@@ -24,8 +23,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-const showLegacySystemStory = false;
-
 export default async function Home() {
   const [heroContent, projects, insightArticles] = await Promise.all([
     getCmsContent("home.hero"),
@@ -37,7 +34,6 @@ export default async function Home() {
       <HomeHero content={heroContent} />
       <AureumSystemIntroduction />
       <AureumSequenceStory />
-      {showLegacySystemStory && <AureumSystemStory />}
       <LifecycleStory />
       <EngagementModels />
       <section className="work section">

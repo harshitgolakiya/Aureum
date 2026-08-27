@@ -4,7 +4,6 @@ import "./globals.css";
 import "./pages.css";
 import "./interactions.css";
 import "./content-completion.css";
-import "./system-masterplan.css";
 import "./engagement.css";
 import "./global-interactions.css";
 import "./secondary-experiences.css";
