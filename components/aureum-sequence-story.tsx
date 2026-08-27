@@ -9,7 +9,7 @@ import { Eyebrow } from "./ui";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const FRAME_COUNT = 361;
+const FRAME_COUNT = 151;
 const LAST_FRAME = FRAME_COUNT - 1;
 const FRAME_PREFIX = "/aureum/hf_20260827_062227_82de69e1-52ae-4c2d-ba05-c7399e2fdfc7_";
 const POSTER = `${FRAME_PREFIX}00000.webp`;
