@@ -674,7 +674,7 @@
 /* Scroll-scrubbed Aureum System sequence. */
 .aureum-sequence-story {
   background: var(--cream);
-  min-height: 400vh;
+  min-height: 450vh;
   position: relative;
 }
 .aureum-sequence-sticky {
@@ -841,7 +841,7 @@
 
 @media (max-width: 800px) {
   .aureum-sequence-story {
-    min-height: 340vh;
+    min-height: 380vh;
   }
   .aureum-sequence-sticky {
     align-content: start;

@@ -13,7 +13,6 @@ const FRAME_COUNT = 151;
 const LAST_FRAME = FRAME_COUNT - 1;
 const FRAME_WIDTH = 1280;
 const FRAME_HEIGHT = 720;
-const CACHE_LIMIT = 18;
 const FRAME_PREFIX = "/aureum/hf_20260827_062227_82de69e1-52ae-4c2d-ba05-c7399e2fdfc7_";
 const POSTER = `${FRAME_PREFIX}00000.webp`;
 const stageNotes = [
@@ -30,6 +29,14 @@ function stageForProgress(progress: number) {
   if (progress < 0.36) return 0;
   if (progress < 0.7) return 1;
   return 2;
+}
+
+function cacheLimitForDevice() {
+  const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8;
+  let limit = window.innerWidth >= 1200 ? 52 : window.innerWidth >= 700 ? 34 : 18;
+  if (memory <= 4) limit = Math.min(limit, 28);
+  if (memory <= 2) limit = Math.min(limit, 14);
+  return limit;
 }
 
 type DecodedFrame = {
@@ -58,32 +65,39 @@ export function AureumSequenceStory() {
 
     let alive = true;
     let desiredFrame = 0;
+    let targetFrame = 0;
+    let easedFrame = 0;
     let renderedFrame = -1;
-    let loadingTarget = false;
     let direction = 1;
-    let neighborTimer = 0;
+    let animationFrame = 0;
+    let warmGeneration = 0;
+    let warmFocus = -100;
     let didRevealCanvas = false;
     let currentStage = 0;
+    let prefetchStarted = false;
+    const cacheLimit = cacheLimitForDevice();
     const requestController = new AbortController();
+    const compressedFrames = new Map<number, Blob>();
+    const fetching = new Map<number, Promise<Blob>>();
     const images = new Map<number, DecodedFrame>();
     const pending = new Map<number, Promise<DecodedFrame>>();
 
     const trimCache = (focus: number) => {
-      if (images.size <= CACHE_LIMIT) return;
+      if (images.size <= cacheLimit) return;
       [...images.keys()]
         .sort((left, right) => Math.abs(right - focus) - Math.abs(left - focus))
-        .slice(0, images.size - CACHE_LIMIT)
+        .slice(0, images.size - cacheLimit)
         .forEach((index) => {
           images.get(index)?.release?.();
           images.delete(index);
         });
     };
 
-    const loadFrame = (index: number) => {
+    const loadCompressedFrame = (index: number) => {
       const bounded = Math.min(Math.max(index, 0), LAST_FRAME);
-      const cached = images.get(bounded);
+      const cached = compressedFrames.get(bounded);
       if (cached) return Promise.resolve(cached);
-      const existing = pending.get(bounded);
+      const existing = fetching.get(bounded);
       if (existing) return existing;
       const request = (async () => {
         const response = await fetch(frameSource(bounded), {
@@ -93,8 +107,22 @@ export function AureumSequenceStory() {
         if (!response.ok) {
           throw new Error(`Unable to load Aureum sequence frame ${bounded}.`);
         }
-
         const blob = await response.blob();
+        if (alive) compressedFrames.set(bounded, blob);
+        return blob;
+      })().finally(() => fetching.delete(bounded));
+      fetching.set(bounded, request);
+      return request;
+    };
+
+    const loadFrame = (index: number) => {
+      const bounded = Math.min(Math.max(index, 0), LAST_FRAME);
+      const cached = images.get(bounded);
+      if (cached) return Promise.resolve(cached);
+      const existing = pending.get(bounded);
+      if (existing) return existing;
+      const request = (async () => {
+        const blob = await loadCompressedFrame(bounded);
         let frame: DecodedFrame;
         if (typeof window.createImageBitmap === "function") {
           const bitmap = await window.createImageBitmap(blob);
@@ -133,6 +161,35 @@ export function AureumSequenceStory() {
       return request;
     };
 
+    const prefetchOrder = () => {
+      const order: number[] = [];
+      const seen = new Set<number>();
+      const add = (index: number) => {
+        if (index >= 0 && index <= LAST_FRAME && !seen.has(index)) {
+          seen.add(index);
+          order.push(index);
+        }
+      };
+      add(0);
+      for (let index = 10; index <= LAST_FRAME; index += 10) add(index);
+      add(LAST_FRAME);
+      for (let index = 0; index <= LAST_FRAME; index += 1) add(index);
+      return order;
+    };
+
+    const startCompressedPrefetch = () => {
+      if (prefetchStarted) return;
+      prefetchStarted = true;
+      const queue = prefetchOrder();
+      const worker = async () => {
+        while (alive && queue.length) {
+          const index = queue.shift();
+          if (index !== undefined) await loadCompressedFrame(index).catch(() => undefined);
+        }
+      };
+      void Promise.all(Array.from({ length: 6 }, worker));
+    };
+
     const draw = (image: DecodedFrame, index: number) => {
       const width = canvasNode.width;
       const height = canvasNode.height;
@@ -148,39 +205,84 @@ export function AureumSequenceStory() {
       }
     };
 
-    const preloadNeighbors = (focus: number) => {
-      window.clearTimeout(neighborTimer);
-      neighborTimer = window.setTimeout(() => {
-        const offsets = direction > 0
-          ? [1, 2, 3, -1]
-          : [-1, -2, -3, 1];
-        void (async () => {
-          for (const offset of offsets) {
-            if (!alive || focus !== desiredFrame) break;
-            const index = focus + offset;
-            if (index >= 0 && index <= LAST_FRAME) {
-              await loadFrame(index).catch(() => undefined);
-            }
-          }
-          trimCache(focus);
-        })();
-      }, 80);
+    const waitForDecodeSlot = () => new Promise<void>((resolve) => {
+      if ("requestIdleCallback" in window) {
+        window.requestIdleCallback(() => resolve(), { timeout: 120 });
+      } else {
+        setTimeout(resolve, 16);
+      }
+    });
+
+    const warmDecodedWindow = (focus: number) => {
+      if (Math.abs(focus - warmFocus) < 4) return;
+      warmFocus = focus;
+      const generation = ++warmGeneration;
+      const offsets: number[] = [];
+      for (let distance = 1; offsets.length < cacheLimit - 1; distance += 1) {
+        const forward = direction > 0 ? focus + distance : focus - distance;
+        const backward = direction > 0 ? focus - distance : focus + distance;
+        if (forward >= 0 && forward <= LAST_FRAME) offsets.push(forward);
+        if (offsets.length < cacheLimit - 1 && backward >= 0 && backward <= LAST_FRAME) offsets.push(backward);
+        if (forward < 0 && backward < 0) break;
+        if (forward > LAST_FRAME && backward > LAST_FRAME) break;
+      }
+      void (async () => {
+        for (let position = 0; position < offsets.length; position += 1) {
+          if (!alive || generation !== warmGeneration) break;
+          if (position >= 6) await waitForDecodeSlot();
+          if (!alive || generation !== warmGeneration) break;
+          await loadFrame(offsets[position]).catch(() => undefined);
+          trimCache(desiredFrame);
+        }
+      })();
     };
 
-    const renderDesiredFrame = async () => {
-      if (loadingTarget || !alive) return;
-      loadingTarget = true;
-      const target = desiredFrame;
-      try {
-        const image = await loadFrame(target);
-        if (alive && target === desiredFrame) draw(image, target);
-      } catch {
-        // The poster remains visible if an individual frame cannot be decoded.
-      } finally {
-        loadingTarget = false;
-        if (alive && target !== desiredFrame) void renderDesiredFrame();
-        else if (alive) preloadNeighbors(target);
+    const closestDecodedFrame = (focus: number) => {
+      let closestIndex = -1;
+      let closestDistance = Number.POSITIVE_INFINITY;
+      images.forEach((_, index) => {
+        const distance = Math.abs(index - focus);
+        if (distance < closestDistance) {
+          closestIndex = index;
+          closestDistance = distance;
+        }
+      });
+      return closestIndex;
+    };
+
+    const requestDraw = (index: number) => {
+      const cached = images.get(index);
+      if (cached) {
+        if (renderedFrame !== index) draw(cached, index);
+      } else {
+        const closest = closestDecodedFrame(index);
+        const fallback = images.get(closest);
+        if (fallback && renderedFrame !== closest) draw(fallback, closest);
+        void loadFrame(index).then((frame) => {
+          if (alive && Math.abs(index - Math.round(easedFrame)) <= 1) draw(frame, index);
+        }).catch(() => undefined);
       }
+      warmDecodedWindow(index);
+    };
+
+    const renderEasedFrame = () => {
+      animationFrame = 0;
+      if (!alive) return;
+      const distance = targetFrame - easedFrame;
+      easedFrame = Math.abs(distance) < 0.08 ? targetFrame : easedFrame + distance * 0.24;
+      const nextFrame = Math.round(easedFrame);
+      if (nextFrame !== desiredFrame || renderedFrame < 0) {
+        direction = nextFrame >= desiredFrame ? 1 : -1;
+        desiredFrame = nextFrame;
+        requestDraw(nextFrame);
+      }
+      if (Math.abs(targetFrame - easedFrame) >= 0.08) {
+        animationFrame = window.requestAnimationFrame(renderEasedFrame);
+      }
+    };
+
+    const scheduleRender = () => {
+      if (!animationFrame) animationFrame = window.requestAnimationFrame(renderEasedFrame);
     };
 
     const resizeCanvas = () => {
@@ -210,28 +312,34 @@ export function AureumSequenceStory() {
         if (alive) setActiveStage(2);
       }, 0);
       progressBar.current?.style.setProperty("--sequence-progress", "100%");
-      void renderDesiredFrame();
+      void loadFrame(LAST_FRAME).then((image) => draw(image, LAST_FRAME)).catch(() => undefined);
       return () => {
         alive = false;
         requestController.abort();
         window.clearTimeout(reducedStageTimer);
         resizeObserver.disconnect();
-        window.clearTimeout(neighborTimer);
+        window.cancelAnimationFrame(animationFrame);
         images.forEach((image) => image.release?.());
         images.clear();
         pending.clear();
+        compressedFrames.clear();
+        fetching.clear();
       };
     }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
+        startCompressedPrefetch();
         void loadFrame(0).then((image) => {
-          if (alive && renderedFrame < 0) draw(image, 0);
+          if (alive && renderedFrame < 0) {
+            draw(image, 0);
+            warmDecodedWindow(0);
+          }
         }).catch(() => undefined);
         observer.disconnect();
       },
-      { rootMargin: "50% 0px" },
+      { rootMargin: "150% 0px" },
     );
     observer.observe(section);
 
@@ -241,12 +349,10 @@ export function AureumSequenceStory() {
         start: "top top",
         end: "bottom bottom",
         onUpdate: (self) => {
-          const nextFrame = Math.round(self.progress * LAST_FRAME);
-          if (nextFrame !== desiredFrame) {
-            direction = nextFrame > desiredFrame ? 1 : -1;
-            desiredFrame = nextFrame;
-            void renderDesiredFrame();
-          }
+          const nextTarget = self.progress * LAST_FRAME;
+          direction = nextTarget >= targetFrame ? 1 : -1;
+          targetFrame = nextTarget;
+          scheduleRender();
           const nextStage = stageForProgress(self.progress);
           if (nextStage !== currentStage) {
             currentStage = nextStage;
@@ -262,11 +368,13 @@ export function AureumSequenceStory() {
       requestController.abort();
       observer.disconnect();
       resizeObserver.disconnect();
-      window.clearTimeout(neighborTimer);
+      window.cancelAnimationFrame(animationFrame);
       gsapContext.revert();
       images.forEach((image) => image.release?.());
       images.clear();
       pending.clear();
+      compressedFrames.clear();
+      fetching.clear();
     };
   }, []);
 
