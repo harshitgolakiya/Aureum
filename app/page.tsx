@@ -43,10 +43,6 @@ export default async function Home() {
             Every development reflects the <em>thinking behind it...</em>
           </h2>
           <p>
-            From the opportunity identified to the decisions that shape its
-            performance.
-            <br />
-            <br />
             Explore the developments that demonstrate Aureum&apos;s approach in
             practice.
           </p>
@@ -95,7 +91,7 @@ export default async function Home() {
         </div>
         <div className="insights-cta">
           <ArrowLink href="/insights" dark>
-            View All Insights
+            View All News
           </ArrowLink>
         </div>
       </section>

@@ -14,9 +14,8 @@ export default function Page() {
     <main>
       <PageHero
         identity="pathways"
-        eyebrow="How We Partner"
+        eyebrow="What We Do"
         title="Different opportunities. One way of thinking."
-        copy="Every engagement is shaped around the opportunity and its objectives, while remaining grounded in the same disciplined approach to development."
       />
       <PartnerJourney />
       <PartnerConvergence />

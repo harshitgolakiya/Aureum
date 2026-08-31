@@ -107,41 +107,23 @@ export function HomeHero({ content }: { content: HomeHeroContent }) {
             <Eyebrow>{content.eyebrow}</Eyebrow>
             <p>{content.kicker}</p>
           </div>
-          <h1
-            aria-label={`${content.titleLineOne} ${content.titleLineTwo} ${content.titleEmphasis}`}
-          >
-            <span className="hero-line">
-              <span data-hero-line>{content.titleLineOne}</span>
-            </span>
-            <span className="hero-line">
-              <span data-hero-line>
-                {content.titleLineTwo} <em>{content.titleEmphasis}</em>
+          <div className="hero-statement">
+            <h1
+              aria-label={`${content.titleLineOne} ${content.titleLineTwo} ${content.titleEmphasis}`}
+            >
+              <span className="hero-line">
+                <span data-hero-line>{content.titleLineOne}</span>
               </span>
-            </span>
-          </h1>
-        </div>
-        <div className="hero-dock" data-hero-follow>
-          <div className="hero-summary">
-            <small>Our perspective</small>
-            <p>{content.summary}</p>
+              <span className="hero-line">
+                <span data-hero-line>
+                  {content.titleLineTwo} <em>{content.titleEmphasis}</em>
+                </span>
+              </span>
+            </h1>
+            <div className="hero-actions" data-hero-follow>
+              <ArrowLink href="#system">Explore The Aureum System</ArrowLink>
+            </div>
           </div>
-          <div className="hero-actions">
-            <ArrowLink href="#system">Explore The Aureum System</ArrowLink>
-            <Link href="/contact" className="text-link">
-              Start a Conversation ↗
-            </Link>
-          </div>
-          <ol className="hero-principles" aria-label="The Aureum approach">
-            <li>
-              <span>01</span> Identify
-            </li>
-            <li>
-              <span>02</span> Shape
-            </li>
-            <li>
-              <span>03</span> Deliver
-            </li>
-          </ol>
         </div>
       </div>
       <div className="scroll-cue" data-hero-follow>
@@ -170,7 +152,7 @@ export function AureumSystemIntroduction() {
           strengthens the next.
         </p>
         <ArrowLink href="/how-we-partner" dark>
-          Discover How We Partner
+          Discover What We Do
         </ArrowLink>
       </div>
     </section>
@@ -331,7 +313,14 @@ export function EngagementModels() {
             </div>
             <div className="engagement-panel-copy">
               <small>{["Originate", "Develop", "Align"][index]}</small>
-              <h3>{model.title}</h3>
+              <h3>
+                {model.title}
+                {model.qualifier && (
+                  <span className="engagement-title-qualifier">
+                    ({model.qualifier})
+                  </span>
+                )}
+              </h3>
               <strong>{model.lead}</strong>
               <p>{model.body}</p>
               <Link href="/how-we-partner">

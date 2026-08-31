@@ -74,6 +74,10 @@
   letter-spacing: -0.04em;
   margin: 1rem 0;
 }
+.engagement-title-qualifier {
+  display: block;
+  white-space: nowrap;
+}
 .engagement-panel-copy strong {
   font-family: Georgia, serif;
   font-style: italic;

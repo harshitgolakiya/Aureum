@@ -254,8 +254,6 @@ const partnerships = [
     n: "01",
     title: "Predictive Development",
     headline: "Opportunity is where development begins.",
-    overview:
-      "Aureum identifies and evaluates industrial opportunities through market intelligence, commercial discipline and development insight and shapes them into assets positioned for long-term performance.",
     how: "We identify and evaluate opportunities through market intelligence, commercial assessment and development insight and bring the right conditions together to determine what should be developed and why.",
     who: "For those seeking to unlock an industrial opportunity as an occupier, landowner, investor or strategic partner.",
     cta: "Discuss an Opportunity",
@@ -266,8 +264,6 @@ const partnerships = [
     n: "02",
     title: "Development Management",
     headline: "Developed around your requirements.",
-    overview:
-      "From site and strategy through to delivery and operational readiness, Aureum brings the development together around the requirements of the business it is designed to serve.",
     how: "We align site, commercial, design, engineering and delivery decisions around the occupier's operational requirements, creating a development purpose-built for how the business needs to perform.",
     who: "For occupiers and businesses seeking industrial space developed around their operational requirements, expansion plans and long-term needs.",
     cta: "Explore Development Management",
@@ -278,11 +274,9 @@ const partnerships = [
     n: "03",
     title: "Strategic Development Partnerships",
     headline: "The right partners shape the right opportunity.",
-    overview:
-      "Aureum brings complementary interests together around industrial opportunities, aligning land, capital, occupier requirements and development expertise to create shared long-term value.",
     how: "We structure partnerships around the strengths and objectives of each party, creating a clear alignment between the opportunity, the development model and the interests invested in its success.",
     who: "For investors, landowners, occupiers and strategic partners seeking to unlock industrial development opportunities together.",
-    cta: "Discuss a Partnership",
+    cta: "Discuss a Development Opportunity",
     image: "/how-we-3.webp",
     visualCue: "Interests aligned",
   },
@@ -363,7 +357,6 @@ export function PartnerJourney() {
               {item.n} / {item.title}
             </Eyebrow>
             <h2>{item.headline}</h2>
-            <p className="large-copy">{item.overview}</p>
             <div className="partner-chapter-details">
               <section>
                 <small>How it works</small>

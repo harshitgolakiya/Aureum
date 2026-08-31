@@ -8,9 +8,9 @@ import type { FooterContent } from "@/lib/cms/schema";
 
 const links = [
   ["Who We Are", "/who-we-are"],
-  ["How We Partner", "/how-we-partner"],
+  ["What We Do", "/how-we-partner"],
   ["Portfolio", "/portfolio"],
-  ["Insights", "/insights"],
+  ["News", "/insights"],
   ["Contact", "/contact"],
 ];
 
@@ -65,6 +65,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mega, setMega] = useState<string | null>(null);
+  const [footerVisible, setFooterVisible] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
   const mobileMenu = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -105,11 +106,27 @@ export function Header() {
     addEventListener("keydown", close);
     return () => removeEventListener("keydown", close);
   }, [open]);
+  useEffect(() => {
+    const footer = document.querySelector<HTMLElement>("footer");
+    if (!footer) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      const visible = entry.isIntersecting;
+      setFooterVisible(visible);
+      if (visible) {
+        setOpen(false);
+        setMega(null);
+      }
+    });
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, []);
   if (pathname.startsWith("/admin")) return null;
   return (
     <header
-      className={`header ${scrolled ? "is-scrolled" : ""} ${usesLightHeader ? "on-light-hero" : ""} ${mega ? "mega-active" : ""}`}
+      className={`header ${scrolled ? "is-scrolled" : ""} ${usesLightHeader ? "on-light-hero" : ""} ${mega ? "mega-active" : ""} ${footerVisible ? "is-over-footer" : ""}`}
       onMouseLeave={() => setMega(null)}
+      aria-hidden={footerVisible || undefined}
+      inert={footerVisible}
     >
       <Link href="/" className="logo" aria-label="Aureum home">
         <Image

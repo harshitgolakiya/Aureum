@@ -92,7 +92,7 @@ export function PageHero({
 }: {
   eyebrow: string;
   title: string;
-  copy: string;
+  copy?: string;
   identity?: "perspective" | "pathways" | "portfolio" | "insights";
   image?: string;
 }) {
@@ -103,7 +103,7 @@ export function PageHero({
     insights: "/media/heroes/insights.webp",
   };
   return (
-    <section className={`page-hero page-hero-${identity}`}>
+    <section className={`page-hero page-hero-${identity}${copy ? "" : " page-hero-no-copy"}`}>
       <div className="page-hero-photo" aria-hidden="true">
         <Image
           src={image || heroImages[identity]}
@@ -125,7 +125,7 @@ export function PageHero({
       </div>
       <Eyebrow>{eyebrow}</Eyebrow>
       <h1>{title}</h1>
-      <p>{copy}</p>
+      {copy && <p>{copy}</p>}
       <span className="page-no">AUREUM / 360°</span>
     </section>
   );

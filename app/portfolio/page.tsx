@@ -24,9 +24,8 @@ export default async function Page() {
           Consistency is developed on <em>principles.</em>
         </h2>
         <p>
-          Different opportunities demand different responses, but the philosophy
-          never changes. The Aureum System ensures every development is guided
-          by the same standard of thinking.
+          The Aureum System ensures every development is guided by the same
+          standard of thinking.
         </p>
       </section>
       <Connect

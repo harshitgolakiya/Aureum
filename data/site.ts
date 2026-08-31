@@ -16,7 +16,7 @@ export const phases = [
   ],
   [
     "04",
-    "Governed Delivery",
+    "Flawless Delivery",
     "Disciplined execution keeps every decision aligned, every milestone accountable and the development true to its strategic intent.",
   ],
   [
@@ -44,27 +44,30 @@ export const pillars = [
   {
     n: "03",
     title: "Disciplined Execution",
-    body: "Governance-led delivery that ensures every milestone meets institutional standards of quality, compliance and long-term performance. We do not simply manage delivery. We govern it.",
+    body: "Governance-led delivery that ensures every milestone meets institutional standards of quality, compliance and long-term performance. We do not simply manage delivery. We own it.",
   },
 ];
 export const models = [
   {
     n: "01",
     title: "Predictive Development",
+    qualifier: "Built-to-lease",
     lead: "We originate the opportunity.",
     body: "Market intelligence identifies where demand is heading. Aureum turns that insight into industrial developments positioned for long-term performance.",
   },
   {
     n: "02",
-    title: "Development Management",
+    title: "Purpose-Built Development",
+    qualifier: "Built-to-suit",
     lead: "We develop around your requirements.",
-    body: "Aureum leads the development of industrial assets around specific occupier, commercial and operational requirements from land acquisition to planning and design through to delivery and operational readiness.",
+    body: "Aureum develops fully functional industrial and logistics operations facilities built around specific occupier operational requirements.",
   },
   {
     n: "03",
-    title: "Strategic Partnerships",
+    title: "Strategic Development Partnerships",
+    qualifier: "",
     lead: "We align the right partners.",
-    body: "We bring together land, occupier requirements and development expertise to connect capital to opportunities for shared long-term value.",
+    body: "We bring together land, occupier requirements and development expertise to connect capital to opportunities for long-term value.",
   },
 ];
 export type CmsWorkflowStatus = "draft" | "scheduled" | "published" | "unpublished" | "archived";

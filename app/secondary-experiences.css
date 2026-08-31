@@ -673,13 +673,13 @@
 }
 .partner-chapter h2 {
   font-size: clamp(3rem, 5vw, 6rem);
-  margin: 3rem 0;
+  margin: 3rem 0 2rem;
 }
 .partner-chapter-details {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
-  margin: 3rem 0;
+  margin: 0 0 3rem;
 }
 .partner-chapter-details small {
   color: var(--gold);
