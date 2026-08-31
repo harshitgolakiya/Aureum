@@ -173,7 +173,6 @@ export function AureumSequenceStory() {
       add(0);
       for (let index = 10; index <= LAST_FRAME; index += 10) add(index);
       add(LAST_FRAME);
-      for (let index = 0; index <= LAST_FRAME; index += 1) add(index);
       return order;
     };
 
@@ -187,7 +186,7 @@ export function AureumSequenceStory() {
           if (index !== undefined) await loadCompressedFrame(index).catch(() => undefined);
         }
       };
-      void Promise.all(Array.from({ length: 6 }, worker));
+      void Promise.all(Array.from({ length: 3 }, worker));
     };
 
     const draw = (image: DecodedFrame, index: number) => {
@@ -327,47 +326,59 @@ export function AureumSequenceStory() {
       };
     }
 
+    void loadFrame(0).then((image) => {
+      if (alive && renderedFrame < 0) draw(image, 0);
+    }).catch(() => undefined);
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
+        warmDecodedWindow(desiredFrame);
         startCompressedPrefetch();
-        void loadFrame(0).then((image) => {
-          if (alive && renderedFrame < 0) {
-            draw(image, 0);
-            warmDecodedWindow(0);
-          }
-        }).catch(() => undefined);
         observer.disconnect();
       },
-      { rootMargin: "150% 0px" },
+      { rootMargin: "50% 0px" },
     );
     observer.observe(section);
+
+    const applyProgress = (progress: number) => {
+      const boundedProgress = Math.min(Math.max(progress, 0), 1);
+      const nextTarget = boundedProgress * LAST_FRAME;
+      direction = nextTarget >= targetFrame ? 1 : -1;
+      targetFrame = nextTarget;
+      scheduleRender();
+      const nextStage = stageForProgress(boundedProgress);
+      if (nextStage !== currentStage) {
+        currentStage = nextStage;
+        setActiveStage(nextStage);
+      }
+      progressBar.current?.style.setProperty("--sequence-progress", `${boundedProgress * 100}%`);
+    };
+
+    const syncProgressFromScroll = () => {
+      const travel = Math.max(section.offsetHeight - window.innerHeight, 1);
+      applyProgress((window.scrollY - section.offsetTop) / travel);
+    };
+    window.addEventListener("scroll", syncProgressFromScroll, { passive: true });
+    document.addEventListener("scroll", syncProgressFromScroll, { passive: true, capture: true });
 
     const gsapContext = gsap.context(() => {
       ScrollTrigger.create({
         trigger: section,
         start: "top top",
         end: "bottom bottom",
-        onUpdate: (self) => {
-          const nextTarget = self.progress * LAST_FRAME;
-          direction = nextTarget >= targetFrame ? 1 : -1;
-          targetFrame = nextTarget;
-          scheduleRender();
-          const nextStage = stageForProgress(self.progress);
-          if (nextStage !== currentStage) {
-            currentStage = nextStage;
-            setActiveStage(nextStage);
-          }
-          progressBar.current?.style.setProperty("--sequence-progress", `${self.progress * 100}%`);
-        },
+        onUpdate: syncProgressFromScroll,
       });
     }, section);
+    syncProgressFromScroll();
 
     return () => {
       alive = false;
       requestController.abort();
       observer.disconnect();
       resizeObserver.disconnect();
+      window.removeEventListener("scroll", syncProgressFromScroll);
+      document.removeEventListener("scroll", syncProgressFromScroll, { capture: true });
       window.cancelAnimationFrame(animationFrame);
       gsapContext.revert();
       images.forEach((image) => image.release?.());
