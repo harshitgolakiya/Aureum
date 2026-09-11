@@ -33,16 +33,16 @@ function stageForProgress(progress: number) {
 
 function cacheLimitForDevice() {
   const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8;
-  let limit = window.innerWidth >= 1200 ? 24 : window.innerWidth >= 700 ? 16 : 10;
-  if (memory <= 4) limit = Math.min(limit, 14);
+  let limit = window.innerWidth >= 1200 ? 14 : window.innerWidth >= 700 ? 10 : 8;
+  if (memory <= 4) limit = Math.min(limit, 10);
   if (memory <= 2) limit = Math.min(limit, 8);
   return limit;
 }
 
 function compressedCacheLimitForDevice() {
   const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8;
-  let limit = window.innerWidth >= 1200 ? 48 : window.innerWidth >= 700 ? 32 : 20;
-  if (memory <= 4) limit = Math.min(limit, 24);
+  let limit = window.innerWidth >= 1200 ? 28 : window.innerWidth >= 700 ? 20 : 14;
+  if (memory <= 4) limit = Math.min(limit, 18);
   if (memory <= 2) limit = Math.min(limit, 14);
   return limit;
 }
@@ -194,7 +194,7 @@ export function AureumSequenceStory() {
       add(0);
       add(Math.round(LAST_FRAME * 0.36));
       add(Math.round(LAST_FRAME * 0.7));
-      const stride = Math.max(18, Math.round(FRAME_COUNT / 16));
+      const stride = Math.max(32, Math.round(FRAME_COUNT / 8));
       for (let index = stride; index <= LAST_FRAME; index += stride) add(index);
       add(LAST_FRAME);
       return order;
@@ -361,7 +361,7 @@ export function AureumSequenceStory() {
         startCompressedPrefetch();
         observer.disconnect();
       },
-      { rootMargin: "50% 0px" },
+      { rootMargin: "25% 0px" },
     );
     observer.observe(section);
 

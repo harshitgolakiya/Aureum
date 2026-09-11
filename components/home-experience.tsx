@@ -15,21 +15,40 @@ gsap.registerPlugin(ScrollTrigger);
 export function HomeHero({ content }: { content: HomeHeroContent }) {
   const root = useRef<HTMLElement>(null);
   const video = useRef<HTMLVideoElement>(null);
+  const [videoEnabled, setVideoEnabled] = useState(false);
 
   useEffect(() => {
     const motionPreference = matchMedia("(prefers-reduced-motion: reduce)");
+    let enableTimer = 0;
+
     const syncPlayback = () => {
+      window.clearTimeout(enableTimer);
       if (motionPreference.matches) {
         video.current?.pause();
         return;
       }
-      void video.current?.play().catch(() => undefined);
+      if (video.current?.querySelector("source")) {
+        void video.current.play().catch(() => undefined);
+        return;
+      }
+      enableTimer = window.setTimeout(() => setVideoEnabled(true), 1200);
     };
 
-    syncPlayback();
+    if (document.readyState === "complete") syncPlayback();
+    else window.addEventListener("load", syncPlayback, { once: true });
     motionPreference.addEventListener("change", syncPlayback);
-    return () => motionPreference.removeEventListener("change", syncPlayback);
+    return () => {
+      window.clearTimeout(enableTimer);
+      window.removeEventListener("load", syncPlayback);
+      motionPreference.removeEventListener("change", syncPlayback);
+    };
   }, []);
+
+  useEffect(() => {
+    if (!videoEnabled || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    video.current?.load();
+    void video.current?.play().catch(() => undefined);
+  }, [videoEnabled]);
 
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -89,7 +108,7 @@ export function HomeHero({ content }: { content: HomeHeroContent }) {
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="none"
           poster={homeHeroMedia.posterSrc}
           tabIndex={-1}
           disablePictureInPicture
@@ -97,7 +116,7 @@ export function HomeHero({ content }: { content: HomeHeroContent }) {
             event.currentTarget.hidden = true;
           }}
         >
-          <source src={homeHeroMedia.videoSrc} type="video/mp4" />
+          {videoEnabled && <source src={homeHeroMedia.videoSrc} type="video/mp4" />}
         </video>
       </div>
       <div className="hero-grid" />
