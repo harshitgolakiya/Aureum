@@ -118,7 +118,7 @@ export function WhoNarrative({ leaders }: { leaders: readonly LeaderContent[] })
           through to development and performance.
         </p>
       </section>
-      <section className="who-philosophy">
+      <section className="who-philosophy" id="philosophy">
         <PhilosophyDecisionEngine />
         <div data-who-reveal>
           <Eyebrow>Our Philosophy</Eyebrow>

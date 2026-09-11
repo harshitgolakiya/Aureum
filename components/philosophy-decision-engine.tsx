@@ -1,111 +1,102 @@
 export function PhilosophyDecisionEngine() {
-  const verticals = [84, 164, 244, 324, 396, 476, 556, 636];
-  const horizontals = [108, 176, 244, 312, 380, 448, 516, 584];
+  const font = "var(--font-sans), Arial, sans-serif";
 
   return (
-    <div className="philosophy-engine">
-      <div className="philosophy-engine-status" aria-hidden="true">
-        <span>Integrated decision framework</span>
-        <i>System active</i>
-      </div>
+    <div className="philosophy-engine philosophy-system-diagram">
       <svg
-        viewBox="0 0 720 660"
+        viewBox="0 0 760 560"
         role="img"
-        aria-label="Commercial, technical and strategic perspectives converging into one Aureum decision system"
+        aria-label="The Aureum System connects Discipline, Integrated Thinking and Long-Term Perspective."
       >
         <defs>
-          <radialGradient id="philosophy-core-glow">
-            <stop offset="0" stopColor="#c4a456" stopOpacity="0.48" />
-            <stop offset="0.48" stopColor="#c4a456" stopOpacity="0.12" />
-            <stop offset="1" stopColor="#c4a456" stopOpacity="0" />
+          <radialGradient id="philosophy-system-center-disc" cx="34%" cy="24%" r="82%">
+            <stop offset="0" stopColor="#263840" />
+            <stop offset="1" stopColor="#0c161b" />
           </radialGradient>
-          <linearGradient id="philosophy-plane-gold" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#c4a456" stopOpacity="0.18" />
-            <stop offset="1" stopColor="#c4a456" stopOpacity="0.02" />
-          </linearGradient>
-          <linearGradient id="philosophy-plane-blue" x1="1" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#91a3ba" stopOpacity="0.16" />
-            <stop offset="1" stopColor="#91a3ba" stopOpacity="0.02" />
-          </linearGradient>
-          <linearGradient id="philosophy-scan" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#c4a456" stopOpacity="0" />
-            <stop offset="0.5" stopColor="#c4a456" stopOpacity="0.24" />
-            <stop offset="1" stopColor="#c4a456" stopOpacity="0" />
-          </linearGradient>
+          <filter id="philosophy-system-shadow" x="-40%" y="-40%" width="180%" height="190%">
+            <feDropShadow dx="0" dy="7" stdDeviation="7" floodColor="#14202a" floodOpacity=".13" />
+          </filter>
         </defs>
 
-        <g className="philosophy-engine-grid" aria-hidden="true">
-          {verticals.map((x) => (
-            <line x1={x} y1="64" x2="360" y2="602" key={`v-${x}`} />
-          ))}
-          {horizontals.map((y) => (
-            <line x1="48" y1={y} x2="672" y2={y} key={`h-${y}`} />
-          ))}
+        <g className="philosophy-system-orbits" aria-hidden="true">
+          <path
+            className="philosophy-system-draw philosophy-system-outer-ring"
+            pathLength="1"
+            d="M380 72 L164 422 H596 Z"
+          />
+          <path
+            className="philosophy-system-draw philosophy-system-connector"
+            pathLength="1"
+            d="M380 214 V158"
+          />
+          <path
+            className="philosophy-system-draw philosophy-system-connector philosophy-system-connector-two"
+            pathLength="1"
+            d="M326 312 L209 397"
+          />
+          <path
+            className="philosophy-system-draw philosophy-system-connector philosophy-system-connector-three"
+            pathLength="1"
+            d="M434 312 L551 397"
+          />
+          <circle className="philosophy-system-node" cx="380" cy="166" r="3" />
+          <circle className="philosophy-system-node" cx="267" cy="355" r="3" />
+          <circle className="philosophy-system-node" cx="493" cy="355" r="3" />
         </g>
 
-        <g className="philosophy-engine-plane philosophy-engine-commercial">
-          <polygon points="54,112 316,166 316,366 54,310" />
-          <path d="M92 148 L280 188 L280 326 L92 286 Z" />
-          <text x="76" y="92">COMMERCIAL</text>
-          <text x="76" y="108" className="philosophy-engine-code">MARKET / VALUE / CAPITAL</text>
-        </g>
-        <g className="philosophy-engine-plane philosophy-engine-technical">
-          <polygon points="666,112 404,166 404,366 666,310" />
-          <path d="M628 148 L440 188 L440 326 L628 286 Z" />
-          <text x="644" y="92" textAnchor="end">TECHNICAL</text>
-          <text x="644" y="108" textAnchor="end" className="philosophy-engine-code">DESIGN / DELIVERY / RISK</text>
-        </g>
-        <g className="philosophy-engine-plane philosophy-engine-strategic">
-          <polygon points="150,590 298,386 422,386 570,590" />
-          <path d="M218 558 L320 414 L400 414 L502 558 Z" />
-          <text x="360" y="622" textAnchor="middle">STRATEGIC</text>
-          <text x="360" y="638" textAnchor="middle" className="philosophy-engine-code">POSITION / ALIGNMENT / PERFORMANCE</text>
+        <g className="philosophy-system-pillar philosophy-system-discipline">
+          <circle cx="380" cy="72" r="47" fill="#b88a2b" filter="url(#philosophy-system-shadow)" />
+          <circle cx="380" cy="72" r="42" fill="none" stroke="#f1d58f" strokeOpacity=".48" strokeWidth=".8" />
+          <g className="philosophy-system-icon" fill="none" stroke="#fff8e7" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="380" cy="72" r="12" />
+            <path d="M380 55v7M380 82v7M363 72h7M390 72h7" />
+            <path d="M374 79l5-14 8-6-5 15z" fill="#fff8e7" stroke="none" />
+          </g>
+          <text className="philosophy-system-heading" x="380" y="142" textAnchor="middle" fontFamily={font}>DISCIPLINE</text>
         </g>
 
-        <g className="philosophy-engine-connectors" aria-hidden="true">
-          <path d="M124 214 C216 214 240 276 306 306" />
-          <path d="M596 214 C504 214 480 276 414 306" />
-          <path d="M360 548 C360 478 360 430 360 390" />
-          <path d="M124 284 C222 356 260 364 316 352" />
-          <path d="M596 284 C498 356 460 364 404 352" />
+        <g className="philosophy-system-pillar philosophy-system-integrated">
+          <circle cx="164" cy="422" r="47" fill="#17483d" stroke="#b8d5cd" strokeWidth="1.5" filter="url(#philosophy-system-shadow)" />
+          <circle cx="164" cy="422" r="42" fill="none" stroke="#dcebe6" strokeOpacity=".28" strokeWidth=".8" />
+          <g className="philosophy-system-icon" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="164" y1="396" x2="149" y2="420" />
+            <line x1="164" y1="396" x2="179" y2="420" />
+            <line x1="149" y1="420" x2="164" y2="444" />
+            <line x1="179" y1="420" x2="164" y2="444" />
+            <circle cx="164" cy="396" r="5" fill="#17483d" />
+            <circle cx="149" cy="420" r="5" fill="#17483d" />
+            <circle cx="179" cy="420" r="5" fill="#17483d" />
+            <circle cx="164" cy="444" r="5" fill="#17483d" />
+          </g>
+          <text className="philosophy-system-heading" x="164" y="501" textAnchor="middle" fontFamily={font}>INTEGRATED THINKING</text>
         </g>
 
-        <g className="philosophy-engine-nodes" aria-hidden="true">
-          {[
-            [124, 214], [124, 284], [596, 214], [596, 284], [360, 548],
-            [306, 306], [414, 306], [316, 352], [404, 352], [360, 390],
-          ].map(([cx, cy], index) => (
-            <circle cx={cx} cy={cy} r={index > 4 ? 4 : 5} key={`${cx}-${cy}`} />
-          ))}
+        <g className="philosophy-system-pillar philosophy-system-longterm">
+          <circle cx="596" cy="422" r="47" fill="#14283a" stroke="#bdc9d5" strokeWidth="1.5" filter="url(#philosophy-system-shadow)" />
+          <circle cx="596" cy="422" r="42" fill="none" stroke="#e0e6eb" strokeOpacity=".26" strokeWidth=".8" />
+          <g className="philosophy-system-icon" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M595 426c-1-23 8-37 29-46-2 21-10 34-29 46z" />
+            <path d="M595 426c-8-16-18-24-31-25 4 15 13 23 31 25z" />
+            <path d="M595 426v17" />
+          </g>
+          <text className="philosophy-system-heading" x="596" y="501" textAnchor="middle" fontFamily={font}>LONG-TERM PERSPECTIVE</text>
         </g>
 
-        <g className="philosophy-engine-core" aria-hidden="true">
-          <circle cx="360" cy="334" r="132" fill="url(#philosophy-core-glow)" />
-          <circle cx="360" cy="334" r="102" className="philosophy-engine-ring philosophy-engine-ring-outer" />
-          <circle cx="360" cy="334" r="78" className="philosophy-engine-ring philosophy-engine-ring-middle" />
-          <circle cx="360" cy="334" r="54" className="philosophy-engine-ring philosophy-engine-ring-inner" />
-          <path d="M360 280 L407 307 L407 361 L360 388 L313 361 L313 307 Z" className="philosophy-engine-aperture" />
-          <line x1="274" y1="334" x2="446" y2="334" />
-          <line x1="360" y1="248" x2="360" y2="420" />
-          <text x="360" y="327" textAnchor="middle">ONE</text>
-          <text x="360" y="347" textAnchor="middle">SYSTEM</text>
-          <text x="360" y="365" textAnchor="middle" className="philosophy-engine-core-small">AUREUM</text>
+        <g className="philosophy-system-center" filter="url(#philosophy-system-shadow)">
+          <circle cx="380" cy="280" r="68" fill="url(#philosophy-system-center-disc)" stroke="#c89b3c" strokeWidth="2" />
+          <circle cx="380" cy="280" r="59" fill="none" stroke="#d7b55a" strokeOpacity=".35" strokeWidth=".8" />
+          <g className="philosophy-system-icon" fill="none" stroke="#d5ae4d" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M380 236c-16 8-18 21 0 32 18-11 16-24 0-32z" />
+            <path d="M380 236c16 8 18 21 0 32" />
+            <path d="M380 236c-16 8-18 21 0 32" />
+            <path d="M380 268v10" />
+          </g>
+          <g className="philosophy-system-center-label" textAnchor="middle" fontFamily={font}>
+            <text x="380" y="300">THE AUREUM</text>
+            <text x="380" y="317">SYSTEM</text>
+          </g>
         </g>
-
-        <g className="philosophy-engine-output">
-          <path d="M446 334 H638" />
-          <circle cx="638" cy="334" r="5" />
-          <text x="638" y="316" textAnchor="end">ALIGNED DECISION</text>
-          <text x="638" y="358" textAnchor="end" className="philosophy-engine-output-strong">LONG-TERM VALUE</text>
-        </g>
-
-        <rect className="philosophy-engine-scan" x="36" y="72" width="648" height="72" fill="url(#philosophy-scan)" />
       </svg>
-      <div className="philosophy-engine-readout" aria-hidden="true">
-        <span><i /> Perspective aligned</span>
-        <span>Commercial + Technical + Strategic</span>
-        <strong>A</strong>
-      </div>
     </div>
   );
 }

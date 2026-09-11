@@ -291,6 +291,124 @@
 @keyframes philosophyEngineRotateReverse {
   to { transform: rotate(-360deg); }
 }
+.philosophy-system-diagram {
+  background: transparent;
+  border: 0;
+  min-height: 0;
+  overflow: visible;
+}
+.philosophy-system-diagram::before {
+  content: none;
+}
+.philosophy-system-diagram svg {
+  display: block;
+  height: auto;
+  inset: auto;
+  overflow: visible;
+  position: static;
+  width: 100%;
+}
+.philosophy-system-orbits {
+  fill: none;
+  stroke: #c89b3c;
+  stroke-width: 1.1;
+}
+.philosophy-system-outer-ring {
+  opacity: 0.72;
+}
+.philosophy-system-inner-ring {
+  opacity: 0.48;
+  stroke-width: 0.85;
+}
+.philosophy-system-connector {
+  opacity: 0.58;
+  stroke-width: 0.9;
+}
+.philosophy-system-heading {
+  fill: var(--navy);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 2.4px;
+}
+.philosophy-system-center-label {
+  fill: #f5e4ad;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2.4px;
+}
+.philosophy-system-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.philosophy-system-pillar,
+.philosophy-system-center {
+  opacity: 0;
+  transform: scale(0.72);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.philosophy-system-label,
+.philosophy-system-node {
+  opacity: 0;
+}
+.philosophy-system-diagram.is-active .philosophy-system-draw {
+  animation: philosophySystemDraw 1.45s cubic-bezier(0.65, 0, 0.25, 1) forwards;
+}
+.philosophy-system-diagram.is-active .philosophy-system-inner-ring {
+  animation-delay: 0.12s;
+}
+.philosophy-system-diagram.is-active .philosophy-system-connector {
+  animation-delay: 0.28s;
+}
+.philosophy-system-diagram.is-active .philosophy-system-connector-two {
+  animation-delay: 0.4s;
+}
+.philosophy-system-diagram.is-active .philosophy-system-connector-three {
+  animation-delay: 0.52s;
+}
+.philosophy-system-diagram.is-active .philosophy-system-pillar {
+  animation: philosophySystemPop 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.philosophy-system-diagram.is-active .philosophy-system-discipline {
+  animation-delay: 0.62s;
+}
+.philosophy-system-diagram.is-active .philosophy-system-integrated {
+  animation-delay: 0.76s;
+}
+.philosophy-system-diagram.is-active .philosophy-system-longterm {
+  animation-delay: 0.9s;
+}
+.philosophy-system-diagram.is-active .philosophy-system-center {
+  animation: philosophySystemPop 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.48s forwards;
+}
+.philosophy-system-diagram.is-active .philosophy-system-label {
+  animation: philosophySystemFade 0.6s ease 1.05s forwards;
+}
+.philosophy-system-diagram.is-active .philosophy-system-node {
+  animation: philosophySystemNodeIn 0.45s ease 1.1s forwards;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.philosophy-system-node {
+  fill: #c89b3c;
+  stroke: none;
+}
+@keyframes philosophySystemDraw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes philosophySystemPop {
+  0% { opacity: 0; transform: scale(0.72); }
+  65% { opacity: 1; transform: scale(1.035); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes philosophySystemFade {
+  to { opacity: 1; }
+}
+@keyframes philosophySystemNodeIn {
+  0% { opacity: 0; transform: scale(0); }
+  70% { opacity: 1; transform: scale(1.25); }
+  100% { opacity: 1; transform: scale(1); }
+}
 .who-philosophy > div:last-child {
   align-self: center;
 }
@@ -951,6 +1069,9 @@
   .philosophy-engine {
     min-height: 500px;
   }
+  .philosophy-system-diagram {
+    min-height: 0;
+  }
   .collective-portrait {
     position: static;
   }
@@ -1048,6 +1169,10 @@
     inset-inline: -12%;
     width: 124%;
   }
+  .philosophy-system-diagram svg {
+    inset-inline: auto;
+    width: 100%;
+  }
   .collective-portrait .media {
     height: auto;
   }
@@ -1069,6 +1194,17 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .philosophy-system-draw,
+  .philosophy-system-pillar,
+  .philosophy-system-center,
+  .philosophy-system-label,
+  .philosophy-system-node {
+    animation: none !important;
+    opacity: 1 !important;
+    stroke-dasharray: 1 !important;
+    stroke-dashoffset: 0 !important;
+    transform: none !important;
+  }
   .philosophy-engine-plane,
   .philosophy-engine-core,
   .philosophy-engine-nodes circle,

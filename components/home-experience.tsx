@@ -327,12 +327,6 @@ export function EngagementModels() {
                 Explore model <b>↗</b>
               </Link>
             </div>
-            <div className="engagement-geometry" aria-hidden="true">
-              <i />
-              <i />
-              <i />
-              <span>{model.n}</span>
-            </div>
           </article>
         ))}
       </div>

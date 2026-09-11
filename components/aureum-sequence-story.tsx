@@ -9,11 +9,11 @@ import { Eyebrow } from "./ui";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const FRAME_COUNT = 151;
+const FRAME_COUNT = 336;
 const LAST_FRAME = FRAME_COUNT - 1;
 const FRAME_WIDTH = 1280;
 const FRAME_HEIGHT = 720;
-const FRAME_PREFIX = "/aureum/hf_20260827_062227_82de69e1-52ae-4c2d-ba05-c7399e2fdfc7_";
+const FRAME_PREFIX = "/new-home-hero/1_";
 const POSTER = `${FRAME_PREFIX}00000.webp`;
 const stageNotes = [
   "Understanding the opportunity",
@@ -33,8 +33,16 @@ function stageForProgress(progress: number) {
 
 function cacheLimitForDevice() {
   const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8;
-  let limit = window.innerWidth >= 1200 ? 52 : window.innerWidth >= 700 ? 34 : 18;
-  if (memory <= 4) limit = Math.min(limit, 28);
+  let limit = window.innerWidth >= 1200 ? 24 : window.innerWidth >= 700 ? 16 : 10;
+  if (memory <= 4) limit = Math.min(limit, 14);
+  if (memory <= 2) limit = Math.min(limit, 8);
+  return limit;
+}
+
+function compressedCacheLimitForDevice() {
+  const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8;
+  let limit = window.innerWidth >= 1200 ? 48 : window.innerWidth >= 700 ? 32 : 20;
+  if (memory <= 4) limit = Math.min(limit, 24);
   if (memory <= 2) limit = Math.min(limit, 14);
   return limit;
 }
@@ -76,6 +84,7 @@ export function AureumSequenceStory() {
     let currentStage = 0;
     let prefetchStarted = false;
     const cacheLimit = cacheLimitForDevice();
+    const compressedCacheLimit = compressedCacheLimitForDevice();
     const requestController = new AbortController();
     const compressedFrames = new Map<number, Blob>();
     const fetching = new Map<number, Promise<Blob>>();
@@ -93,6 +102,14 @@ export function AureumSequenceStory() {
         });
     };
 
+    const trimCompressedCache = (focus: number) => {
+      if (compressedFrames.size <= compressedCacheLimit) return;
+      [...compressedFrames.keys()]
+        .sort((left, right) => Math.abs(right - focus) - Math.abs(left - focus))
+        .slice(0, compressedFrames.size - compressedCacheLimit)
+        .forEach((index) => compressedFrames.delete(index));
+    };
+
     const loadCompressedFrame = (index: number) => {
       const bounded = Math.min(Math.max(index, 0), LAST_FRAME);
       const cached = compressedFrames.get(bounded);
@@ -108,7 +125,10 @@ export function AureumSequenceStory() {
           throw new Error(`Unable to load Aureum sequence frame ${bounded}.`);
         }
         const blob = await response.blob();
-        if (alive) compressedFrames.set(bounded, blob);
+        if (alive) {
+          compressedFrames.set(bounded, blob);
+          trimCompressedCache(desiredFrame);
+        }
         return blob;
       })().finally(() => fetching.delete(bounded));
       fetching.set(bounded, request);
@@ -171,7 +191,10 @@ export function AureumSequenceStory() {
         }
       };
       add(0);
-      for (let index = 10; index <= LAST_FRAME; index += 10) add(index);
+      add(Math.round(LAST_FRAME * 0.36));
+      add(Math.round(LAST_FRAME * 0.7));
+      const stride = Math.max(18, Math.round(FRAME_COUNT / 16));
+      for (let index = stride; index <= LAST_FRAME; index += stride) add(index);
       add(LAST_FRAME);
       return order;
     };
@@ -186,7 +209,7 @@ export function AureumSequenceStory() {
           if (index !== undefined) await loadCompressedFrame(index).catch(() => undefined);
         }
       };
-      void Promise.all(Array.from({ length: 3 }, worker));
+      void Promise.all(Array.from({ length: 2 }, worker));
     };
 
     const draw = (image: DecodedFrame, index: number) => {
