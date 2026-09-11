@@ -24,10 +24,14 @@ export function ConversationProvider({ children }: { children: React.ReactNode }
   useEffect(() => {
     const node = dialog.current;
     if (!open || !node) return;
+    const bodyOverflow = document.body.style.overflow;
+    const documentOverflow = document.documentElement.style.overflow;
     node.showModal();
     document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = bodyOverflow;
+      document.documentElement.style.overflow = documentOverflow;
       if (node.open) node.close();
       trigger.current?.focus();
     };

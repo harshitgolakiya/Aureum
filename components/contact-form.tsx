@@ -213,6 +213,7 @@ export function ContactForm() {
           <option>Strategic Partnership</option>
           <option>Land Development</option>
           <option>Market Intelligence</option>
+          <option>Built-to-suit</option>
           <option>Other</option>
         </select>
         {errors.interest && (
