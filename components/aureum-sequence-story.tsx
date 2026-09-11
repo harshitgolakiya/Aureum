@@ -61,6 +61,7 @@ export function AureumSequenceStory() {
   const progressBar = useRef<HTMLSpanElement>(null);
   const [activeStage, setActiveStage] = useState(0);
   const [canvasReady, setCanvasReady] = useState(false);
+  const [posterReady, setPosterReady] = useState(false);
 
   useEffect(() => {
     const section = root.current;
@@ -415,11 +416,27 @@ export function AureumSequenceStory() {
   return (
     <section ref={root} id="system" className="aureum-sequence-story" aria-label="The Aureum System development journey">
       <div className="aureum-sequence-sticky">
-        <div ref={visual} className={`aureum-sequence-visual${canvasReady ? " is-ready" : ""}`} aria-hidden="true">
-          <Image className="aureum-sequence-poster" src={POSTER} alt="" fill sizes="(max-width: 900px) 100vw, 62vw" unoptimized />
-          <canvas ref={canvas} />
+        <div
+          ref={visual}
+          className={`aureum-sequence-visual${posterReady ? " has-poster" : ""}${canvasReady ? " is-ready" : ""}`}
+          aria-hidden="true"
+        >
+          <Image
+            className="aureum-sequence-poster"
+            src={POSTER}
+            alt=""
+            fill
+            sizes="(max-width: 900px) 100vw, 62vw"
+            onLoad={() => setPosterReady(true)}
+            unoptimized
+          />
+          <canvas ref={canvas} aria-hidden="true" />
           <div className="aureum-sequence-shade" />
           <span className="aureum-sequence-visual-label">Opportunity → Asset</span>
+          <div className="aureum-sequence-loader">
+            <span />
+            <small>Loading development sequence</small>
+          </div>
         </div>
         <div className="aureum-sequence-copy">
           <Eyebrow>From Opportunity to Asset</Eyebrow>

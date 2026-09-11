@@ -718,6 +718,44 @@
 .aureum-sequence-visual.is-ready .aureum-sequence-poster {
   opacity: 0;
 }
+.aureum-sequence-loader {
+  align-items: center;
+  background: #c9c7c3;
+  color: var(--navy);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  inset: 0;
+  justify-content: center;
+  opacity: 1;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+  visibility: visible;
+  z-index: 6;
+}
+.aureum-sequence-loader > span {
+  animation: aureumSequenceLoader 0.85s linear infinite;
+  border: 1px solid rgba(16, 26, 43, 0.2);
+  border-radius: 50%;
+  border-top-color: var(--gold);
+  height: 2.4rem;
+  width: 2.4rem;
+}
+.aureum-sequence-loader small {
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.aureum-sequence-visual.has-poster .aureum-sequence-loader,
+.aureum-sequence-visual.is-ready .aureum-sequence-loader {
+  opacity: 0;
+  visibility: hidden;
+}
+@keyframes aureumSequenceLoader {
+  to { transform: rotate(360deg); }
+}
 .aureum-sequence-shade {
   background: linear-gradient(180deg, rgba(16, 26, 43, 0.02), transparent 60%, rgba(16, 26, 43, 0.16));
   inset: 0;
@@ -916,5 +954,8 @@
   .aureum-sequence-poster,
   .aureum-sequence-stage-stack article {
     transition: none;
+  }
+  .aureum-sequence-loader > span {
+    animation: none;
   }
 }
