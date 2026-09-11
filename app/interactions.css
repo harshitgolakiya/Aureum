@@ -748,9 +748,9 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
-.aureum-sequence-visual.has-poster .aureum-sequence-loader,
-.aureum-sequence-visual.is-ready .aureum-sequence-loader {
+.aureum-sequence-visual.is-buffered .aureum-sequence-loader {
   opacity: 0;
+  transition: none;
   visibility: hidden;
 }
 @keyframes aureumSequenceLoader {

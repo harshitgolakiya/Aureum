@@ -33,8 +33,8 @@ function stageForProgress(progress: number) {
 
 function cacheLimitForDevice() {
   const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8;
-  let limit = window.innerWidth >= 1200 ? 14 : window.innerWidth >= 700 ? 10 : 8;
-  if (memory <= 4) limit = Math.min(limit, 10);
+  let limit = window.innerWidth >= 1200 ? 24 : window.innerWidth >= 700 ? 16 : 10;
+  if (memory <= 4) limit = Math.min(limit, 14);
   if (memory <= 2) limit = Math.min(limit, 8);
   return limit;
 }
@@ -61,7 +61,8 @@ export function AureumSequenceStory() {
   const progressBar = useRef<HTMLSpanElement>(null);
   const [activeStage, setActiveStage] = useState(0);
   const [canvasReady, setCanvasReady] = useState(false);
-  const [posterReady, setPosterReady] = useState(false);
+  const [preloadProgress, setPreloadProgress] = useState(0);
+  const [sequenceBuffered, setSequenceBuffered] = useState(false);
 
   useEffect(() => {
     const section = root.current;
@@ -194,9 +195,8 @@ export function AureumSequenceStory() {
       add(0);
       add(Math.round(LAST_FRAME * 0.36));
       add(Math.round(LAST_FRAME * 0.7));
-      const stride = Math.max(32, Math.round(FRAME_COUNT / 8));
-      for (let index = stride; index <= LAST_FRAME; index += stride) add(index);
       add(LAST_FRAME);
+      for (let index = 1; index < LAST_FRAME; index += 1) add(index);
       return order;
     };
 
@@ -204,13 +204,37 @@ export function AureumSequenceStory() {
       if (prefetchStarted) return;
       prefetchStarted = true;
       const queue = prefetchOrder();
+      let completed = 0;
+      const progressStep = Math.max(1, Math.ceil(FRAME_COUNT / 100));
+      const preloadFrame = async (index: number) => {
+        for (let attempt = 0; attempt < 3; attempt += 1) {
+          try {
+            await loadCompressedFrame(index);
+            return true;
+          } catch {
+            if (!alive) return false;
+          }
+        }
+        return false;
+      };
       const worker = async () => {
         while (alive && queue.length) {
           const index = queue.shift();
-          if (index !== undefined) await loadCompressedFrame(index).catch(() => undefined);
+          if (index === undefined) continue;
+          const loaded = await preloadFrame(index);
+          if (!loaded) continue;
+          completed += 1;
+          if (alive && (completed % progressStep === 0 || completed === FRAME_COUNT)) {
+            setPreloadProgress(Math.min(100, Math.round((completed / FRAME_COUNT) * 100)));
+          }
         }
       };
-      void Promise.all(Array.from({ length: 2 }, worker));
+      const workerCount = window.innerWidth >= 900 ? 6 : 4;
+      void Promise.all(Array.from({ length: workerCount }, worker)).then(() => {
+        if (!alive || completed !== FRAME_COUNT) return;
+        setPreloadProgress(100);
+        setSequenceBuffered(true);
+      });
     };
 
     const draw = (image: DecodedFrame, index: number) => {
@@ -332,7 +356,11 @@ export function AureumSequenceStory() {
     if (reducedMotion.matches) {
       desiredFrame = LAST_FRAME;
       const reducedStageTimer = window.setTimeout(() => {
-        if (alive) setActiveStage(2);
+        if (alive) {
+          setActiveStage(2);
+          setPreloadProgress(100);
+          setSequenceBuffered(true);
+        }
       }, 0);
       progressBar.current?.style.setProperty("--sequence-progress", "100%");
       void loadFrame(LAST_FRAME).then((image) => draw(image, LAST_FRAME)).catch(() => undefined);
@@ -353,17 +381,7 @@ export function AureumSequenceStory() {
     void loadFrame(0).then((image) => {
       if (alive && renderedFrame < 0) draw(image, 0);
     }).catch(() => undefined);
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        warmDecodedWindow(desiredFrame);
-        startCompressedPrefetch();
-        observer.disconnect();
-      },
-      { rootMargin: "25% 0px" },
-    );
-    observer.observe(section);
+    startCompressedPrefetch();
 
     const applyProgress = (progress: number) => {
       const boundedProgress = Math.min(Math.max(progress, 0), 1);
@@ -399,7 +417,6 @@ export function AureumSequenceStory() {
     return () => {
       alive = false;
       requestController.abort();
-      observer.disconnect();
       resizeObserver.disconnect();
       window.removeEventListener("scroll", syncProgressFromScroll);
       document.removeEventListener("scroll", syncProgressFromScroll, { capture: true });
@@ -418,7 +435,7 @@ export function AureumSequenceStory() {
       <div className="aureum-sequence-sticky">
         <div
           ref={visual}
-          className={`aureum-sequence-visual${posterReady ? " has-poster" : ""}${canvasReady ? " is-ready" : ""}`}
+          className={`aureum-sequence-visual${canvasReady ? " is-ready" : ""}${sequenceBuffered ? " is-buffered" : ""}`}
           aria-hidden="true"
         >
           <Image
@@ -427,7 +444,6 @@ export function AureumSequenceStory() {
             alt=""
             fill
             sizes="(max-width: 900px) 100vw, 62vw"
-            onLoad={() => setPosterReady(true)}
             unoptimized
           />
           <canvas ref={canvas} aria-hidden="true" />
@@ -435,7 +451,7 @@ export function AureumSequenceStory() {
           <span className="aureum-sequence-visual-label">Opportunity → Asset</span>
           <div className="aureum-sequence-loader">
             <span />
-            <small>Loading development sequence</small>
+            <small>Loading development sequence · {preloadProgress}%</small>
           </div>
         </div>
         <div className="aureum-sequence-copy">

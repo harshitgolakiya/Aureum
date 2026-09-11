@@ -123,6 +123,9 @@ const auditExpression = `(() => {
     .filter(id => !document.getElementById(id));
   const navigation = performance.getEntriesByType('navigation')[0];
   const resources = performance.getEntriesByType('resource');
+  const sequenceResources = resources.filter(entry => entry.name.includes('/new-home-hero/'));
+  const sequenceResourceBytes = sequenceResources.reduce((total, entry) => total + (entry.decodedBodySize || 0), 0);
+  const criticalResources = resources.filter(entry => !entry.name.includes('/new-home-hero/'));
   return {
     overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
     viewportWidths: {
@@ -142,8 +145,12 @@ const auditExpression = `(() => {
     h1Count: document.querySelectorAll('h1').length,
     domNodes: document.querySelectorAll('*').length,
     resourceCount: performance.getEntriesByType('resource').length,
+    criticalResourceCount: criticalResources.length,
+    sequenceResourceCount: new Set(sequenceResources.map(entry => entry.name)).size,
     domContentLoaded: navigation ? navigation.domContentLoadedEventEnd : 0,
     decodedResourceBytes: resources.reduce((total, entry) => total + (entry.decodedBodySize || 0), 0),
+    criticalDecodedResourceBytes: criticalResources.reduce((total, entry) => total + (entry.decodedBodySize || 0), 0),
+    sequenceResourceBytes,
     overflowElements: [...document.querySelectorAll('body *')]
       .filter(node => { const rect = node.getBoundingClientRect(); return rect.right > innerWidth + 2 || rect.left < -2; })
       .sort((a, b) => {
@@ -250,9 +257,11 @@ try {
               value.htmlLang === "en" &&
               value.h1Count === 1 &&
               value.domNodes <= 2500 &&
-              value.resourceCount <= 150 &&
+              value.criticalResourceCount <= 150 &&
+              value.sequenceResourceCount <= 336 &&
               value.domContentLoaded <= 4000 &&
-              value.decodedResourceBytes <= 5_000_000 &&
+              value.criticalDecodedResourceBytes <= 5_000_000 &&
+              value.sequenceResourceBytes <= 50_000_000 &&
               value.overflow <= 2 &&
               !value.duplicateIds.length &&
               !value.brokenAriaReferences.length &&
@@ -282,7 +291,7 @@ try {
       });
       const interactions = [
         ["mobile navigation", "/", `async () => { const button = document.querySelector('.menu-button'); button?.focus(); button?.click(); await new Promise(resolve => setTimeout(resolve, 100)); const menu = document.querySelector('#mobile-menu'); const opened = button?.getAttribute('aria-expanded') === 'true' && menu?.getAttribute('aria-hidden') === 'false' && menu?.contains(document.activeElement); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await new Promise(resolve => setTimeout(resolve, 100)); return opened && button?.getAttribute('aria-expanded') === 'false' && menu?.getAttribute('aria-hidden') === 'true' && document.activeElement === button; }`],
-        ["homepage image sequence", "/", `async () => { const section = document.querySelector('.aureum-sequence-story'); if (!section) return false; const travel = Math.max(section.offsetHeight - innerHeight, 1); scrollTo({ top: section.offsetTop + travel * 0.55, behavior: 'instant' }); window.dispatchEvent(new Event('scroll')); await new Promise(resolve => setTimeout(resolve, 1200)); const active = section.querySelector('.aureum-sequence-stage-stack article.is-active'); const progress = section.querySelector('.aureum-sequence-progress > span'); return section.querySelector('.aureum-sequence-visual')?.classList.contains('is-ready') && active?.querySelector('h2')?.textContent.trim() === 'Development Strategy' && parseFloat(getComputedStyle(progress).width) > 0; }`, "no-preference"],
+        ["homepage image sequence", "/", `async () => { const section = document.querySelector('.aureum-sequence-story'); if (!section) return false; const travel = Math.max(section.offsetHeight - innerHeight, 1); scrollTo({ top: section.offsetTop + travel * 0.55, behavior: 'instant' }); window.dispatchEvent(new Event('scroll')); const deadline = performance.now() + 60000; while (!section.querySelector('.aureum-sequence-visual')?.classList.contains('is-buffered') && performance.now() < deadline) await new Promise(resolve => setTimeout(resolve, 100)); await new Promise(resolve => setTimeout(resolve, 450)); const active = section.querySelector('.aureum-sequence-stage-stack article.is-active'); const progress = section.querySelector('.aureum-sequence-progress > span'); const visual = section.querySelector('.aureum-sequence-visual'); const loader = section.querySelector('.aureum-sequence-loader'); return visual?.classList.contains('is-ready') && visual?.classList.contains('is-buffered') && getComputedStyle(loader).visibility === 'hidden' && active?.querySelector('h2')?.textContent.trim() === 'Development Strategy' && parseFloat(getComputedStyle(progress).width) > 0; }`, "no-preference"],
         ["portfolio filter", "/portfolio", `async () => { const buttons = [...document.querySelectorAll('.portfolio-filter-bar button')]; const button = buttons.find(node => node.textContent.trim() === 'Logistics'); if (!button) return buttons.length === 1 && buttons[0].textContent.trim() === 'All' && buttons[0].getAttribute('aria-pressed') === 'true'; button.click(); await new Promise(resolve => setTimeout(resolve, 100)); return button.getAttribute('aria-pressed') === 'true'; }`],
         ["contact validation", "/contact", `async () => { document.querySelector('.strategic-form button[type="submit"]')?.click(); await new Promise(resolve => setTimeout(resolve, 100)); const alert = document.querySelector('.error-summary[role="alert"]'); return Boolean(alert && document.activeElement === alert && document.querySelectorAll('[aria-invalid="true"]').length >= 4); }`],
         ["contact visual states", "/contact", `async () => { await new Promise(resolve => setTimeout(resolve, 1200)); const title = document.querySelector('.contact-hero h1'); const selects = [...document.querySelectorAll('.strategic-form .select-field')]; if (!title || selects.length !== 2) return false; const titleStyle = getComputedStyle(title); const titleVisible = Number(titleStyle.opacity) >= 0.99 && titleStyle.color === 'rgb(255, 255, 255)'; const labelsClear = selects.every(field => { const label = field.querySelector(':scope > span')?.getBoundingClientRect(); const select = field.querySelector('select')?.getBoundingClientRect(); return label && select && label.bottom <= select.top + 2; }); return titleVisible && labelsClear; }`],
@@ -305,7 +314,7 @@ try {
         console.log(`${pass ? "PASS" : "FAIL"} ${name} interaction ${label}`);
         if (!pass && label === "homepage image sequence") {
           const debugResult = await cdp.send("Runtime.evaluate", {
-            expression: `(() => { const section = document.querySelector('.aureum-sequence-story'); const visual = section?.querySelector('.aureum-sequence-visual'); const active = section?.querySelector('.aureum-sequence-stage-stack article.is-active'); const progress = section?.querySelector('.aureum-sequence-progress > span'); return { reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches, scrollY, sectionTop: section?.offsetTop, sectionHeight: section?.offsetHeight, viewportHeight: innerHeight, ready: visual?.classList.contains('is-ready'), activeTitle: active?.querySelector('h2')?.textContent.trim(), progressWidth: progress ? parseFloat(getComputedStyle(progress).width) : null }; })()`,
+            expression: `(() => { const section = document.querySelector('.aureum-sequence-story'); const visual = section?.querySelector('.aureum-sequence-visual'); const active = section?.querySelector('.aureum-sequence-stage-stack article.is-active'); const progress = section?.querySelector('.aureum-sequence-progress > span'); const loader = section?.querySelector('.aureum-sequence-loader'); return { reducedMotion: matchMedia('(prefers-reduced-motion: reduce)').matches, scrollY, sectionTop: section?.offsetTop, sectionHeight: section?.offsetHeight, viewportHeight: innerHeight, ready: visual?.classList.contains('is-ready'), buffered: visual?.classList.contains('is-buffered'), loaderText: loader?.textContent.trim(), loaderVisibility: loader ? getComputedStyle(loader).visibility : null, activeTitle: active?.querySelector('h2')?.textContent.trim(), progressWidth: progress ? parseFloat(getComputedStyle(progress).width) : null }; })()`,
             returnByValue: true,
           });
           console.log(`DEBUG ${name} interaction ${label}`, JSON.stringify(debugResult.result.value));
