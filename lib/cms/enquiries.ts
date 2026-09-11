@@ -4,7 +4,7 @@ import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { ensureCmsSchema, getCmsPool } from "./database";
 
 export const ENQUIRY_STATUSES = ["new", "in_progress", "closed", "spam"] as const;
-export const CONTACT_INTERESTS = ["Industrial Investment", "Development Management", "Strategic Partnership", "Land Development", "Market Intelligence", "Other"] as const;
+export const CONTACT_INTERESTS = ["Industrial Investment", "Development Management", "Strategic Partnership", "Land Development", "Market Intelligence", "Built-to-suit", "Other"] as const;
 export const CONTACT_SOURCES = ["", "Referral", "Search", "Event", "Other"] as const;
 
 export type EnquiryStatus = (typeof ENQUIRY_STATUSES)[number];

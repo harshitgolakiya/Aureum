@@ -479,19 +479,7 @@
   transform: scale(1.025);
 }
 .collective-role-label {
-  position: absolute;
-  z-index: 4;
-  right: clamp(0.7rem, 1.2vw, 1.2rem);
-  bottom: clamp(0.9rem, 1.5vw, 1.5rem);
-  color: rgba(255, 255, 255, 0.94);
-  font-size: clamp(2.25rem, 4vw, 4.5rem);
-  font-weight: 700;
-  line-height: 0.86;
-  letter-spacing: -0.06em;
-  text-shadow: 0 2px 18px rgba(8, 20, 36, 0.32);
-  text-transform: uppercase;
-  transform: rotate(180deg);
-  writing-mode: vertical-rl;
+  display: none !important;
 }
 .collective-portrait .media-approved > img {
   object-fit: cover;
@@ -603,21 +591,7 @@
   content: none;
 }
 .leadership-card-index {
-  position: absolute;
-  z-index: 4;
-  top: 1.25rem;
-  left: 1.25rem;
-  display: grid;
-  place-items: center;
-  width: 2.65rem;
-  height: 2.65rem;
-  border: 1px solid rgba(255, 255, 255, 0.34);
-  border-radius: 50%;
-  background: rgba(16, 26, 43, 0.3);
-  backdrop-filter: blur(8px);
-  color: #fff;
-  font-size: 0.58rem;
-  letter-spacing: 0.1em;
+  display: none !important;
 }
 .leadership-card-discipline {
   position: absolute;
