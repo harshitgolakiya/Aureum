@@ -11,6 +11,7 @@ import "./secondary-experiences.css";
 import "./portfolio-experience.css";
 import "./insights-experience.css";
 import "./contact-experience.css";
+import "./conversation-modal.css";
 import "./production-qa.css";
 import "./route-experience.css";
 import "./status-pages.css";
@@ -24,6 +25,7 @@ import { RouteExperience } from "@/components/route-experience";
 import { SiteConnect } from "@/components/site-connect";
 import { Connect } from "@/components/ui";
 import { WebVitals } from "@/components/web-vitals";
+import { ConversationProvider } from "@/components/conversation-modal";
 import { getCmsContent } from "@/lib/cms/content";
 import { getSiteOrigin } from "@/lib/site-url";
 
@@ -84,16 +86,18 @@ export default async function RootLayout({
         <a className="skip-link" href="#main-content">
           Skip to main content
         </a>
-        <Header />
-        <RouteExperience>
-          <div id="main-content" tabIndex={-1}>
-            {children}
-          </div>
-          <Suspense fallback={<Connect compact />}>
-            <SiteConnect />
-          </Suspense>
-          <Footer content={footerContent} />
-        </RouteExperience>
+        <ConversationProvider>
+          <Header />
+          <RouteExperience>
+            <div id="main-content" tabIndex={-1}>
+              {children}
+            </div>
+            <Suspense fallback={<Connect compact />}>
+              <SiteConnect />
+            </Suspense>
+            <Footer content={footerContent} />
+          </RouteExperience>
+        </ConversationProvider>
         <WebVitals />
       </body>
     </html>

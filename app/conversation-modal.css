@@ -1,0 +1,172 @@
+.conversation-trigger {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.conversation-modal {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--navy);
+  color: white;
+  overflow-y: auto;
+}
+
+.conversation-modal::backdrop {
+  background: rgba(5, 14, 27, 0.82);
+  backdrop-filter: blur(8px);
+}
+
+.conversation-modal-panel {
+  width: min(100%, 1480px);
+  min-height: 100%;
+  margin: 0 auto;
+  padding: clamp(5.5rem, 9vw, 8.5rem) var(--pad) clamp(4rem, 7vw, 7rem);
+  position: relative;
+}
+
+.conversation-modal-close {
+  position: absolute;
+  top: clamp(1.25rem, 3vw, 2.25rem);
+  right: var(--pad);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.conversation-modal-close span {
+  color: var(--gold);
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.conversation-modal-panel > header {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+  column-gap: clamp(3rem, 8vw, 9rem);
+  align-items: end;
+  margin-bottom: clamp(3rem, 6vw, 6rem);
+}
+
+.conversation-modal-panel > header .eyebrow {
+  grid-column: 1 / -1;
+  margin-bottom: 2rem;
+}
+
+.conversation-modal-panel > header h2 {
+  margin: 0;
+  max-width: 820px;
+  font-size: clamp(2.7rem, 5.4vw, 6rem);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 0.96;
+}
+
+.conversation-modal-panel > header p {
+  max-width: 430px;
+  margin: 0 0 0.4rem;
+  color: var(--grey);
+  line-height: 1.75;
+}
+
+.conversation-modal .strategic-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem clamp(2rem, 5vw, 5rem);
+}
+
+.conversation-modal .strategic-form input,
+.conversation-modal .strategic-form select,
+.conversation-modal .strategic-form textarea {
+  display: block;
+  width: 100%;
+  padding: 1rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--dusty);
+  border-radius: 0;
+  outline: 0;
+  background: transparent;
+  color: white;
+  font: inherit;
+}
+
+.conversation-modal .strategic-form select option {
+  color: var(--navy);
+}
+
+.conversation-modal .strategic-form .full,
+.conversation-modal .error-summary,
+.conversation-modal .submission-notice,
+.conversation-modal .form-actions {
+  grid-column: 1 / -1;
+}
+
+.conversation-modal .form-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.5rem;
+  min-width: 260px;
+  padding: 1.2rem;
+  border: 0;
+  background: var(--gold);
+  color: var(--navy);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.conversation-modal .confirmation {
+  min-height: 420px;
+}
+
+@media (max-width: 760px) {
+  .conversation-modal-panel {
+    padding-top: 6.5rem;
+  }
+
+  .conversation-modal-panel > header,
+  .conversation-modal .strategic-form {
+    grid-template-columns: 1fr;
+  }
+
+  .conversation-modal-panel > header {
+    gap: 1.5rem;
+  }
+
+  .conversation-modal-panel > header .eyebrow,
+  .conversation-modal .strategic-form .full,
+  .conversation-modal .error-summary,
+  .conversation-modal .submission-notice,
+  .conversation-modal .form-actions {
+    grid-column: auto;
+  }
+
+  .conversation-modal .form-actions button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .conversation-modal::backdrop {
+    backdrop-filter: none;
+  }
+}

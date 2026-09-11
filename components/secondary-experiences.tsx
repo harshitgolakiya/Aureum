@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -9,6 +8,7 @@ import { ArrowLink, Eyebrow, Media } from "./ui";
 import { PartnerSystemGraphic } from "./partner-system-graphic";
 import { PhilosophyDecisionEngine } from "./philosophy-decision-engine";
 import type { LeaderContent } from "@/lib/cms/schema";
+import { ConversationTrigger } from "./conversation-modal";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -426,7 +426,7 @@ export function PartnerConvergence() {
           Regardless of the engagement model, every development follows the same
           disciplined framework.
         </p>
-        <Link href="/contact">Start a conversation ↗</Link>
+        <ConversationTrigger>Start a conversation ↗</ConversationTrigger>
       </div>
     </section>
   );

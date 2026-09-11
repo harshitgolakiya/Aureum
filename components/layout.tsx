@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type { FooterContent } from "@/lib/cms/schema";
+import { ConversationTrigger } from "./conversation-modal";
 
 const links = [
   ["Who We Are", "/who-we-are"],
@@ -160,9 +161,9 @@ export function Header() {
             </Link>
           </div>
         ))}
-        <Link className="nav-cta" href="/contact">
+        <ConversationTrigger className="nav-cta">
           Start a Conversation <span>↗</span>
-        </Link>
+        </ConversationTrigger>
       </nav>
       <button
         ref={menuButton}
@@ -246,11 +247,11 @@ export function Footer({ content }: { content: FooterContent }) {
             {content.brandStatement}
           </p>
         </div>
-        <Link className="footer-cta" href="/contact">
+        <ConversationTrigger className="footer-cta">
           <small>Have an industrial opportunity?</small>
           <span>Start a conversation</span>
           <b aria-hidden="true">↗</b>
-        </Link>
+        </ConversationTrigger>
       </div>
       <div className="footer-grid">
         <div className="footer-column">

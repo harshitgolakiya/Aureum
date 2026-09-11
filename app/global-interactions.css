@@ -244,6 +244,7 @@ footer:before {
   }
   .menu-button i {
     position: relative;
+    top: -3px;
     transition: transform 0.4s var(--ease);
   }
   .menu-button i:after {

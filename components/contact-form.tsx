@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useId, useRef, useState } from "react";
 
 type Values = {
   name: string;
@@ -93,12 +93,14 @@ const fields = [
 ];
 
 export function ContactForm() {
+  const formId = useId().replace(/:/g, "");
   const [values, setValues] = useState(initial);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<
     "idle" | "sending" | "success" | "failed"
   >("idle");
   const summary = useRef<HTMLDivElement>(null);
+  const fieldId = (name: keyof Values) => `${formId}-${name}`;
   function update(name: keyof Values, value: string) {
     setValues((current) => ({ ...current, [name]: value }));
     if (errors[name])
@@ -141,10 +143,10 @@ export function ContactForm() {
     );
   return (
     <form className="strategic-form" onSubmit={submit} noValidate>
-      <label className="form-honeypot" htmlFor="companyWebsite">
+      <label className="form-honeypot" htmlFor={fieldId("companyWebsite")}>
         Leave this field empty
         <input
-          id="companyWebsite"
+          id={fieldId("companyWebsite")}
           name="companyWebsite"
           type="text"
           tabIndex={-1}
@@ -159,7 +161,7 @@ export function ContactForm() {
           <ul>
             {Object.entries(errors).map(([name, message]) => (
               <li key={name}>
-                <a href={`#${name}`}>{message}</a>
+                <a href={`#${fieldId(name as keyof Values)}`}>{message}</a>
               </li>
             ))}
           </ul>
@@ -169,14 +171,14 @@ export function ContactForm() {
         <label
           className={`field ${values[field.name] ? "has-value" : ""} ${errors[field.name] ? "invalid" : ""}`}
           key={field.name}
-          htmlFor={field.name}
+          htmlFor={fieldId(field.name)}
         >
           <span>
             {field.label}
             {field.required && " *"}
           </span>
           <input
-            id={field.name}
+            id={fieldId(field.name)}
             name={field.name}
             type={field.type}
             autoComplete={field.autoComplete}
@@ -185,25 +187,25 @@ export function ContactForm() {
             onChange={(event) => update(field.name, event.target.value)}
             aria-invalid={!!errors[field.name]}
             aria-describedby={
-              errors[field.name] ? `${field.name}-error` : undefined
+              errors[field.name] ? `${fieldId(field.name)}-error` : undefined
             }
           />
           {errors[field.name] && (
-            <small id={`${field.name}-error`}>{errors[field.name]}</small>
+            <small id={`${fieldId(field.name)}-error`}>{errors[field.name]}</small>
           )}
         </label>
       ))}
       <label
         className={`field select-field ${values.interest ? "has-value" : ""} ${errors.interest ? "invalid" : ""}`}
-        htmlFor="interest"
+        htmlFor={fieldId("interest")}
       >
         <span>Area of Interest *</span>
         <select
-          id="interest"
+          id={fieldId("interest")}
           value={values.interest}
           onChange={(event) => update("interest", event.target.value)}
           aria-invalid={!!errors.interest}
-          aria-describedby={errors.interest ? "interest-error" : undefined}
+          aria-describedby={errors.interest ? `${fieldId("interest")}-error` : undefined}
         >
           <option value="">Select one</option>
           <option>Industrial Investment</option>
@@ -214,16 +216,16 @@ export function ContactForm() {
           <option>Other</option>
         </select>
         {errors.interest && (
-          <small id="interest-error">{errors.interest}</small>
+          <small id={`${fieldId("interest")}-error`}>{errors.interest}</small>
         )}
       </label>
       <label
         className={`field full ${values.opportunity ? "has-value" : ""}`}
-        htmlFor="opportunity"
+        htmlFor={fieldId("opportunity")}
       >
         <span>Tell us about your opportunity</span>
         <textarea
-          id="opportunity"
+          id={fieldId("opportunity")}
           rows={4}
           maxLength={2000}
           value={values.opportunity}
@@ -235,11 +237,11 @@ export function ContactForm() {
       </label>
       <label
         className={`field full select-field ${values.source ? "has-value" : ""}`}
-        htmlFor="source"
+        htmlFor={fieldId("source")}
       >
         <span>How did you hear about Aureum?</span>
         <select
-          id="source"
+          id={fieldId("source")}
           value={values.source}
           onChange={(event) => update("source", event.target.value)}
         >
