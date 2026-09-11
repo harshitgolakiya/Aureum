@@ -399,10 +399,12 @@ export function PartnerConvergence() {
       <PartnerSystemGraphic />
       <div>
         <Eyebrow>The Aureum System in Action</Eyebrow>
-        <h2>Different pathways. One Aureum standard.</h2>
+        <h2>A disciplined system creates repeatable excellence.</h2>
         <p>
-          Whichever path an opportunity takes, the same perspective, discipline
-          and standards guide how it is shaped and developed.
+          The Aureum System connects intelligence, governance and execution into
+          one coherent approach, reducing complexity while increasing confidence.
+          Regardless of the engagement model, every development follows the same
+          disciplined framework.
         </p>
         <Link href="/contact">Start a conversation ↗</Link>
       </div>
