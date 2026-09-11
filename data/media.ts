@@ -23,14 +23,14 @@ export const approvedMedia: Record<string, ApprovedMedia> = {
     focalPoint: "50% 0%",
   },
   "leadership-portrait-02.webp": {
-    src: "/leadership/akhi 1.webp",
-    alt: "Portrait of Akhilesh Padinhare, Executive Director in Investment and Strategy",
-    focalPoint: "50% 0%",
+    src: "/leadership/newAkhilesh.webp",
+    alt: "Portrait of Akhilesh Padinhare, Founder and Executive Director",
+    focalPoint: "50% 20%",
   },
   "leadership-portrait-03.webp": {
-    src: "/leadership/anish 1.webp",
+    src: "/leadership/newAnish.webp",
     alt: "Portrait of Anish Kasim, Executive Director at Real Estate Development",
-    focalPoint: "50% 0%",
+    focalPoint: "50% 20%",
   },
   "leadership-profile-portrait-01.webp": {
     src: "/leadership/aasim inner.webp",
@@ -39,13 +39,23 @@ export const approvedMedia: Record<string, ApprovedMedia> = {
   },
   "leadership-profile-portrait-02.webp": {
     src: "/leadership/akhi inner.webp",
-    alt: "Portrait of Akhilesh Padinhare, Executive Director in Investment and Strategy",
+    alt: "Portrait of Akhilesh Padinhare, Founder and Executive Director",
     focalPoint: "50% 0%",
   },
   "leadership-profile-portrait-03.webp": {
     src: "/leadership/anish inner.webp",
     alt: "Portrait of Anish Kasim, Executive Director at Real Estate Development",
     focalPoint: "50% 0%",
+  },
+  "leadership-portrait-tejeshree.webp": {
+    src: "/leadership/new-tj.webp",
+    alt: "Portrait of Tejeshree Jadhav, Associate Director – Industrial Assets",
+    focalPoint: "50% 20%",
+  },
+  "leadership-profile-portrait-tejeshree.webp": {
+    src: "/leadership/tj.webp",
+    alt: "Portrait of Tejeshree Jadhav, Associate Director – Industrial Assets",
+    focalPoint: "50% 50%",
   },
   "project-hero.webp": {
     src: "/media/heroes/portfolio.webp",

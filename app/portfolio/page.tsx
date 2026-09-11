@@ -1,5 +1,5 @@
 import { PortfolioListing } from "@/components/portfolio-experience";
-import { Connect, PageHero } from "@/components/ui";
+import { PageHero } from "@/components/ui";
 import { getProjects } from "@/lib/cms/collections";
 export const metadata = {
   title: "Portfolio",
@@ -28,11 +28,6 @@ export default async function Page() {
           standard of thinking.
         </p>
       </section>
-      <Connect
-        compact
-        title="Tomorrow’s developments begin with today’s conversations."
-        copy="Every future development starts with a shared ambition and the willingness to explore what is possible. Aureum welcomes conversations that lead to enduring partnerships and meaningful outcomes."
-      />
     </main>
   );
 }

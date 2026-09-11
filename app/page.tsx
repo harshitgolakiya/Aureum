@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLink, Connect, Eyebrow, Media } from "@/components/ui";
+import { ArrowLink, Eyebrow, Media } from "@/components/ui";
 import {
   insightPresentation,
   projectPresentation,
@@ -95,7 +95,6 @@ export default async function Home() {
           </ArrowLink>
         </div>
       </section>
-      <Connect compact />
       <HomepageReveals />
     </main>
   );

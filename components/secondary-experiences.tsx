@@ -12,9 +12,15 @@ import type { LeaderContent } from "@/lib/cms/schema";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function WhoNarrative({ leaders }: { leaders: readonly LeaderContent[] }) {
+export function WhoNarrative({
+  featuredLeader,
+  leaders,
+}: {
+  featuredLeader: LeaderContent;
+  leaders: readonly LeaderContent[];
+}) {
   const root = useRef<HTMLDivElement>(null);
-  const [person, setPerson] = useState<number | null>(null);
+  const [person, setPerson] = useState<LeaderContent | null>(null);
   useEffect(() => {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const context = gsap.context(() => {
@@ -92,9 +98,11 @@ export function WhoNarrative({ leaders }: { leaders: readonly LeaderContent[] })
     person === null
       ? []
       : [
-          leaders[person].biographyOne,
-          leaders[person].biographyTwo,
-          leaders[person].biographyThree,
+          person.biographyOne,
+          person.biographyTwo,
+          person.biographyThree,
+          person.biographyFour,
+          person.biographyFive,
         ].filter(Boolean);
   return (
     <div ref={root}>
@@ -137,11 +145,23 @@ export function WhoNarrative({ leaders }: { leaders: readonly LeaderContent[] })
       </section>
       <section className="collective-feature">
         <div className="collective-portrait">
-          <Media label="leadership-group-portrait.webp" />
-          <span>Aureum Leadership</span>
+          <button
+            className="collective-portrait-trigger"
+            type="button"
+            onClick={() => setPerson(featuredLeader)}
+            aria-label="View Aasim Ameer's profile"
+          >
+            <Media
+              label="leadership-feature-aasim.webp"
+              src="/leadership/newAasim.webp"
+              alt="Portrait of Aasim Ameer, Chief Executive Officer"
+            />
+            <span className="collective-role-label" aria-hidden="true">CEO</span>
+          </button>
+          <span>Aasim Ameer · Chief Executive Officer</span>
         </div>
         <div>
-          <Eyebrow>A Leadership Perspective</Eyebrow>
+          <Eyebrow>Executive Leadership</Eyebrow>
           <h2 className="collective-statement">
             <span>Three perspectives.</span>
             <span>One standard for</span>
@@ -167,7 +187,7 @@ export function WhoNarrative({ leaders }: { leaders: readonly LeaderContent[] })
       </section>
       <section className="leadership">
         <div className="leadership-heading" data-who-reveal>
-          <Eyebrow>Leadership</Eyebrow>
+          <Eyebrow>Senior Management</Eyebrow>
           <h2>Different perspectives, shared conviction.</h2>
           <p>
             Together, we bring the experience, judgement and perspective to
@@ -185,7 +205,7 @@ export function WhoNarrative({ leaders }: { leaders: readonly LeaderContent[] })
               className="leadership-card"
               type="button"
               key={leader.name}
-              onClick={() => setPerson(index)}
+              onClick={() => setPerson(leader)}
               aria-label={`View ${leader.name}'s profile`}
             >
               <div className="leadership-card-visual">
@@ -222,14 +242,14 @@ export function WhoNarrative({ leaders }: { leaders: readonly LeaderContent[] })
             Close ×
           </button>
           <div className="bio-visual">
-            <Media label={`leadership-profile-portrait-0${person + 1}.webp`} />
+            <Media label={person.profilePortrait} />
           </div>
           <div className="bio-copy">
             <small>Leadership profile</small>
-            <h2 id="bio-title">{leaders[person].name}</h2>
-            <h3>{leaders[person].role}</h3>
+            <h2 id="bio-title">{person.name}</h2>
+            <h3>{person.role}</h3>
             <p className="pending-profile-line">
-              {leaders[person].discipline}
+              {person.discipline}
             </p>
             {selectedBiography.length ? (
               selectedBiography.map((paragraph) => (

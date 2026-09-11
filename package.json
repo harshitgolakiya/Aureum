@@ -22,6 +22,7 @@
     "cms:restore": "node --env-file=.env.local scripts/cms-restore.mjs",
     "cms:verify-public": "node --env-file=.env.local scripts/verify-public-cms.mjs",
     "cms:migrate-public": "node --env-file=.env.local scripts/migrate-public-cms.mjs",
+    "cms:update-leadership": "node --env-file=.env.local scripts/update-leadership-content.mjs",
     "cms:audit:launch": "node --env-file=.env.local scripts/cms-launch-audit.mjs",
     "cms:audit:browsers": "node --env-file=.env.local scripts/cms-browser-audit.mjs",
     "cms:verify-restore": "node --env-file=.env.local scripts/verify-cms-restore.mjs",

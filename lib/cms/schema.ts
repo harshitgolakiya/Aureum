@@ -19,9 +19,12 @@ export type LeaderContent = {
   discipline: string;
   visualLabel: string;
   portrait: string;
+  profilePortrait: string;
   biographyOne: string;
   biographyTwo: string;
   biographyThree: string;
+  biographyFour: string;
+  biographyFive: string;
 };
 
 export type FooterContent = {
@@ -46,6 +49,7 @@ export type CmsContentMap = {
   "leader.aasim": LeaderContent;
   "leader.akhilesh": LeaderContent;
   "leader.anish": LeaderContent;
+  "leader.tejeshree": LeaderContent;
   "site.footer": FooterContent;
 };
 
@@ -74,9 +78,12 @@ const leaderFields = [
   { name: "discipline", label: "Discipline", maxLength: 120 },
   { name: "visualLabel", label: "Card label", maxLength: 30 },
   { name: "portrait", label: "Media reservation label", maxLength: 120 },
+  { name: "profilePortrait", label: "Profile media reservation label", maxLength: 120 },
   { name: "biographyOne", label: "Biography — introduction", kind: "textarea", maxLength: 1200 },
   { name: "biographyTwo", label: "Biography — experience", kind: "textarea", maxLength: 1800 },
   { name: "biographyThree", label: "Biography — Aureum role", kind: "textarea", maxLength: 1200 },
+  { name: "biographyFour", label: "Biography — investment philosophy", kind: "textarea", maxLength: 1800, required: false },
+  { name: "biographyFive", label: "Biography — platform vision", kind: "textarea", maxLength: 1800, required: false },
 ] as const;
 
 export const CMS_DEFINITIONS = [
@@ -130,9 +137,12 @@ export const CMS_DEFINITIONS = [
       discipline: "Executive Leadership",
       visualLabel: "CEO",
       portrait: "leadership-portrait-01.webp",
+      profilePortrait: "leadership-profile-portrait-01.webp",
       biographyOne: "Leverages deep industry experience to strengthen Aureum’s ability to identify, de-risk and deliver high-yield, income-generating assets, aligning long-term value creation with investor goals.",
       biographyTwo: "An engineer from Loughborough University, UK, Aasim brings extensive technical expertise to Dubai’s industrial construction landscape. Since 2014, he has played a pivotal role in shaping a reputation for delivering high-performance, design-and-build industrial projects across the region.",
       biographyThree: "As CEO, he drives strategic direction, combining operational depth with an engineering-led approach to successfully deliver complex builds.",
+      biographyFour: "",
+      biographyFive: "",
     },
   },
   {
@@ -143,13 +153,16 @@ export const CMS_DEFINITIONS = [
     fields: leaderFields,
     fallback: {
       name: "Akhilesh Padinhare",
-      role: "Executive Director in Investment and Strategy",
+      role: "Founder and Executive Director",
       discipline: "Investment & Strategy",
       visualLabel: "Invest",
       portrait: "leadership-portrait-02.webp",
-      biographyOne: "Combines technical depth, market insight and financial acumen to guide Aureum’s investment strategy and steer high-performance developments in line with evolving industrial trends.",
-      biographyTwo: "A Civil Engineer with over 25 years of experience in industrial development across Dubai and Abu Dhabi, Akhilesh brings a rare blend of technical expertise and strategic foresight. His deep familiarity with regulatory frameworks and compliance standards positions him as a critical link between design intent and project delivery.",
-      biographyThree: "As Executive Director at Aureum, he leads with a sharp focus on commercial modeling, project controls and business strategy, ensuring each investment is both technically sound and financially optimized.",
+      profilePortrait: "leadership-profile-portrait-02.webp",
+      biographyOne: "Akhilesh Padinhare is the Founder and Executive Director of Aureum, leading the firm’s investment strategy and growth across industrial and logistics real estate.",
+      biographyTwo: "With more than 26 years of experience in the UAE, Akhilesh combines a Civil Engineering background with deep expertise in industrial development, investment evaluation, construction and asset execution. His experience spans the full real estate investment and development lifecycle, enabling him to assess opportunities from both an investment and execution perspective.",
+      biographyThree: "At Aureum, he focuses on investment origination, development strategy, capital structuring, strategic partnerships and value creation, with particular expertise in industrial, logistics, manufacturing and Built-to-Suit assets.",
+      biographyFour: "His investment philosophy is centred on disciplined underwriting, downside protection, execution certainty and long-term asset value. He works closely with institutional investors, family offices, occupiers and strategic partners to transform industrial real estate opportunities into scalable, income-generating assets.",
+      biographyFive: "Akhilesh is instrumental in shaping Aureum’s evolution into an integrated industrial real estate investment and development platform, with ambitions to build a diversified portfolio of institutional-quality assets across the UAE and the wider GCC.",
     },
   },
   {
@@ -164,9 +177,32 @@ export const CMS_DEFINITIONS = [
       discipline: "Real Estate Development",
       visualLabel: "Estate",
       portrait: "leadership-portrait-03.webp",
+      profilePortrait: "leadership-profile-portrait-03.webp",
       biographyOne: "Brings deep operational insight and value-engineering expertise to ensure Aureum’s developments are buildable, cost-efficient and performance-led from concept to completion.",
       biographyTwo: "An Engineer with 30+ years of hands-on contracting experience, Anish has led the delivery of complex design-and-build industrial projects across the region. His strong command over construction methodologies, site execution and technical detailing makes him an invaluable anchor in translating design intent into high-performing assets.",
       biographyThree: "As Executive Director at Aureum, he plays a pivotal role in aligning construction execution with investor expectations.",
+      biographyFour: "",
+      biographyFive: "",
+    },
+  },
+  {
+    key: "leader.tejeshree",
+    title: "Leadership — Tejeshree Jadhav",
+    description: "Leadership card and profile biography.",
+    route: "/who-we-are",
+    fields: leaderFields,
+    fallback: {
+      name: "Tejeshree Jadhav",
+      role: "Associate Director – Industrial Assets",
+      discipline: "Business Development & Leasing",
+      visualLabel: "Assets",
+      portrait: "leadership-portrait-tejeshree.webp",
+      profilePortrait: "leadership-profile-portrait-tejeshree.webp",
+      biographyOne: "Tejeshree Jadhav leads business development and leasing initiatives at Aureum, with a focus on occupier relationships, commercialisation and portfolio growth across industrial and logistics real estate.",
+      biographyTwo: "She drives leasing strategy, tenant origination, market engagement, and commercial negotiations, working closely with investors, occupiers, and Aureum’s development teams to create strong alignment between industrial assets and market demand.",
+      biographyThree: "Her focus is on building long-term relationships with leading industrial, logistics and manufacturing occupiers, identifying opportunities, and converting market relationships into sustainable leasing outcomes.",
+      biographyFour: "As Aureum expands its portfolio across the UAE, Tejeshree plays an important role in growing the occupier network, strengthening recurring income, and supporting long-term asset value creation.",
+      biographyFive: "",
     },
   },
   {

@@ -381,48 +381,6 @@ export function HomepageReveals() {
           },
         });
       }
-      const connectItems = gsap.utils.toArray<HTMLElement>(".connect > *");
-      if (connectItems.length) {
-        gsap.from(connectItems, {
-          opacity: 0,
-          y: 38,
-          stagger: 0.14,
-          duration: 1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: connectItems[0].closest(".connect") ?? connectItems[0],
-            start: "top 75%",
-          },
-        });
-      }
-      const footer = document.querySelector<HTMLElement>("footer");
-      const footerItems = gsap.utils.toArray<HTMLElement>(
-        "footer .footer-grid > div",
-      );
-      if (footer && footerItems.length) {
-        gsap.from(footerItems, {
-          opacity: 0,
-          y: 24,
-          stagger: 0.12,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: { trigger: footer, start: "top 90%" },
-        });
-      }
-      const footerOrbit = document.querySelector<HTMLElement>(".footer-orbit");
-      if (footer && footerOrbit) {
-        gsap.to(footerOrbit, {
-          rotation: 35,
-          y: -35,
-          ease: "none",
-          scrollTrigger: {
-            trigger: footer,
-            start: "top bottom",
-            end: "bottom bottom",
-            scrub: true,
-          },
-        });
-      }
     });
     return () => context.revert();
   }, []);

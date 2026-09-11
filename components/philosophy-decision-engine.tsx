@@ -47,10 +47,9 @@ export function PhilosophyDecisionEngine() {
         <g className="philosophy-system-pillar philosophy-system-discipline">
           <circle cx="380" cy="72" r="47" fill="#b88a2b" filter="url(#philosophy-system-shadow)" />
           <circle cx="380" cy="72" r="42" fill="none" stroke="#f1d58f" strokeOpacity=".48" strokeWidth=".8" />
-          <g className="philosophy-system-icon" fill="none" stroke="#fff8e7" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="380" cy="72" r="12" />
-            <path d="M380 55v7M380 82v7M363 72h7M390 72h7" />
-            <path d="M374 79l5-14 8-6-5 15z" fill="#fff8e7" stroke="none" />
+          <g className="philosophy-system-icon" fill="none" stroke="#fff8e7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M380 51l17 6v13c0 11-6.5 19-17 24-10.5-5-17-13-17-24V57z" />
+            <path d="M371 72l6 6 13-15" />
           </g>
           <text className="philosophy-system-heading" x="380" y="142" textAnchor="middle" fontFamily={font}>DISCIPLINE</text>
         </g>
@@ -74,7 +73,7 @@ export function PhilosophyDecisionEngine() {
         <g className="philosophy-system-pillar philosophy-system-longterm">
           <circle cx="596" cy="422" r="47" fill="#14283a" stroke="#bdc9d5" strokeWidth="1.5" filter="url(#philosophy-system-shadow)" />
           <circle cx="596" cy="422" r="42" fill="none" stroke="#e0e6eb" strokeOpacity=".26" strokeWidth=".8" />
-          <g className="philosophy-system-icon" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <g className="philosophy-system-icon" transform="translate(596 430) scale(.84) translate(-596 -422)" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <path d="M595 426c-1-23 8-37 29-46-2 21-10 34-29 46z" />
             <path d="M595 426c-8-16-18-24-31-25 4 15 13 23 31 25z" />
             <path d="M595 426v17" />

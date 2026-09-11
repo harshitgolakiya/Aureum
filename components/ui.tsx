@@ -131,21 +131,27 @@ export function PageHero({
   );
 }
 export function Connect({
+  eyebrow = "Begin a conversation",
   title = "The right development starts with the right conversation.",
   copy = "Whether you're exploring an opportunity, planning a development or considering what's next, Aureum brings the intelligence, perspective and development expertise to help shape the right path forward.",
+  ctaLabel = "Connect with us",
+  href = "/contact",
   compact = false,
 }: {
+  eyebrow?: string;
   title?: string;
   copy?: string;
+  ctaLabel?: string;
+  href?: string;
   compact?: boolean;
 }) {
   return (
     <section className={`connect${compact ? " connect-compact" : ""}`}>
-      <Eyebrow>Begin a conversation</Eyebrow>
+      <Eyebrow>{eyebrow}</Eyebrow>
       <h2>{title}</h2>
       <div>
         <p>{copy}</p>
-        <ArrowLink href="/contact">Connect with us</ArrowLink>
+        <ArrowLink href={href}>{ctaLabel}</ArrowLink>
       </div>
     </section>
   );

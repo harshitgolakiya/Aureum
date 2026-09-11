@@ -1,5 +1,5 @@
 import { WhoNarrative } from "@/components/secondary-experiences";
-import { Connect, PageHero } from "@/components/ui";
+import { PageHero } from "@/components/ui";
 import { getCmsContent } from "@/lib/cms/content";
 export const metadata = {
   title: "Who We Are",
@@ -8,9 +8,10 @@ export const metadata = {
   alternates: { canonical: "/who-we-are" },
 };
 export default async function Page() {
-  const [hero, aasim, akhilesh, anish] = await Promise.all([
+  const [hero, aasim, tejeshree, akhilesh, anish] = await Promise.all([
     getCmsContent("who.hero"),
     getCmsContent("leader.aasim"),
+    getCmsContent("leader.tejeshree"),
     getCmsContent("leader.akhilesh"),
     getCmsContent("leader.anish"),
   ]);
@@ -22,11 +23,9 @@ export default async function Page() {
         title={hero.title}
         copy={hero.copy}
       />
-      <WhoNarrative leaders={[aasim, akhilesh, anish]} />
-      <Connect
-        compact
-        title="The next opportunity starts with a conversation."
-        copy="Every significant development begins with a conversation about ambition, opportunity and long-term value. Whether exploring investment or expansion, Aureum welcomes discussions that begin with possibilities and evolve into enduring partnerships."
+      <WhoNarrative
+        featuredLeader={aasim}
+        leaders={[akhilesh, anish, tejeshree]}
       />
     </main>
   );

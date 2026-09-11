@@ -606,6 +606,12 @@ em {
 }
 .connect .button {
   justify-self: end;
+  position: relative;
+  z-index: 2;
+  gap: 1.9rem;
+  min-height: 44px;
+  margin: 0;
+  padding: 0.78rem 0.95rem;
 }
 .connect.connect-compact {
   padding-top: clamp(4.5rem, 6vw, 6.5rem);

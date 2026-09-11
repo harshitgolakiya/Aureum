@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import "./pages.css";
 import "./interactions.css";
@@ -20,6 +21,8 @@ import "./control-system.css";
 import "./launch-polish.css";
 import { Footer, Header } from "@/components/layout";
 import { RouteExperience } from "@/components/route-experience";
+import { SiteConnect } from "@/components/site-connect";
+import { Connect } from "@/components/ui";
 import { WebVitals } from "@/components/web-vitals";
 import { getCmsContent } from "@/lib/cms/content";
 import { getSiteOrigin } from "@/lib/site-url";
@@ -86,6 +89,9 @@ export default async function RootLayout({
           <div id="main-content" tabIndex={-1}>
             {children}
           </div>
+          <Suspense fallback={<Connect compact />}>
+            <SiteConnect />
+          </Suspense>
           <Footer content={footerContent} />
         </RouteExperience>
         <WebVitals />

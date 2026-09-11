@@ -24,9 +24,9 @@ export const CMS_PAGE_CONFIGS: Record<CmsEditorSlug, CmsPageConfig> = {
   "who-we-are": {
     slug: "who-we-are",
     title: "Who We Are",
-    description: "Manage the page introduction and all three leadership profiles.",
+    description: "Manage the page introduction and leadership profiles.",
     route: "/who-we-are",
-    keys: ["who.hero", "leader.aasim", "leader.akhilesh", "leader.anish"],
+    keys: ["who.hero", "leader.aasim", "leader.akhilesh", "leader.anish", "leader.tejeshree"],
   },
   settings: {
     slug: "settings",
@@ -75,7 +75,7 @@ export function validatePageContent(config: CmsPageConfig, values: Partial<CmsCo
       else if (field.kind === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) errors[name] = "Enter a valid email address.";
       else if (field.kind === "tel" && !/^\+?[0-9()\-\s.]+$/.test(value)) errors[name] = "Use a valid international phone number.";
       else if (field.kind === "url" && !/^https:\/\/[^\s]+$/i.test(value)) errors[name] = "Enter a complete HTTPS URL.";
-      else if (field.name === "portrait" && !/^[A-Za-z0-9/_\-.]+$/.test(value)) errors[name] = "Use a media filename or public asset path.";
+      else if ((field.name === "portrait" || field.name === "profilePortrait") && !/^[A-Za-z0-9/_\-.]+$/.test(value)) errors[name] = "Use a media filename or public asset path.";
     }
   }
   return errors;

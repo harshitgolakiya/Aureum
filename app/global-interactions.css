@@ -197,13 +197,14 @@
 .connect:after {
   content: "";
   position: absolute;
-  width: min(42vw, 620px);
+  width: clamp(360px, 42vw, 620px);
   aspect-ratio: 1;
   border: 1px solid rgba(183, 154, 88, 0.14);
   border-radius: 50%;
-  right: -15%;
-  bottom: -55%;
+  right: 0;
+  bottom: 0;
   box-shadow: 0 0 0 70px rgba(183, 154, 88, 0.025);
+  transform: translate(50%, 50%);
 }
 footer {
   position: relative;
@@ -221,13 +222,14 @@ footer:before {
 }
 .footer-orbit {
   position: absolute;
-  width: 420px;
-  height: 420px;
-  border: 1px solid rgba(183, 154, 88, 0.09);
+  width: clamp(360px, 42vw, 620px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(183, 154, 88, 0.14);
   border-radius: 50%;
-  right: -210px;
-  top: -210px;
-  box-shadow: 0 0 0 65px rgba(183, 154, 88, 0.018);
+  right: 0;
+  top: 0;
+  box-shadow: 0 0 0 70px rgba(183, 154, 88, 0.025);
+  transform: translate(50%, -50%);
 }
 .footer-grid,
 .footer-bottom {
@@ -293,10 +295,5 @@ footer:before {
   }
   .mega-menu {
     display: none;
-  }
-  .connect:after {
-    width: 70vw;
-    right: -35%;
-    bottom: -20%;
   }
 }
