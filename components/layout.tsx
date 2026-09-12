@@ -247,11 +247,13 @@ export function Footer({ content }: { content: FooterContent }) {
             {content.brandStatement}
           </p>
         </div>
-        <ConversationTrigger className="footer-cta">
-          <small>Have an industrial opportunity?</small>
-          <span>Start a conversation</span>
-          <b aria-hidden="true">↗</b>
-        </ConversationTrigger>
+        {pathname !== "/contact" && (
+          <ConversationTrigger className="footer-cta">
+            <small>Have an industrial opportunity?</small>
+            <span>Start a conversation</span>
+            <b aria-hidden="true">↗</b>
+          </ConversationTrigger>
+        )}
       </div>
       <div className="footer-grid">
         <div className="footer-column">
