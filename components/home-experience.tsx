@@ -313,7 +313,7 @@ export function EngagementModels() {
   return (
     <section ref={root} className="engagement section">
       <div className="engagement-heading">
-        <Eyebrow>How We Partner</Eyebrow>
+        <Eyebrow>What We Do</Eyebrow>
         <h2>
           The right development approach is never predefined.{" "}
           <em>The opportunity shapes the way we develop.</em>
