@@ -260,7 +260,7 @@ export function ContactForm() {
           aria-busy={status === "sending"}
         >
           {status === "sending" && <i className="button-spinner" />}
-          {status === "sending" ? "Preparing…" : "Start the Conversation"}
+          {status === "sending" ? "Submitting…" : "Submit"}
           <span>↗</span>
         </button>
         <p>Required fields are marked with an asterisk.</p>

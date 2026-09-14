@@ -18,7 +18,7 @@ export const approvedMedia: Record<string, ApprovedMedia> = {
     focalPoint: "50% 50%",
   },
   "leadership-portrait-01.webp": {
-    src: "/leadership/aasim 1.webp",
+    src: "/leadership/newAasim.webp",
     alt: "Portrait of Aasim Ameer, Chief Executive Officer",
     focalPoint: "50% 0%",
   },

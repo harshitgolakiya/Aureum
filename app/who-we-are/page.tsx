@@ -24,8 +24,8 @@ export default async function Page() {
         copy={hero.copy}
       />
       <WhoNarrative
-        featuredLeader={aasim}
-        leaders={[akhilesh, anish, tejeshree]}
+        executiveLeaders={[aasim, akhilesh, anish]}
+        seniorManagement={[tejeshree]}
       />
     </main>
   );

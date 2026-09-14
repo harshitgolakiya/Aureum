@@ -13,11 +13,11 @@ import { ConversationTrigger } from "./conversation-modal";
 gsap.registerPlugin(ScrollTrigger);
 
 export function WhoNarrative({
-  featuredLeader,
-  leaders,
+  executiveLeaders,
+  seniorManagement,
 }: {
-  featuredLeader: LeaderContent;
-  leaders: readonly LeaderContent[];
+  executiveLeaders: readonly LeaderContent[];
+  seniorManagement: readonly LeaderContent[];
 }) {
   const root = useRef<HTMLDivElement>(null);
   const [person, setPerson] = useState<LeaderContent | null>(null);
@@ -131,12 +131,6 @@ export function WhoNarrative({
         <div data-who-reveal>
           <Eyebrow>Our Philosophy</Eyebrow>
           <h2>A different view demands a different way of thinking.</h2>
-          <p>
-            The Aureum System provides a consistent institutional framework for
-            evaluating opportunities, shaping developments and pursuing
-            long-term value across commercial, technical and strategic
-            dimensions.
-          </p>
           <blockquote>
             The Aureum System brings consistency to how we assess opportunities,
             shape developments and create long-term value.
@@ -145,23 +139,11 @@ export function WhoNarrative({
       </section>
       <section className="collective-feature">
         <div className="collective-portrait">
-          <button
-            className="collective-portrait-trigger"
-            type="button"
-            onClick={() => setPerson(featuredLeader)}
-            aria-label="View Aasim Ameer's profile"
-          >
-            <Media
-              label="leadership-feature-aasim.webp"
-              src="/leadership/newAasim.webp"
-              alt="Portrait of Aasim Ameer, Chief Executive Officer"
-            />
-            <span className="collective-role-label" aria-hidden="true">CEO</span>
-          </button>
-          <span>Aasim Ameer · Chief Executive Officer</span>
+          <Media label="leadership-group-portrait.webp" />
+          <span>Aureum leadership team</span>
         </div>
         <div>
-          <Eyebrow>Executive Leadership</Eyebrow>
+          <Eyebrow>Leadership Perspective</Eyebrow>
           <h2 className="collective-statement">
             <span>Three perspectives.</span>
             <span>One standard for</span>
@@ -187,20 +169,11 @@ export function WhoNarrative({
       </section>
       <section className="leadership">
         <div className="leadership-heading" data-who-reveal>
-          <Eyebrow>Senior Management</Eyebrow>
+          <Eyebrow>Executive Leadership</Eyebrow>
           <h2>Different perspectives, shared conviction.</h2>
-          <p>
-            Together, we bring the experience, judgement and perspective to
-            shape opportunities with clarity and purpose.
-          </p>
-          <small>
-            Our leadership brings together commercial, engineering and
-            development experience, aligned around a shared perspective on
-            industrial development.
-          </small>
         </div>
         <div className="leadership-list" data-who-reveal>
-          {leaders.map((leader, index) => (
+          {executiveLeaders.map((leader) => (
             <button
               className="leadership-card"
               type="button"
@@ -210,10 +183,35 @@ export function WhoNarrative({
             >
               <div className="leadership-card-visual">
                 <Media label={leader.portrait} />
-                <span className="leadership-card-index">0{index + 1}</span>
-                <span className="leadership-card-discipline">
-                  {leader.visualLabel}
-                </span>
+              </div>
+              <div className="leadership-card-body">
+                <small>{leader.role}</small>
+                <strong>{leader.name}</strong>
+                <div>
+                  <span>{leader.discipline}</span>
+                  <b aria-hidden="true">View profile ↗</b>
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </section>
+      <section className="leadership leadership-secondary">
+        <div className="leadership-heading" data-who-reveal>
+          <Eyebrow>Senior Management</Eyebrow>
+          <h2>Experience that strengthens every development.</h2>
+        </div>
+        <div className="leadership-list" data-who-reveal>
+          {seniorManagement.map((leader) => (
+            <button
+              className="leadership-card"
+              type="button"
+              key={leader.name}
+              onClick={() => setPerson(leader)}
+              aria-label={`View ${leader.name}'s profile`}
+            >
+              <div className="leadership-card-visual">
+                <Media label={leader.portrait} />
               </div>
               <div className="leadership-card-body">
                 <small>{leader.role}</small>

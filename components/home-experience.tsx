@@ -12,6 +12,51 @@ import type { HomeHeroContent } from "@/lib/cms/schema";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const LIFECYCLE_TAPER_PROGRESS = 0.05;
+const LIFECYCLE_TAPER_SEGMENTS = 10;
+
+function lifecycleArcSegment(startProgress: number, endProgress: number) {
+  const center = 50;
+  const radius = 49;
+  const boundedStart = Math.max(0, Math.min(startProgress, 1));
+  const boundedEnd = Math.max(boundedStart, Math.min(endProgress, 1));
+  const sweep = boundedEnd - boundedStart;
+
+  if (sweep <= 0) return "";
+  if (sweep >= 1) {
+    return "M 50 1 A 49 49 0 1 1 50 99 A 49 49 0 1 1 50 1";
+  }
+
+  const startAngle = (-90 + boundedStart * 360) * (Math.PI / 180);
+  const endAngle = (-90 + boundedEnd * 360) * (Math.PI / 180);
+  const startX = center + radius * Math.cos(startAngle);
+  const startY = center + radius * Math.sin(startAngle);
+  const endX = center + radius * Math.cos(endAngle);
+  const endY = center + radius * Math.sin(endAngle);
+  const largeArc = sweep > 0.5 ? 1 : 0;
+
+  return `M ${startX.toFixed(3)} ${startY.toFixed(3)} A 49 49 0 ${largeArc} 1 ${endX.toFixed(3)} ${endY.toFixed(3)}`;
+}
+
+function updateLifecycleOrbit(group: SVGGElement, progress: number) {
+  const taperStep = LIFECYCLE_TAPER_PROGRESS / LIFECYCLE_TAPER_SEGMENTS;
+  group
+    .querySelectorAll<SVGPathElement>(".lifecycle-orbit-taper")
+    .forEach((segment, index) => {
+      const segmentStart = index * taperStep;
+      const segmentEnd = Math.min(progress, segmentStart + taperStep);
+      segment.setAttribute(
+        "d",
+        lifecycleArcSegment(segmentStart, segmentEnd),
+      );
+    });
+  const body = group.querySelector<SVGPathElement>(".lifecycle-orbit-body");
+  body?.setAttribute(
+    "d",
+    lifecycleArcSegment(LIFECYCLE_TAPER_PROGRESS, progress),
+  );
+}
+
 export function HomeHero({ content }: { content: HomeHeroContent }) {
   const root = useRef<HTMLElement>(null);
   const video = useRef<HTMLVideoElement>(null);
@@ -184,13 +229,72 @@ export function LifecycleStory() {
   const [active, setActive] = useState(0);
   useEffect(() => {
     const media = gsap.matchMedia();
+    const cards = gsap.utils.toArray<HTMLElement>(
+      ".lifecycle-card",
+      track.current,
+    );
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    cards.forEach((card) => {
+      const orbit = card.querySelector<SVGGElement>(
+        ".lifecycle-orbit-progress",
+      );
+      if (!orbit) return;
+      const targetProgress = Number(orbit.dataset.progress ?? 0);
+      updateLifecycleOrbit(
+        orbit,
+        reducedMotion ? targetProgress : 0.003,
+      );
+      gsap.set(orbit, {
+        opacity: 1,
+      });
+    });
+
+    const revealOrbit = (card: HTMLElement) => {
+      const orbit = card.querySelector<SVGGElement>(
+        ".lifecycle-orbit-progress",
+      );
+      if (!orbit || orbit.dataset.drawn === "true" || reducedMotion) return;
+      orbit.dataset.drawn = "true";
+      const targetProgress = Number(orbit.dataset.progress ?? 0);
+      const drawState = { progress: 0.003 };
+      gsap.to(drawState, {
+        progress: targetProgress,
+        duration: 0.95,
+        ease: "power2.out",
+        onUpdate: () => {
+          updateLifecycleOrbit(orbit, drawState.progress);
+        },
+      });
+    };
+
+    const revealVisibleOrbits = () => {
+      const sectionBounds = root.current?.getBoundingClientRect();
+      if (
+        !sectionBounds ||
+        sectionBounds.top >= innerHeight ||
+        sectionBounds.bottom <= 0
+      )
+        return;
+      cards.forEach((card) => {
+        const bounds = card.getBoundingClientRect();
+        if (bounds.left <= innerWidth * 0.88 && bounds.right >= 0) {
+          revealOrbit(card);
+        }
+      });
+    };
+
     media.add(
       "(min-width: 901px) and (prefers-reduced-motion: no-preference)",
       () => {
-        const cards = gsap.utils.toArray<HTMLElement>(
-          ".lifecycle-card",
-          track.current,
-        );
+        ScrollTrigger.create({
+          trigger: root.current,
+          start: "top 88%",
+          once: true,
+          onEnter: () => {
+            cards.slice(0, 2).forEach(revealOrbit);
+          },
+        });
         const tween = gsap.to(track.current, {
           x: () => -(track.current!.scrollWidth - innerWidth),
           ease: "none",
@@ -201,8 +305,12 @@ export function LifecycleStory() {
             pin: true,
             scrub: 1,
             invalidateOnRefresh: true,
-            onUpdate: (self) =>
-              setActive(Math.min(5, Math.floor(self.progress * 6))),
+            onEnter: revealVisibleOrbits,
+            onEnterBack: revealVisibleOrbits,
+            onUpdate: (self) => {
+              setActive(Math.min(5, Math.floor(self.progress * 6)));
+              revealVisibleOrbits();
+            },
           },
         });
         cards.forEach((card) =>
@@ -221,11 +329,7 @@ export function LifecycleStory() {
       },
     );
     media.add("(max-width: 900px)", () => {
-      const cards = gsap.utils.toArray<HTMLElement>(
-        ".lifecycle-card",
-        track.current,
-      );
-      cards.forEach((card, index) =>
+      cards.forEach((card, index) => {
         ScrollTrigger.create({
           trigger: card,
           start: "top 45%",
@@ -233,8 +337,16 @@ export function LifecycleStory() {
           onToggle: (self) => {
             if (self.isActive) setActive(index);
           },
-        }),
-      );
+        });
+        if (!reducedMotion) {
+          ScrollTrigger.create({
+            trigger: card,
+            start: "top 82%",
+            once: true,
+            onEnter: () => revealOrbit(card),
+          });
+        }
+      });
     });
     return () => media.revert();
   }, []);
@@ -270,17 +382,70 @@ export function LifecycleStory() {
         <span>Development phases</span>
       </div>
       <div ref={track} className="lifecycle-track">
-        {phases.map(([n, title, body], index) => (
-          <article className="lifecycle-card" key={n}>
-            <div className="lifecycle-orbit">
-              <span>{n}</span>
-              <i style={{ transform: `rotate(${index * 60}deg)` }} />
-            </div>
-            <small>Development phase {n}</small>
-            <h3>{title}</h3>
-            <p>{body}</p>
-          </article>
-        ))}
+        {phases.map(([n, title, body], index) => {
+          const progress = (index + 1) / phases.length;
+
+          return (
+            <article className="lifecycle-card" key={n}>
+              <div className="lifecycle-orbit">
+                <span>{n}</span>
+                <svg
+                  aria-hidden="true"
+                  className="lifecycle-orbit-ring"
+                  focusable="false"
+                  viewBox="0 0 100 100"
+                >
+                  <g
+                    className="lifecycle-orbit-progress"
+                    data-progress={progress}
+                  >
+                    {Array.from(
+                      { length: LIFECYCLE_TAPER_SEGMENTS },
+                      (_, segmentIndex) => {
+                        const taperStep =
+                          LIFECYCLE_TAPER_PROGRESS /
+                          LIFECYCLE_TAPER_SEGMENTS;
+                        const segmentStart = segmentIndex * taperStep;
+                        const segmentEnd = Math.min(
+                          progress,
+                          segmentStart + taperStep,
+                        );
+                        const strokeWidth =
+                          0.35 +
+                          (segmentIndex /
+                            (LIFECYCLE_TAPER_SEGMENTS - 1)) *
+                            1.65;
+
+                        return (
+                          <path
+                            className="lifecycle-orbit-taper"
+                            d={lifecycleArcSegment(
+                              segmentStart,
+                              segmentEnd,
+                            )}
+                            key={segmentIndex}
+                            strokeWidth={strokeWidth}
+                          />
+                        );
+                      },
+                    )}
+                    <path
+                      className="lifecycle-orbit-body"
+                      d={lifecycleArcSegment(
+                        LIFECYCLE_TAPER_PROGRESS,
+                        progress,
+                      )}
+                      strokeWidth="2"
+                    />
+                  </g>
+                </svg>
+              </div>
+              <small>Development phase {n}</small>
+              <h3>{title}</h3>
+              <p>{body}</p>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
@@ -288,7 +453,12 @@ export function LifecycleStory() {
 
 export function EngagementModels() {
   const root = useRef<HTMLElement>(null);
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState<number | null>(null);
+  const modelImages = [
+    "/Predictive.webp",
+    "/Purpose.webp",
+    "/Strategic.webp",
+  ];
   useEffect(() => {
     const context = gsap.context(() => {
       gsap.from(".engagement-heading > *", {
@@ -319,14 +489,27 @@ export function EngagementModels() {
           <em>The opportunity shapes the way we develop.</em>
         </h2>
       </div>
-      <div className="engagement-panels" onMouseLeave={() => setActive(0)}>
+      <div className="engagement-panels" onMouseLeave={() => setActive(null)}>
         {models.map((model, index) => (
           <article
             className={`engagement-panel ${active === index ? "active" : ""}`}
             key={model.n}
+            onBlur={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) {
+                setActive(null);
+              }
+            }}
             onMouseEnter={() => setActive(index)}
             onFocus={() => setActive(index)}
           >
+            <div className="engagement-panel-media">
+              <Image
+                alt={`${model.title} Grade A warehouse development`}
+                fill
+                sizes="(max-width: 900px) 100vw, 50vw"
+                src={modelImages[index]}
+              />
+            </div>
             <div className="engagement-index">
               <i />
             </div>

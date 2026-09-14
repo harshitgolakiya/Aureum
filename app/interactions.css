@@ -245,12 +245,28 @@
   font-size: clamp(3rem, 6vw, 6rem);
   color: var(--cream);
 }
-.lifecycle-orbit i {
+.lifecycle-orbit-ring {
   position: absolute;
-  inset: -1px;
-  border-radius: 50%;
-  border-top: 2px solid var(--gold);
-  border-right: 2px solid transparent;
+  inset: 0;
+  height: 100%;
+  overflow: visible;
+  width: 100%;
+}
+.lifecycle-orbit-progress {
+  opacity: 0;
+}
+.lifecycle-orbit-progress path {
+  fill: none;
+  stroke: var(--gold);
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.lifecycle-orbit-taper {
+  stroke-linecap: square;
+}
+.lifecycle-orbit-taper:first-child,
+.lifecycle-orbit-body {
+  stroke-linecap: round;
 }
 @media (max-width: 900px) {
   .system-story {
@@ -607,6 +623,10 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .lifecycle-orbit-progress {
+    opacity: 1;
+    stroke-width: 2px;
+  }
   .industrial-field {
     display: none;
   }
