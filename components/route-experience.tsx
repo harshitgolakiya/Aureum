@@ -111,9 +111,9 @@ export function RouteExperience({ children }: { children: React.ReactNode }) {
         >
           <div>
             <Image
-              src="/aureumLogo.svg"
-              width={308}
-              height={94}
+              src="/aureum.svg"
+              width={337}
+              height={73}
               alt=""
               unoptimized
             />

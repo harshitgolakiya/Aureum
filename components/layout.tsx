@@ -131,9 +131,9 @@ export function Header() {
     >
       <Link href="/" className="logo" aria-label="Aureum home">
         <Image
-          src="/aureumLogo.svg"
-          width={308}
-          height={94}
+          src="/aureum.svg"
+          width={337}
+          height={73}
           alt="Aureum — The 360° Industrial Developer"
           priority
           unoptimized
@@ -237,9 +237,9 @@ export function Footer({ content }: { content: FooterContent }) {
         <div className="footer-brand">
           <Image
             className="footer-logo"
-            src="/aureumLogo.svg"
-            width={308}
-            height={94}
+            src="/aureum.svg"
+            width={337}
+            height={73}
             alt="Aureum"
             unoptimized
           />
