@@ -1,0 +1,106 @@
+/* A restrained public-site radius pass. Intentional circular controls stay circular. */
+:root {
+  --radius-control: 3px;
+  --radius-card: 4px;
+  --radius-media: 6px;
+}
+
+/* Small interactive controls. */
+.header :is(.nav-cta, .menu-button),
+.route-shell:not(.route-shell-admin) :is(
+    .button,
+    .footer-cta,
+    .conversation-trigger,
+    input,
+    select,
+    textarea,
+    .filters button,
+    .featured-insight-copy nav button
+  ),
+.conversation-modal .form-actions button {
+  border-radius: var(--radius-control);
+}
+
+/* Large visual surfaces need enough radius to remain visible at scale. */
+.route-shell:not(.route-shell-admin) :is(
+    .media,
+    .phase-visual,
+    .portfolio-media,
+    .engagement-panel-media,
+    .partner-media,
+    .partner-chapter-media,
+    .case-chapter-visual,
+    .featured-insight-media,
+    .aureum-sequence-visual,
+    .collective-portrait,
+    .bio-visual,
+    .map
+  ),
+.conversation-modal {
+  border-radius: var(--radius-media);
+}
+
+/* Cards and compact panels sit between controls and large media. */
+.route-shell:not(.route-shell-admin) :is(
+    .engagement-panel,
+    .model-grid article,
+    .article-list > a,
+    .leadership-card,
+    .leadership-list button,
+    .insight-category,
+    .insight-result,
+    .related-insights a,
+    .data-placeholder,
+    .map-location-card,
+    .alternative-contact,
+    .principle,
+    .categories article,
+    .partner-block,
+    .error-summary,
+    .confirmation,
+    .portfolio-filter-bar,
+    .insight-filter,
+    .case-chapters > nav,
+    .project-pagination
+  ) {
+  border-radius: var(--radius-card);
+}
+
+.route-shell:not(.route-shell-admin) :is(
+    .media,
+    .phase-visual,
+    .portfolio-media,
+    .engagement-panel-media,
+    .partner-media,
+    .partner-chapter-media,
+    .case-chapter-visual,
+    .featured-insight-media,
+    .aureum-sequence-visual,
+    .collective-portrait,
+    .bio-visual,
+    .map,
+    .engagement-panel,
+    .model-grid article,
+    .article-list > a,
+    .leadership-card,
+    .leadership-list button,
+    .insight-category,
+    .insight-result,
+    .related-insights a,
+    .data-placeholder,
+    .map-location-card,
+    .alternative-contact,
+    .principle,
+    .categories article,
+    .partner-block,
+    .error-summary,
+    .confirmation,
+    .project-pagination
+  ),
+.conversation-modal {
+  overflow: hidden;
+}
+
+.route-shell:not(.route-shell-admin) .partner-system-pathway rect {
+  rx: 3px;
+}

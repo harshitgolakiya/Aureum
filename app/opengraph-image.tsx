@@ -63,7 +63,7 @@ export default function Image() {
               fontSize: 42,
               lineHeight: 1.22,
               letterSpacing: -1.5,
-              color: "#d2cfcb",
+              color: "#f1efe9",
             }}
           >
             From opportunity to sustainable long-term performance.
