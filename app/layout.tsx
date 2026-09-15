@@ -40,6 +40,14 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   applicationName: "Aureum",
   alternates: { canonical: "/" },
+  icons: {
+    icon: {
+      url: "/AUREUM%2032%20X%2032.png",
+      sizes: "32x32",
+      type: "image/png",
+    },
+    shortcut: "/AUREUM%2032%20X%2032.png",
+  },
   openGraph: {
     title: "Aureum — The 360° Industrial Developer",
     description: "From opportunity to sustainable long-term performance.",
