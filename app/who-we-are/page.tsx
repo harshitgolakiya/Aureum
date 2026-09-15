@@ -1,6 +1,24 @@
 import { WhoNarrative } from "@/components/secondary-experiences";
 import { PageHero } from "@/components/ui";
 import { getCmsContent } from "@/lib/cms/content";
+import type { LeaderContent } from "@/lib/cms/schema";
+
+const seniorManagementPlaceholder: LeaderContent = {
+  name: "Profile to be announced",
+  role: "Senior Management",
+  discipline: "Development Operations",
+  visualLabel: "",
+  portrait: "leadership-portrait-placeholder.webp",
+  profilePortrait: "leadership-profile-placeholder.webp",
+  biographyOne:
+    "This profile is reserved for an additional member of Aureum’s senior management team.",
+  biographyTwo:
+    "Approved professional information and photography will be added when supplied.",
+  biographyThree: "",
+  biographyFour: "",
+  biographyFive: "",
+};
+
 export const metadata = {
   title: "Who We Are",
   description:
@@ -25,7 +43,7 @@ export default async function Page() {
       />
       <WhoNarrative
         executiveLeaders={[aasim, akhilesh, anish]}
-        seniorManagement={[tejeshree]}
+        seniorManagement={[tejeshree, seniorManagementPlaceholder]}
       />
     </main>
   );

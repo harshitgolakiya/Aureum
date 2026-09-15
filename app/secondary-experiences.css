@@ -549,6 +549,9 @@
   gap: clamp(0.8rem, 1.5vw, 1.5rem);
   margin-top: clamp(3rem, 5vw, 5rem);
 }
+.leadership-list-compact {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
 .leadership-list button {
   width: 100%;
   height: 100%;
@@ -939,14 +942,23 @@
 .partner-system-graphic.is-active .partner-system-pathway-3 .partner-system-draw {
   animation: partnerSystemDraw 0.85s cubic-bezier(0.65, 0, 0.35, 1) 0.26s forwards;
 }
+.partner-system-graphic.is-active .partner-system-pathway-4 .partner-system-draw {
+  animation: partnerSystemDraw 0.85s cubic-bezier(0.65, 0, 0.35, 1) 0.39s forwards;
+}
+.partner-system-graphic.is-active .partner-system-pathway-5 .partner-system-draw {
+  animation: partnerSystemDraw 0.85s cubic-bezier(0.65, 0, 0.35, 1) 0.52s forwards;
+}
+.partner-system-graphic.is-active .partner-system-pathway-6 .partner-system-draw {
+  animation: partnerSystemDraw 0.85s cubic-bezier(0.65, 0, 0.35, 1) 0.65s forwards;
+}
 .partner-system-graphic.is-active .partner-system-output-animation {
-  animation: partnerSystemDraw 0.55s cubic-bezier(0.65, 0, 0.35, 1) 0.92s forwards;
+  animation: partnerSystemDraw 0.55s cubic-bezier(0.65, 0, 0.35, 1) 1.18s forwards;
 }
 .partner-system-graphic.is-active .partner-system-core {
-  animation: partnerSystemCoreAppear 0.5s ease 0.58s forwards;
+  animation: partnerSystemCoreAppear 0.5s ease 0.84s forwards;
 }
 .partner-system-graphic.is-active .partner-system-fade {
-  animation: partnerSystemFadeIn 0.4s ease 0.92s forwards;
+  animation: partnerSystemFadeIn 0.4s ease 1.18s forwards;
 }
 @keyframes partnerSystemDraw {
   to { stroke-dashoffset: 0; }

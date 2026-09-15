@@ -226,7 +226,7 @@ export const CMS_DEFINITIONS = [
       { name: "facebookUrl", label: "Facebook URL", kind: "url", maxLength: 300, required: false },
     ],
     fallback: {
-      brandStatement: "Intelligence, strategy and disciplined execution for enduring industrial developments.",
+      brandStatement: "Intelligence, strategy and discipline for enduring industrial developments.",
       addressOne: "Aureum Asset Management LLC. FZ",
       addressTwo: "602, Capricorn Tower",
       addressThree: "Trade Center Second",

@@ -223,6 +223,11 @@ export function Header() {
 export function Footer({ content }: { content: FooterContent }) {
   const pathname = usePathname();
   if (pathname.startsWith("/admin")) return null;
+  const brandStatement =
+    content.brandStatement ===
+    "Intelligence, strategy and disciplined execution for enduring industrial developments."
+      ? "Intelligence, strategy and discipline for enduring industrial developments."
+      : content.brandStatement;
   const socialLinks = (
     [
       ["LinkedIn", content.linkedinUrl],
@@ -244,7 +249,7 @@ export function Footer({ content }: { content: FooterContent }) {
             unoptimized
           />
           <p>
-            {content.brandStatement}
+            {brandStatement}
           </p>
         </div>
         {pathname !== "/contact" && (

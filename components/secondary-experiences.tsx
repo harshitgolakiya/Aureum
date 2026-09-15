@@ -8,7 +8,6 @@ import { ArrowLink, Eyebrow, Media } from "./ui";
 import { PartnerSystemGraphic } from "./partner-system-graphic";
 import { PhilosophyDecisionEngine } from "./philosophy-decision-engine";
 import type { LeaderContent } from "@/lib/cms/schema";
-import { ConversationTrigger } from "./conversation-modal";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -132,8 +131,8 @@ export function WhoNarrative({
           <Eyebrow>Our Philosophy</Eyebrow>
           <h2>A different view demands a different way of thinking.</h2>
           <blockquote>
-            The Aureum System brings consistency to how we assess opportunities,
-            shape developments and create long-term value.
+            The Aureum System brings consistency to how we assess industrial
+            development opportunities, shape them and create long-term value.
           </blockquote>
         </div>
       </section>
@@ -201,7 +200,10 @@ export function WhoNarrative({
           <Eyebrow>Senior Management</Eyebrow>
           <h2>Experience that strengthens every development.</h2>
         </div>
-        <div className="leadership-list" data-who-reveal>
+        <div
+          className="leadership-list leadership-list-compact"
+          data-who-reveal
+        >
           {seniorManagement.map((leader) => (
             <button
               className="leadership-card"
@@ -273,14 +275,14 @@ const partnerships = [
     title: "Predictive Development",
     headline: "Opportunity is where development begins.",
     how: "We identify and evaluate opportunities through market intelligence, commercial assessment and development insight and bring the right conditions together to determine what should be developed and why.",
-    who: "For those seeking to unlock an industrial opportunity as an occupier, landowner, investor or strategic partner.",
+    who: "For those seeking to unlock an industrial opportunity as an occupier, investor or strategic partner.",
     cta: "Discuss an Opportunity",
     image: "/how-we-1.webp",
     visualCue: "Opportunity identified",
   },
   {
     n: "02",
-    title: "Development Management",
+    title: "Purpose-Built Development",
     headline: "Developed around your requirements.",
     how: "We align site, commercial, design, engineering and delivery decisions around the occupier's operational requirements, creating a development purpose-built for how the business needs to perform.",
     who: "For occupiers and businesses seeking industrial space developed around their operational requirements, expansion plans and long-term needs.",
@@ -293,7 +295,7 @@ const partnerships = [
     title: "Strategic Development Partnerships",
     headline: "The right partners shape the right opportunity.",
     how: "We structure partnerships around the strengths and objectives of each party, creating a clear alignment between the opportunity, the development model and the interests invested in its success.",
-    who: "For investors, landowners, occupiers and strategic partners seeking to unlock industrial development opportunities together.",
+    who: "For investors, occupiers and strategic partners seeking to unlock industrial development opportunities together.",
     cta: "Discuss a Development Opportunity",
     image: "/how-we-3.webp",
     visualCue: "Interests aligned",
@@ -424,7 +426,6 @@ export function PartnerConvergence() {
           Regardless of the engagement model, every development follows the same
           disciplined framework.
         </p>
-        <ConversationTrigger>Start a conversation ↗</ConversationTrigger>
       </div>
     </section>
   );
