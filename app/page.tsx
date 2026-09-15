@@ -7,6 +7,7 @@ import {
 import {
   AureumSystemIntroduction,
   EngagementModels,
+  EngagementModelsAlternative,
   HomeHero,
   HomepageReveals,
   LifecycleStory,
@@ -36,6 +37,7 @@ export default async function Home() {
       <AureumSequenceStory />
       <LifecycleStory />
       <EngagementModels />
+      <EngagementModelsAlternative />
       <section className="work section">
         <div className="section-heading">
           <Eyebrow>Selected Developments</Eyebrow>

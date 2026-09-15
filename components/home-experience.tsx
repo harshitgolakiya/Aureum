@@ -161,7 +161,9 @@ export function HomeHero({ content }: { content: HomeHeroContent }) {
             event.currentTarget.hidden = true;
           }}
         >
-          {videoEnabled && <source src={homeHeroMedia.videoSrc} type="video/mp4" />}
+          {videoEnabled && (
+            <source src={homeHeroMedia.videoSrc} type={homeHeroMedia.videoType} />
+          )}
         </video>
       </div>
       <div className="hero-grid" />
@@ -451,14 +453,15 @@ export function LifecycleStory() {
   );
 }
 
+const modelImages = [
+  "/Predictive.webp",
+  "/Purpose.webp",
+  "/Strategic.webp",
+];
+
 export function EngagementModels() {
   const root = useRef<HTMLElement>(null);
   const [active, setActive] = useState<number | null>(null);
-  const modelImages = [
-    "/Predictive.webp",
-    "/Purpose.webp",
-    "/Strategic.webp",
-  ];
   useEffect(() => {
     const context = gsap.context(() => {
       gsap.from(".engagement-heading > *", {
@@ -524,10 +527,53 @@ export function EngagementModels() {
                 )}
               </h3>
               <strong>{model.lead}</strong>
+              <Link href="/how-we-partner">
+                Explore model <b>↗</b>
+              </Link>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+export function EngagementModelsAlternative() {
+  return (
+    <section className="engagement-alternative section">
+      <div className="engagement-alternative-heading">
+        <Eyebrow>What We Do</Eyebrow>
+        <h2>
+          The right development approach is never predefined.{" "}
+          <em>The opportunity shapes the way we develop.</em>
+        </h2>
+      </div>
+      <div className="engagement-alternative-list">
+        {models.map((model, index) => (
+          <article className="engagement-alternative-row" key={model.n}>
+            <div className="engagement-alternative-index">
+              <b>{model.n}</b>
+              <small>{["Originate", "Develop", "Align"][index]}</small>
+            </div>
+            <div className="engagement-alternative-title">
+              <h3>{model.title}</h3>
+              {model.qualifier && <span>({model.qualifier})</span>}
+            </div>
+            <div className="engagement-alternative-copy">
+              <strong>{model.lead}</strong>
               <p>{model.body}</p>
               <Link href="/how-we-partner">
                 Explore model <b>↗</b>
               </Link>
+            </div>
+            <div className="engagement-alternative-media">
+              <Image
+                alt={`${model.title} Grade A warehouse development`}
+                fill
+                sizes="(max-width: 700px) 100vw, 24vw"
+                src={modelImages[index]}
+              />
+              <span>0{index + 1}</span>
             </div>
           </article>
         ))}

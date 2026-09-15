@@ -32,6 +32,7 @@
     .case-chapter-visual,
     .featured-insight-media,
     .aureum-sequence-visual,
+    .engagement-alternative-media,
     .collective-portrait,
     .bio-visual,
     .map
@@ -43,6 +44,7 @@
 /* Cards and compact panels sit between controls and large media. */
 .route-shell:not(.route-shell-admin) :is(
     .engagement-panel,
+    .engagement-alternative-row,
     .model-grid article,
     .article-list > a,
     .leadership-card,
@@ -76,10 +78,12 @@
     .case-chapter-visual,
     .featured-insight-media,
     .aureum-sequence-visual,
+    .engagement-alternative-media,
     .collective-portrait,
     .bio-visual,
     .map,
     .engagement-panel,
+    .engagement-alternative-row,
     .model-grid article,
     .article-list > a,
     .leadership-card,

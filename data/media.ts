@@ -5,7 +5,8 @@ export type ApprovedMedia = {
 };
 
 export const homeHeroMedia = {
-  videoSrc: "/media/heroes/aurium.mp4",
+  videoSrc: "/media/heroes/aurium.webm",
+  videoType: "video/webm",
   posterSrc: "/media/heroes/home.webp",
 } as const;
 
