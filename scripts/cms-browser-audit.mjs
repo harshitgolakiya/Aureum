@@ -27,6 +27,7 @@ const app = spawn(process.execPath, [nextBin, "start", "-p", String(port)], { st
 const db = await mysql.createConnection(process.env.DATABASE_URL);
 const rawToken = randomBytes(32).toString("base64url");
 const tokenHash = createHash("sha256").update(rawToken).digest("hex");
+const teamAuditSlug = `qa-team-${Date.now()}`;
 const [admins] = await db.query("SELECT id FROM cms_users WHERE role = 'administrator' AND active = TRUE ORDER BY created_at LIMIT 1");
 if (!admins.length) throw new Error("An active CMS administrator is required for the browser audit.");
 await db.execute("INSERT INTO cms_sessions (token_hash, user_id, expires_at) VALUES (?, ?, UTC_TIMESTAMP() + INTERVAL 1 HOUR)", [tokenHash, admins[0].id]);
@@ -58,7 +59,7 @@ function connect(url) {
   };
 }
 
-const routes = ["/admin", "/admin/projects", "/admin/projects/new", "/admin/insights", "/admin/insights/new", "/admin/media", "/admin/pages", "/admin/users", "/admin/recovery", "/admin/settings"];
+const routes = ["/admin", "/admin/projects", "/admin/projects/new", "/admin/insights", "/admin/insights/new", "/admin/media", "/admin/team", "/admin/team/new", "/admin/pages", "/admin/users", "/admin/recovery", "/admin/settings"];
 const viewports = [["tablet-768", 768, 1024], ["tablet-1024", 1024, 768], ["desktop-1440", 1440, 900], ["desktop-1920", 1920, 1080]];
 const requestedRoutes = process.env.CMS_AUDIT_ROUTES?.split(",").filter(Boolean);
 const requestedViewports = process.env.CMS_AUDIT_VIEWPORTS?.split(",").filter(Boolean);
@@ -144,11 +145,73 @@ try {
   const keyboardPass = keyboard.result.value?.pass === true;
   console.log(`${keyboardPass ? "PASS" : "FAIL"} tablet keyboard focus and navigation menu${keyboardPass ? "" : ` ${JSON.stringify(keyboard.result.value)}`}`);
   if (!keyboardPass) failed = true;
+  await navigate("/admin/team/new");
+  await cdp.send("Runtime.evaluate", {
+    expression: `(() => {
+      const form = document.querySelector('form.cms-project-editor');
+      const values = ${JSON.stringify({
+        name: "QA Team Member",
+        slug: teamAuditSlug,
+        role: "QA Director",
+        discipline: "Quality Assurance",
+        visualLabel: "QA",
+        portrait: "/leadership/newAasim.webp",
+        profilePortrait: "/leadership/aasim inner.webp",
+        biographyOne: "Temporary team profile created by the CMS browser audit.",
+        group: "senior",
+        sortOrder: "9999",
+      })};
+      for (const [name, value] of Object.entries(values)) {
+        const field = form?.elements.namedItem(name);
+        if (field) field.value = value;
+      }
+      const published = form?.elements.namedItem('published');
+      if (published) published.checked = true;
+      form?.requestSubmit();
+      return Boolean(form);
+    })()`,
+    returnByValue: true,
+  });
+  let teamCreated = false;
+  for (let attempt = 0; attempt < 80; attempt += 1) {
+    await wait(100);
+    const [rows] = await db.execute("SELECT name, published FROM cms_team_members WHERE slug = ? AND deleted_at IS NULL", [teamAuditSlug]);
+    if (rows.length) { teamCreated = rows[0].name === "QA Team Member" && Boolean(rows[0].published); break; }
+  }
+  console.log(`${teamCreated ? "PASS" : "FAIL"} CMS can add and publish a team member`);
+  if (!teamCreated) failed = true;
+  const publicTeamPage = await fetch(origin + "/who-we-are");
+  const publicTeamBody = await publicTeamPage.text();
+  const teamPublished = publicTeamPage.ok && publicTeamBody.includes("QA Team Member");
+  console.log(`${teamPublished ? "PASS" : "FAIL"} published team member appears on Who We Are`);
+  if (!teamPublished) failed = true;
+  await navigate("/admin/team");
+  await cdp.send("Runtime.evaluate", {
+    expression: `(() => {
+      window.confirm = () => true;
+      const row = [...document.querySelectorAll('.cms-project-row')].find(node => node.textContent.includes('QA Team Member'));
+      row?.querySelector('details')?.setAttribute('open', '');
+      const button = [...(row?.querySelectorAll('button') || [])].find(node => node.textContent.includes('Delete member'));
+      button?.click();
+      return Boolean(button);
+    })()`,
+    returnByValue: true,
+  });
+  let teamDeleted = false;
+  for (let attempt = 0; attempt < 80; attempt += 1) {
+    await wait(100);
+    const [rows] = await db.execute("SELECT deleted_at FROM cms_team_members WHERE slug = ?", [teamAuditSlug]);
+    if (rows[0]?.deleted_at) { teamDeleted = true; break; }
+  }
+  console.log(`${teamDeleted ? "PASS" : "FAIL"} CMS can remove a team member`);
+  if (!teamDeleted) failed = true;
   cdp.close();
 } finally {
   if (browser?.pid) spawnSync("taskkill", ["/pid", String(browser.pid), "/T", "/F"], { stdio: "ignore", windowsHide: true });
   if (profile) await rm(profile, { recursive: true, force: true }).catch(() => {});
   await db.execute("DELETE FROM cms_sessions WHERE token_hash = ?", [tokenHash]);
+  await db.execute("DELETE FROM cms_audit_log WHERE content_type = 'team_member' AND content_slug = ?", [teamAuditSlug]);
+  await db.execute("DELETE FROM cms_team_members WHERE slug = ?", [teamAuditSlug]);
   await db.end();
   app.kill("SIGTERM");
   await Promise.race([once(app, "exit"), wait(2000)]);

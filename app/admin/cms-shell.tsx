@@ -7,6 +7,7 @@ export type CmsArea =
   | "projects"
   | "insights"
   | "media"
+  | "team"
   | "pages"
   | "users"
   | "recovery"
@@ -23,10 +24,11 @@ const navigation: Array<{
   { area: "projects", href: "/admin/projects", label: "Projects", shortLabel: "03" },
   { area: "insights", href: "/admin/insights", label: "Insights", shortLabel: "04" },
   { area: "media", href: "/admin/media", label: "Media", shortLabel: "05" },
-  { area: "pages", href: "/admin/pages", label: "Pages", shortLabel: "06" },
-  { area: "users", href: "/admin/users", label: "Users", shortLabel: "07" },
-  { area: "recovery", href: "/admin/recovery", label: "Audit & recovery", shortLabel: "08" },
-  { area: "settings", href: "/admin/settings", label: "Settings", shortLabel: "09" },
+  { area: "team", href: "/admin/team", label: "Team", shortLabel: "06" },
+  { area: "pages", href: "/admin/pages", label: "Pages", shortLabel: "07" },
+  { area: "users", href: "/admin/users", label: "Users", shortLabel: "08" },
+  { area: "recovery", href: "/admin/recovery", label: "Audit & recovery", shortLabel: "09" },
+  { area: "settings", href: "/admin/settings", label: "Settings", shortLabel: "10" },
 ];
 
 function Navigation({ active, onMobile = false }: { active: CmsArea; onMobile?: boolean }) {

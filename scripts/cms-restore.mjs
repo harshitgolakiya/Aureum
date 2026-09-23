@@ -3,7 +3,7 @@ import path from "node:path";
 import process from "node:process";
 import mysql from "mysql2/promise";
 
-const tableOrder = ["cms_entries", "cms_contact_submissions", "cms_projects", "cms_posts", "cms_media", "cms_users", "cms_enquiry_comments", "cms_media_files", "cms_sessions", "cms_revisions", "cms_redirects", "cms_audit_log", "cms_login_attempts", "cms_migrations"];
+const tableOrder = ["cms_entries", "cms_contact_submissions", "cms_projects", "cms_posts", "cms_team_members", "cms_media", "cms_users", "cms_enquiry_comments", "cms_media_files", "cms_sessions", "cms_revisions", "cms_redirects", "cms_audit_log", "cms_login_attempts", "cms_migrations"];
 const args = process.argv.slice(2);
 const backupArgument = args.find((argument) => !argument.startsWith("--"));
 const verifyOnly = args.includes("--verify");
@@ -15,7 +15,7 @@ const backup = JSON.parse(await readFile(backupPath, "utf8"));
 if (backup.format !== "aureum-cms-backup" || backup.version !== 1 || !backup.tables) throw new Error("Unsupported or invalid Aureum CMS backup.");
 for (const table of tableOrder) {
   const payload = backup.tables[table];
-  if (!payload && table === "cms_migrations") continue;
+  if (!payload && (table === "cms_migrations" || table === "cms_team_members")) continue;
   if (!payload || !Array.isArray(payload.columns) || !Array.isArray(payload.rows)) throw new Error(`Backup is missing ${table}.`);
   const names = new Set(payload.columns.map((column) => column.name));
   for (const row of payload.rows) if (Object.keys(row).some((column) => !names.has(column))) throw new Error(`Backup has an unknown ${table} column.`);

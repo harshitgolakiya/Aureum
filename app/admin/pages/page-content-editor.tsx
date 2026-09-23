@@ -42,7 +42,7 @@ export function PageContentEditor({ canEdit = true, editorSlug, previewHref, sec
             const error = state.errors?.[name];
             return <label className={`${field.kind === "textarea" ? "is-wide" : ""}${error ? " has-error" : ""}`} key={field.name}>
               <span>{field.label}{field.maxLength && <small>Maximum {field.maxLength} characters</small>}</span>
-              {field.kind === "textarea" ? <textarea aria-describedby={error ? `${name}-error` : undefined} aria-invalid={Boolean(error)} defaultValue={section.value[field.name]} disabled={!canEdit} maxLength={field.maxLength} name={name} rows={field.maxLength && field.maxLength > 800 ? 6 : 4} required /> : <input aria-describedby={error ? `${name}-error` : undefined} aria-invalid={Boolean(error)} defaultValue={section.value[field.name]} disabled={!canEdit} maxLength={field.maxLength} name={name} type={field.kind ?? "text"} required />}
+              {field.kind === "textarea" ? <textarea aria-describedby={error ? `${name}-error` : undefined} aria-invalid={Boolean(error)} defaultValue={section.value[field.name]} disabled={!canEdit} maxLength={field.maxLength} name={name} rows={field.maxLength && field.maxLength > 800 ? 6 : 4} required={field.required !== false} /> : <input aria-describedby={error ? `${name}-error` : undefined} aria-invalid={Boolean(error)} defaultValue={section.value[field.name]} disabled={!canEdit} maxLength={field.maxLength} name={name} type={field.kind ?? "text"} required={field.required !== false} />}
               {error && <small className="cms-field-error" id={`${name}-error`}>{error}</small>}
             </label>;
           })}

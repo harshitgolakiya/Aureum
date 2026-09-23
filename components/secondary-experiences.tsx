@@ -181,7 +181,7 @@ export function WhoNarrative({
               aria-label={`View ${leader.name}'s profile`}
             >
               <div className="leadership-card-visual">
-                <Media label={leader.portrait} />
+                <Media label={leader.portrait} src={leader.portrait.startsWith("/") ? leader.portrait : undefined} alt={`Portrait of ${leader.name}`} />
               </div>
               <div className="leadership-card-body">
                 <small>{leader.role}</small>
@@ -213,7 +213,7 @@ export function WhoNarrative({
               aria-label={`View ${leader.name}'s profile`}
             >
               <div className="leadership-card-visual">
-                <Media label={leader.portrait} />
+                <Media label={leader.portrait} src={leader.portrait.startsWith("/") ? leader.portrait : undefined} alt={`Portrait of ${leader.name}`} />
               </div>
               <div className="leadership-card-body">
                 <small>{leader.role}</small>
@@ -242,7 +242,7 @@ export function WhoNarrative({
             Close ×
           </button>
           <div className="bio-visual">
-            <Media label={person.profilePortrait} />
+            <Media label={person.profilePortrait} src={person.profilePortrait.startsWith("/") ? person.profilePortrait : undefined} alt={`Portrait of ${person.name}`} />
           </div>
           <div className="bio-copy">
             <small>Leadership profile</small>

@@ -107,6 +107,31 @@ CREATE TABLE IF NOT EXISTS cms_posts (
   KEY cms_posts_featured (featured)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS cms_team_members (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  slug VARCHAR(191) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  role_title VARCHAR(255) NOT NULL,
+  discipline VARCHAR(180) NOT NULL,
+  visual_label VARCHAR(60) NOT NULL DEFAULT '',
+  portrait VARCHAR(500) NOT NULL,
+  profile_portrait VARCHAR(500) NOT NULL,
+  biography_one TEXT NOT NULL,
+  biography_two TEXT NOT NULL,
+  biography_three TEXT NOT NULL,
+  biography_four TEXT NOT NULL,
+  biography_five TEXT NOT NULL,
+  leadership_group ENUM('executive','senior') NOT NULL DEFAULT 'senior',
+  published BOOLEAN NOT NULL DEFAULT TRUE,
+  deleted_at DATETIME NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY cms_team_members_slug_unique (slug),
+  KEY cms_team_members_public_order (published, leadership_group, sort_order)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS cms_media (
   id CHAR(36) NOT NULL,
   filename VARCHAR(255) NOT NULL,

@@ -24,9 +24,9 @@ export const CMS_PAGE_CONFIGS: Record<CmsEditorSlug, CmsPageConfig> = {
   "who-we-are": {
     slug: "who-we-are",
     title: "Who We Are",
-    description: "Manage the page introduction and leadership profiles.",
+    description: "Manage the page introduction. Leadership profiles are managed in Team.",
     route: "/who-we-are",
-    keys: ["who.hero", "leader.aasim", "leader.akhilesh", "leader.anish", "leader.tejeshree"],
+    keys: ["who.hero"],
   },
   settings: {
     slug: "settings",
