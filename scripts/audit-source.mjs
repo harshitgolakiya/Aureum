@@ -34,7 +34,7 @@ async function auditAssets(directory) {
     const path = join(directory, entry);
     const info = await stat(path);
     if (info.isDirectory()) await auditAssets(path);
-    else if (info.size > (extname(path).toLowerCase() === ".mp4" ? 50_000_000 : 5_000_000))
+    else if (info.size > ([".mp4", ".webm"].includes(extname(path).toLowerCase()) ? 50_000_000 : 5_000_000))
       failures.push(`${relative(root, path)}: asset exceeds its delivery budget`);
     else if (
       relative(publicRoot, path).split(/[/\\]/).slice(0, 2).join("/") ===
