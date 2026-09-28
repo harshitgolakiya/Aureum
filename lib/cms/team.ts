@@ -42,6 +42,26 @@ const legacyMembers = [
   { key: "leader.tejeshree", slug: "tejeshree-jadhav", group: "senior", sortOrder: 10 },
 ] as const;
 
+const demoMember: TeamMember = {
+  slug: "maya-rahman-demo",
+  name: "Maya Rahman — Demo",
+  role: "Senior Development Manager",
+  discipline: "Development Management",
+  visualLabel: "Demo",
+  portrait: "",
+  profilePortrait: "",
+  biographyOne:
+    "A demonstration profile showing how an additional senior-management team member appears across the Aureum website and CMS.",
+  biographyTwo:
+    "This sample content can be replaced with an approved biography and portrait when the final team member information is available.",
+  biographyThree: "",
+  biographyFour: "",
+  biographyFive: "",
+  group: "senior",
+  published: true,
+  sortOrder: 20,
+};
+
 function fromRow(row: TeamMemberRow): CmsTeamMember {
   return {
     slug: row.slug,
@@ -120,6 +140,44 @@ async function seedLegacyTeamOnce() {
   }
 }
 
+async function seedDemoTeamOnce() {
+  const database = getCmsPool();
+  if (!database) return;
+  const migrationKey = "2026-09-demo-team-member";
+  const [migrations] = await database.execute<RowDataPacket[]>(
+    "SELECT 1 FROM cms_migrations WHERE migration_key = ? LIMIT 1",
+    [migrationKey],
+  );
+  if (migrations.length) return;
+
+  const connection = await database.getConnection();
+  try {
+    await connection.beginTransaction();
+    await connection.execute(
+      `INSERT IGNORE INTO cms_team_members
+        (slug, name, role_title, discipline, visual_label, portrait, profile_portrait,
+         biography_one, biography_two, biography_three, biography_four, biography_five,
+         leadership_group, published, sort_order)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [demoMember.slug, demoMember.name, demoMember.role, demoMember.discipline,
+        demoMember.visualLabel, demoMember.portrait, demoMember.profilePortrait,
+        demoMember.biographyOne, demoMember.biographyTwo, demoMember.biographyThree,
+        demoMember.biographyFour, demoMember.biographyFive, demoMember.group,
+        demoMember.published, demoMember.sortOrder],
+    );
+    await connection.execute(
+      "INSERT IGNORE INTO cms_migrations (migration_key, details_json) VALUES (?, ?)",
+      [migrationKey, JSON.stringify({ slug: demoMember.slug, source: "requested demo profile" })],
+    );
+    await connection.commit();
+  } catch (error) {
+    await connection.rollback();
+    throw error;
+  } finally {
+    connection.release();
+  }
+}
+
 function fallbackMembers(): CmsTeamMember[] {
   return legacyMembers.map((item) => ({
     ...cmsDefinitionByKey[item.key].fallback,
@@ -138,6 +196,7 @@ export async function getTeamMembers(includeDrafts = false): Promise<CmsTeamMemb
   try {
     await ensureCmsSchema();
     await seedLegacyTeamOnce();
+    await seedDemoTeamOnce();
     const [rows] = await database.query<TeamMemberRow[]>(
       `SELECT slug, name, role_title, discipline, visual_label, portrait, profile_portrait,
         biography_one, biography_two, biography_three, biography_four, biography_five,
@@ -163,6 +222,7 @@ export async function saveTeamMember(originalSlug: string, member: TeamMember) {
   if (!database) throw new Error("DATABASE_URL is not configured.");
   await ensureCmsSchema();
   await seedLegacyTeamOnce();
+  await seedDemoTeamOnce();
   if (originalSlug && originalSlug !== member.slug) {
     const [renamed] = await database.execute<ResultSetHeader>(
       "UPDATE cms_team_members SET slug = ? WHERE slug = ? AND deleted_at IS NULL",
