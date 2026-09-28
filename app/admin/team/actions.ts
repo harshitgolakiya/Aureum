@@ -46,7 +46,7 @@ function memberFromForm(formData: FormData): TeamMember {
 
 function validate(member: TeamMember) {
   const errors: Record<string, string> = {};
-  const required: Array<keyof TeamMember> = ["name", "role", "discipline", "portrait", "profilePortrait", "biographyOne"];
+  const required: Array<keyof TeamMember> = ["name", "role", "discipline", "biographyOne"];
   for (const field of required) if (!String(member[field]).trim()) errors[field] = "This field is required.";
   if (!member.slug) errors.slug = "Enter a name or slug.";
   if (member.slug && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(member.slug)) errors.slug = "Use lowercase letters, numbers, and hyphens.";

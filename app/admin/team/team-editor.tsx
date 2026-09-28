@@ -40,7 +40,7 @@ export function TeamEditor({ member }: { member?: TeamMember }) {
           <EditorField name="visualLabel" label="Card label" value={member?.visualLabel} placeholder="Optional short label" />
           <label className="cms-editor-field"><span>Leadership group</span><select name="group" defaultValue={member?.group ?? "senior"}><option value="executive">Executive Leadership</option><option value="senior">Senior Management</option></select></label>
         </EditorSection>
-        <EditorSection id="media" number="02" title="Media" copy="Choose the card portrait and the larger profile portrait from the media library.">
+        <EditorSection id="media" number="02" title="Media" copy="Portraits are optional and can be added from the media library at any time.">
           <MediaField name="portrait" label="Card portrait" value={portrait} setValue={setPortrait} error={errors.portrait} />
           <MediaField name="profilePortrait" label="Profile portrait" value={profilePortrait} setValue={setProfilePortrait} error={errors.profilePortrait} />
         </EditorSection>
@@ -70,5 +70,5 @@ function EditorField({ name, label, value = "", error, textarea = false, require
 }
 
 function MediaField({ name, label, value, setValue, error }: { name: string; label: string; value: string; setValue: (value: string) => void; error?: string }) {
-  return <label className="cms-editor-field is-wide"><span>{label}</span><div className="cms-gallery-add"><input name={name} value={value} required onChange={(event) => setValue(event.target.value)} placeholder="/uploads/media/portrait.webp" /><MediaPicker label={`Choose ${label.toLowerCase()}`} type="image" onSelect={(asset) => setValue(asset.publicPath)} /></div>{error && <em>{error}</em>}</label>;
+  return <label className="cms-editor-field is-wide"><span>{label}<small>Optional</small></span><div className="cms-gallery-add"><input name={name} value={value} onChange={(event) => setValue(event.target.value)} placeholder="/uploads/media/portrait.webp" /><MediaPicker label={`Choose ${label.toLowerCase()}`} type="image" onSelect={(asset) => setValue(asset.publicPath)} /></div>{error && <em>{error}</em>}</label>;
 }

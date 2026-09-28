@@ -155,8 +155,6 @@ try {
         role: "QA Director",
         discipline: "Quality Assurance",
         visualLabel: "QA",
-        portrait: "/leadership/newAasim.webp",
-        profilePortrait: "/leadership/aasim inner.webp",
         biographyOne: "Temporary team profile created by the CMS browser audit.",
         group: "senior",
         sortOrder: "9999",
@@ -178,7 +176,7 @@ try {
     const [rows] = await db.execute("SELECT name, published FROM cms_team_members WHERE slug = ? AND deleted_at IS NULL", [teamAuditSlug]);
     if (rows.length) { teamCreated = rows[0].name === "QA Team Member" && Boolean(rows[0].published); break; }
   }
-  console.log(`${teamCreated ? "PASS" : "FAIL"} CMS can add and publish a team member`);
+  console.log(`${teamCreated ? "PASS" : "FAIL"} CMS can add and publish a team member without portraits`);
   if (!teamCreated) failed = true;
   const publicTeamPage = await fetch(origin + "/who-we-are");
   const publicTeamBody = await publicTeamPage.text();
