@@ -23,6 +23,7 @@
     "cms:verify-public": "node --env-file=.env.local scripts/verify-public-cms.mjs",
     "cms:migrate-public": "node --env-file=.env.local scripts/migrate-public-cms.mjs",
     "cms:seed-homepage": "node --env-file=.env.local scripts/seed-homepage-projects.mjs",
+    "cms:migrate-uploads": "node --env-file=.env.local scripts/migrate-uploads-to-disk.mjs",
     "cms:update-leadership": "node --env-file=.env.local scripts/update-leadership-content.mjs",
     "cms:audit:launch": "node --env-file=.env.local scripts/cms-launch-audit.mjs",
     "cms:audit:browsers": "node --env-file=.env.local scripts/cms-browser-audit.mjs",
