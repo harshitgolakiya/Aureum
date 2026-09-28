@@ -1,0 +1,104 @@
+/* Homepage — Selected Developments intro (scroll-driven character reveal) */
+.dev-intro {
+  /* Scroll distance that drives the reveal; the stage stays pinned inside it. */
+  height: 320vh;
+  background: var(--cream);
+  color: var(--navy);
+}
+.dev-intro-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 0 var(--pad);
+}
+.dev-intro-inner {
+  width: 100%;
+  max-width: var(--content-max);
+  margin: 0 auto;
+  display: grid;
+  gap: clamp(1.5rem, 4vh, 3rem);
+}
+.dev-intro-heading {
+  margin: 0;
+  max-width: 15ch;
+  font-size: clamp(3rem, 8.2vw, 9.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+.dev-intro-heading em {
+  font-family: Georgia, serif;
+  font-style: italic;
+  letter-spacing: -0.03em;
+}
+.dev-intro-copy {
+  margin: 0;
+  max-width: 34ch;
+  font-size: clamp(1.15rem, 1.7vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -0.02em;
+  color: var(--midnight);
+}
+.dev-intro-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+.dev-intro-char {
+  display: inline-block;
+  /* Dull until scroll darkens it; JS drives opacity from here. */
+  opacity: 0.14;
+  will-change: opacity;
+}
+.dev-intro-progress {
+  position: absolute;
+  left: var(--pad);
+  right: var(--pad);
+  bottom: clamp(1.5rem, 4vh, 3rem);
+  height: 1px;
+  background: var(--line);
+}
+.dev-intro-progress i {
+  display: block;
+  height: 100%;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+@media (min-width: 1000px) {
+  .dev-intro-inner {
+    grid-template-columns: 1fr;
+    align-content: center;
+  }
+  .dev-intro-copy {
+    justify-self: end;
+    margin-right: 6vw;
+  }
+}
+@media (max-width: 560px) {
+  .dev-intro {
+    height: 280vh;
+  }
+  .dev-intro-heading {
+    max-width: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dev-intro {
+    height: auto;
+  }
+  .dev-intro-stage {
+    position: static;
+    height: 100svh;
+  }
+  .dev-intro-char {
+    opacity: 1;
+  }
+  .dev-intro-progress {
+    display: none;
+  }
+}

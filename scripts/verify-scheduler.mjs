@@ -46,11 +46,11 @@ async function project(slug, name, due) {
     `INSERT INTO cms_projects
       (slug, name, location, asset_type, category, metric, project_status, philosophy, engagement,
        cover_image, opportunity, strategy, delivery, outcome, chapter_order, gallery_images,
-       seo_title, seo_description, canonical_url, search_index, search_follow, social_title,
+       homepage_specs, seo_title, seo_description, canonical_url, search_index, search_follow, social_title,
        social_description, social_image, published, archived, workflow_status, scheduled_at, sort_order)
      VALUES (?, ?, 'Dubai', 'Warehouse', 'Logistics', 'QA metric', 'Complete', 'QA summary',
        'Development management', '/media/heroes/portfolio.webp', 'QA opportunity', 'QA strategy',
-       'QA delivery', 'QA outcome', 'opportunity,strategy,delivery,outcome', '', '', '', '', TRUE,
+       'QA delivery', 'QA outcome', 'opportunity,strategy,delivery,outcome', '', '', '', '', '', TRUE,
        TRUE, '', '', '', FALSE, FALSE, 'scheduled', ${due ? "UTC_TIMESTAMP() - INTERVAL 1 MINUTE" : "UTC_TIMESTAMP() + INTERVAL 1 DAY"}, 9999)`,
     [slug, name],
   );

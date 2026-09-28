@@ -153,6 +153,17 @@ export async function ensureCmsSchema() {
     if (!projectSeoColumnNames.has("social_title")) await database.execute("ALTER TABLE cms_projects ADD COLUMN social_title VARCHAR(300) NOT NULL DEFAULT '' AFTER search_follow");
     if (!projectSeoColumnNames.has("social_description")) await database.execute("ALTER TABLE cms_projects ADD COLUMN social_description TEXT NOT NULL AFTER social_title");
     if (!projectSeoColumnNames.has("social_image")) await database.execute("ALTER TABLE cms_projects ADD COLUMN social_image VARCHAR(500) NOT NULL DEFAULT '' AFTER social_description");
+    const [projectHomepageColumns] = await database.query<RowDataPacket[]>("SHOW COLUMNS FROM cms_projects WHERE Field IN ('homepage_featured','homepage_image','homepage_headline','homepage_subline','homepage_specs','homepage_tagline','homepage_tagline_sub','homepage_closing','homepage_services')");
+    const projectHomepageColumnNames = new Set(projectHomepageColumns.map((column) => String(column.Field)));
+    if (!projectHomepageColumnNames.has("homepage_featured")) await database.execute("ALTER TABLE cms_projects ADD COLUMN homepage_featured BOOLEAN NOT NULL DEFAULT FALSE AFTER gallery_images");
+    if (!projectHomepageColumnNames.has("homepage_image")) await database.execute("ALTER TABLE cms_projects ADD COLUMN homepage_image VARCHAR(500) NOT NULL DEFAULT '' AFTER homepage_featured");
+    if (!projectHomepageColumnNames.has("homepage_headline")) await database.execute("ALTER TABLE cms_projects ADD COLUMN homepage_headline VARCHAR(300) NOT NULL DEFAULT '' AFTER homepage_image");
+    if (!projectHomepageColumnNames.has("homepage_subline")) await database.execute("ALTER TABLE cms_projects ADD COLUMN homepage_subline VARCHAR(300) NOT NULL DEFAULT '' AFTER homepage_headline");
+    if (!projectHomepageColumnNames.has("homepage_specs")) await database.execute("ALTER TABLE cms_projects ADD COLUMN homepage_specs TEXT NOT NULL AFTER homepage_subline");
+    if (!projectHomepageColumnNames.has("homepage_tagline")) await database.execute("ALTER TABLE cms_projects ADD COLUMN homepage_tagline VARCHAR(1000) NOT NULL DEFAULT '' AFTER homepage_specs");
+    if (!projectHomepageColumnNames.has("homepage_tagline_sub")) await database.execute("ALTER TABLE cms_projects ADD COLUMN homepage_tagline_sub VARCHAR(1000) NOT NULL DEFAULT '' AFTER homepage_tagline");
+    if (!projectHomepageColumnNames.has("homepage_closing")) await database.execute("ALTER TABLE cms_projects ADD COLUMN homepage_closing VARCHAR(1000) NOT NULL DEFAULT '' AFTER homepage_tagline_sub");
+    if (!projectHomepageColumnNames.has("homepage_services")) await database.execute("ALTER TABLE cms_projects ADD COLUMN homepage_services VARCHAR(1000) NOT NULL DEFAULT '' AFTER homepage_closing");
     const [projectLockColumns] = await database.query<RowDataPacket[]>("SHOW COLUMNS FROM cms_projects WHERE Field = 'lock_version'");
     if (!projectLockColumns.length) await database.execute("ALTER TABLE cms_projects ADD COLUMN lock_version INT UNSIGNED NOT NULL DEFAULT 1 AFTER sort_order");
     await database.execute(`

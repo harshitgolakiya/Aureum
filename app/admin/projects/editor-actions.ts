@@ -35,6 +35,14 @@ function value(formData: FormData, name: string) {
   return typeof item === "string" ? item.trim() : "";
 }
 
+function lines(formData: FormData, name: string) {
+  return value(formData, name)
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .join("\n");
+}
+
 function numberValue(formData: FormData, name: string) {
   const parsed = Number.parseInt(value(formData, name), 10);
   return Number.isFinite(parsed) ? Math.max(0, Math.min(parsed, 9999)) : 0;
@@ -74,6 +82,19 @@ function projectFromForm(formData: FormData, workflowStatus: CmsWorkflowStatus, 
     outcome: value(formData, "outcome"),
     chapterOrder: normalizeChapterOrder(value(formData, "chapterOrder")),
     galleryImages,
+    homepageFeatured: checked(formData, "homepageFeatured"),
+    homepageImage: value(formData, "homepageImage"),
+    homepageHeadline: value(formData, "homepageHeadline"),
+    homepageSubline: value(formData, "homepageSubline"),
+    homepageSpecs: value(formData, "homepageSpecs")
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .join("\n"),
+    homepageTagline: lines(formData, "homepageTagline"),
+    homepageTaglineSub: lines(formData, "homepageTaglineSub"),
+    homepageClosing: lines(formData, "homepageClosing"),
+    homepageServices: lines(formData, "homepageServices"),
     seoTitle: value(formData, "seoTitle"),
     seoDescription: value(formData, "seoDescription"),
     canonicalUrl: value(formData, "canonicalUrl"),

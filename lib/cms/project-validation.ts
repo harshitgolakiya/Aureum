@@ -45,6 +45,16 @@ export function validateProjectDraft(project: Project) {
     .filter(Boolean)
     .find((item) => !isPublicAssetPath(item));
   if (invalidGallery) errors.galleryImages = `Invalid gallery path: ${invalidGallery}`;
+  if (project.homepageImage && !isPublicAssetPath(project.homepageImage)) {
+    errors.homepageImage = "Use a public asset path beginning with /, such as /media/projects/homepage-slide.webp.";
+  }
+  if (project.homepageHeadline.length > 300) errors.homepageHeadline = "Keep the homepage headline under 300 characters.";
+  if (project.homepageSubline.length > 300) errors.homepageSubline = "Keep the homepage location line under 300 characters.";
+  if (project.homepageTagline.length > 1000) errors.homepageTagline = "Keep the tagline under 1,000 characters.";
+  if (project.homepageTaglineSub.length > 1000) errors.homepageTaglineSub = "Keep the tagline sub-line under 1,000 characters.";
+  if (project.homepageClosing.length > 1000) errors.homepageClosing = "Keep the closing line under 1,000 characters.";
+  if (project.homepageServices.length > 1000) errors.homepageServices = "Keep the service list under 1,000 characters.";
+  if (project.homepageSpecs.length > 3000) errors.homepageSpecs = "Keep the homepage details under 3,000 characters.";
   if (project.name.length > 255) errors.name = "Keep the project name under 255 characters.";
   if (project.seoTitle.length > 300) errors.seoTitle = "Keep the SEO title under 300 characters.";
   if (project.seoDescription.length > 500) errors.seoDescription = "Keep the SEO description under 500 characters.";
@@ -82,6 +92,10 @@ export function validateProjectForPublishing(project: Project) {
   }
   if (project.coverImage && !isPublicAssetPath(project.coverImage)) {
     errors.coverImage = "Choose a valid cover image before publishing.";
+  }
+  if (project.homepageFeatured) {
+    if (!project.homepageImage.trim()) errors.homepageImage = "Choose the homepage slide image to show this project on the homepage.";
+    if (!project.homepageHeadline.trim()) errors.homepageHeadline = "Add the homepage headline to show this project on the homepage.";
   }
   return errors;
 }

@@ -31,6 +31,15 @@ type ProjectRow = RowDataPacket & {
   outcome: string;
   chapter_order: string;
   gallery_images: string;
+  homepage_featured: number | boolean;
+  homepage_image: string;
+  homepage_headline: string;
+  homepage_subline: string;
+  homepage_specs: string;
+  homepage_tagline: string;
+  homepage_tagline_sub: string;
+  homepage_closing: string;
+  homepage_services: string;
   seo_title: string;
   seo_description: string;
   canonical_url: string;
@@ -97,6 +106,15 @@ function projectFromRow(row: ProjectRow): Project {
     outcome: row.outcome,
     chapterOrder: row.chapter_order,
     galleryImages: row.gallery_images,
+    homepageFeatured: Boolean(row.homepage_featured),
+    homepageImage: row.homepage_image ?? "",
+    homepageHeadline: row.homepage_headline ?? "",
+    homepageSubline: row.homepage_subline ?? "",
+    homepageSpecs: row.homepage_specs ?? "",
+    homepageTagline: row.homepage_tagline ?? "",
+    homepageTaglineSub: row.homepage_tagline_sub ?? "",
+    homepageClosing: row.homepage_closing ?? "",
+    homepageServices: row.homepage_services ?? "",
     seoTitle: row.seo_title,
     seoDescription: row.seo_description,
     canonicalUrl: row.canonical_url,
@@ -154,7 +172,7 @@ export async function getProjects(includeDrafts = false): Promise<Project[]> {
     const [rows] = await database.query<ProjectRow[]>(
       `SELECT slug, name, location, asset_type, category, metric, project_status,
         philosophy, engagement, cover_image, opportunity, strategy, delivery,
-        outcome, chapter_order, gallery_images, seo_title, seo_description,
+        outcome, chapter_order, gallery_images, homepage_featured, homepage_image, homepage_headline, homepage_subline, homepage_specs, homepage_tagline, homepage_tagline_sub, homepage_closing, homepage_services, seo_title, seo_description,
         canonical_url, search_index, search_follow, social_title, social_description, social_image,
         published, archived, workflow_status, scheduled_at, sort_order, updated_at
        FROM cms_projects
@@ -187,7 +205,7 @@ export async function getCmsProjectLibrary(): Promise<CmsProjectListItem[]> {
     const [rows] = await database.query<ProjectRow[]>(
       `SELECT slug, name, location, asset_type, category, metric, project_status,
         philosophy, engagement, cover_image, opportunity, strategy, delivery,
-        outcome, chapter_order, gallery_images, seo_title, seo_description,
+        outcome, chapter_order, gallery_images, homepage_featured, homepage_image, homepage_headline, homepage_subline, homepage_specs, homepage_tagline, homepage_tagline_sub, homepage_closing, homepage_services, seo_title, seo_description,
         canonical_url, search_index, search_follow, social_title, social_description, social_image,
         published, archived, workflow_status, scheduled_at, sort_order, lock_version, updated_at
        FROM cms_projects WHERE deleted_at IS NULL
@@ -392,10 +410,10 @@ export async function saveProject(originalSlug: string, project: Project, expect
     `INSERT INTO cms_projects
       (slug, name, location, asset_type, category, metric, project_status,
        philosophy, engagement, cover_image, opportunity, strategy, delivery,
-       outcome, chapter_order, gallery_images, seo_title, seo_description,
+       outcome, chapter_order, gallery_images, homepage_featured, homepage_image, homepage_headline, homepage_subline, homepage_specs, homepage_tagline, homepage_tagline_sub, homepage_closing, homepage_services, seo_title, seo_description,
        canonical_url, search_index, search_follow, social_title, social_description, social_image,
        published, archived, workflow_status, scheduled_at, sort_order)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
      ${originalSlug ? `ON DUPLICATE KEY UPDATE
        name = VALUES(name), location = VALUES(location),
        asset_type = VALUES(asset_type), category = VALUES(category),
@@ -404,7 +422,12 @@ export async function saveProject(originalSlug: string, project: Project, expect
        cover_image = VALUES(cover_image), opportunity = VALUES(opportunity),
        strategy = VALUES(strategy), delivery = VALUES(delivery),
        outcome = VALUES(outcome), chapter_order = VALUES(chapter_order),
-       gallery_images = VALUES(gallery_images), seo_title = VALUES(seo_title),
+       gallery_images = VALUES(gallery_images), homepage_featured = VALUES(homepage_featured),
+       homepage_image = VALUES(homepage_image), homepage_headline = VALUES(homepage_headline),
+       homepage_subline = VALUES(homepage_subline), homepage_specs = VALUES(homepage_specs),
+       homepage_tagline = VALUES(homepage_tagline), homepage_tagline_sub = VALUES(homepage_tagline_sub),
+       homepage_closing = VALUES(homepage_closing), homepage_services = VALUES(homepage_services),
+       seo_title = VALUES(seo_title),
        seo_description = VALUES(seo_description),
        canonical_url = VALUES(canonical_url), search_index = VALUES(search_index),
        search_follow = VALUES(search_follow), social_title = VALUES(social_title),
@@ -429,6 +452,15 @@ export async function saveProject(originalSlug: string, project: Project, expect
       project.outcome,
       project.chapterOrder,
       project.galleryImages,
+      project.homepageFeatured,
+      project.homepageImage,
+      project.homepageHeadline,
+      project.homepageSubline,
+      project.homepageSpecs,
+      project.homepageTagline,
+      project.homepageTaglineSub,
+      project.homepageClosing,
+      project.homepageServices,
       project.seoTitle,
       project.seoDescription,
       project.canonicalUrl,
@@ -471,7 +503,7 @@ export async function duplicateProjectRecord(slug: string) {
   const [rows] = await database.execute<ProjectRow[]>(
     `SELECT slug, name, location, asset_type, category, metric, project_status,
       philosophy, engagement, cover_image, opportunity, strategy, delivery,
-      outcome, chapter_order, gallery_images, seo_title, seo_description,
+      outcome, chapter_order, gallery_images, homepage_featured, homepage_image, homepage_headline, homepage_subline, homepage_specs, homepage_tagline, homepage_tagline_sub, homepage_closing, homepage_services, seo_title, seo_description,
       canonical_url, search_index, search_follow, social_title, social_description, social_image,
       published, archived, workflow_status, scheduled_at, sort_order, updated_at
      FROM cms_projects WHERE slug = ? AND deleted_at IS NULL LIMIT 1`,
@@ -637,7 +669,7 @@ export async function publishDueContent() {
   const [dueProjects] = await database.query<ProjectRow[]>(
     `SELECT slug, name, location, asset_type, category, metric, project_status,
       philosophy, engagement, cover_image, opportunity, strategy, delivery,
-      outcome, chapter_order, gallery_images, seo_title, seo_description,
+      outcome, chapter_order, gallery_images, homepage_featured, homepage_image, homepage_headline, homepage_subline, homepage_specs, homepage_tagline, homepage_tagline_sub, homepage_closing, homepage_services, seo_title, seo_description,
       canonical_url, search_index, search_follow, social_title, social_description, social_image,
       published, archived, workflow_status, scheduled_at, sort_order, updated_at
      FROM cms_projects WHERE workflow_status = 'scheduled' AND scheduled_at <= UTC_TIMESTAMP() AND deleted_at IS NULL`,
