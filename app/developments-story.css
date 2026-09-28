@@ -1,0 +1,428 @@
+/* Homepage — Selected Developments scroll story (2 slides per project) */
+.dev-story {
+  --dev-gold: #e6b94c;
+  --dev-header: 74px;
+  /* Scroll distance per featured project; the stage stays pinned inside. */
+  height: calc(var(--dev-count, 1) * 440vh + 140vh);
+  background: var(--navy);
+  color: var(--white);
+}
+.dev-story-stage {
+  /* Pinned just below the fixed site header so the slide image is never covered. */
+  position: sticky;
+  top: var(--dev-header);
+  height: calc(100vh - var(--dev-header));
+  height: calc(100svh - var(--dev-header));
+  overflow: hidden;
+  /* Lets text be sized/placed relative to the stage (cqw / cqh units). */
+  container-type: size;
+}
+.dev-slide {
+  /* --u: 1% of the stage measured as if it were 16:9, so type scales with the slide. */
+  --u: min(1cqw, 1.7778cqh);
+  /* Height of the slide image as drawn (cover on landscape), and where its 60/40 split falls. */
+  --fh: max(56.25cqw, 100cqh);
+  --ft: calc(50cqh - var(--fh) / 2);
+  --split: calc(var(--ft) + var(--fh) * 0.6);
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /* Own stacking context so a slide's CTA/counter never bleeds over the next slide. */
+  isolation: isolate;
+  background: var(--navy);
+}
+/* Wiped in by GSAP; hidden until then so there is no flash before hydration. */
+.dev-slide:not(:first-child) {
+  clip-path: inset(100% 0% 0% 0%);
+}
+.dev-slide-media {
+  position: absolute;
+  inset: 0;
+  transform: scale(1.06);
+  will-change: transform;
+}
+.dev-slide-media img {
+  object-fit: cover;
+  object-position: center;
+}
+.dev-slide-backdrop {
+  display: none;
+}
+.dev-slide-tint {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 54, 99, 0.8);
+}
+/* Keeps slide-2 text readable over any photo. */
+.dev-slide-scrim {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background:
+    linear-gradient(90deg, rgba(10, 20, 38, 0.55), rgba(10, 20, 38, 0) 55%),
+    linear-gradient(0deg, rgba(10, 20, 38, 0.35), rgba(10, 20, 38, 0) 40%);
+}
+
+/* Slide 1 — details */
+.dev-s1 {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(2rem, 4vw, 5rem);
+  align-items: center;
+  padding: 10vh var(--pad) 8vh;
+  pointer-events: none;
+}
+.dev-s1-item {
+  opacity: 0;
+  visibility: hidden;
+}
+.dev-s1-title {
+  margin: 0;
+  text-align: right;
+  font-size: clamp(2.4rem, 5.6vw, 6.6rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: var(--dev-gold);
+  text-wrap: balance;
+}
+.dev-s1-title span,
+.dev-s1-title em {
+  display: block;
+}
+.dev-s1-title em {
+  margin-top: 0.12em;
+  /* The site's accent style: serif italic (see the global `em` rule). */
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+.dev-s1-specs {
+  margin: 0;
+  display: grid;
+  gap: 0.25em;
+  font-size: clamp(0.95rem, 1.6vw, 1.75rem);
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+.dev-s1-specs div {
+  margin: 0;
+}
+.dev-s1-specs dt,
+.dev-s1-specs dd {
+  display: inline;
+  margin: 0;
+}
+.dev-s1-specs dt {
+  font-weight: 800;
+}
+.dev-s1-specs dd {
+  font-weight: 400;
+}
+
+/* Slide 2 — text over the top 60% and bottom 40% of the image */
+.dev-s2 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  padding: 0 var(--pad);
+  pointer-events: none;
+  text-shadow: 0 1px 14px rgba(10, 20, 38, 0.5);
+}
+.dev-s2-top {
+  top: 0;
+  height: var(--split);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.dev-s2-bottom {
+  top: var(--split);
+  bottom: 0;
+  padding-top: calc(var(--u) * 1.2);
+}
+.dev-s2-item {
+  opacity: 0;
+  visibility: hidden;
+}
+.dev-line {
+  display: block;
+}
+/* Headline: same treatment as the site's h2 (regular weight, tight tracking). */
+.dev-s2-tagline {
+  margin: 0;
+  font-size: max(1.9rem, calc(var(--u) * 4.4));
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+/* The gold rule is the site's eyebrow line. */
+.dev-s2-rule {
+  display: block;
+  width: 32px;
+  height: 1px;
+  margin: calc(var(--u) * 1.4) 0 calc(var(--u) * 1.2);
+  background: var(--gold);
+}
+/* Supporting copy: same as the intro paragraphs elsewhere on the site. */
+.dev-s2-sub {
+  margin: 0;
+  font-size: max(0.95rem, calc(var(--u) * 1.5));
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -0.02em;
+}
+/* Small labels: the site's eyebrow style (uppercase, wide tracking, bold). */
+.dev-s2-caption,
+.dev-s2-services {
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+.dev-s2-caption {
+  position: absolute;
+  right: var(--pad);
+  bottom: calc(var(--u) * 1.2);
+  margin: 0;
+  max-width: 45%;
+  text-align: right;
+  font-size: max(0.6rem, calc(var(--u) * 0.7));
+  line-height: 1.6;
+}
+.dev-s2-closing {
+  margin: 0;
+  font-size: max(1.15rem, calc(var(--u) * 2.3));
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+.dev-s2-bottom .dev-s2-rule {
+  margin: calc(var(--u) * 1.1) 0 calc(var(--u) * 0.9);
+}
+.dev-s2-services {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: max(0.62rem, calc(var(--u) * 0.8));
+  line-height: 1.9;
+}
+
+/* Counter and CTA */
+.dev-slide-count {
+  position: absolute;
+  z-index: 3;
+  top: calc(var(--u) * 1.2);
+  right: var(--pad);
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--white);
+  opacity: 0;
+  visibility: hidden;
+  text-shadow: 0 1px 10px rgba(10, 20, 38, 0.6);
+}
+.dev-slide-count span {
+  color: var(--ivory);
+  font-weight: 500;
+}
+/* Uses the site's own .button (gold, navy sweep on hover); only placement is set here. */
+.dev-slide-cta {
+  position: absolute;
+  z-index: 3;
+  right: var(--pad);
+  bottom: calc(var(--u) * 2);
+  padding: max(0.9rem, calc(var(--u) * 1.1)) max(1.25rem, calc(var(--u) * 1.6));
+  font-size: max(0.67rem, calc(var(--u) * 0.85));
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Closing slide: wipes up over the last project, then one call to action */
+.dev-slide-end {
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: 0 var(--pad);
+  background: var(--cream);
+  color: var(--navy);
+}
+.dev-end-inner {
+  display: grid;
+  justify-items: center;
+  gap: clamp(1.8rem, 5cqh, 3.2rem);
+  text-align: center;
+}
+.dev-end-copy {
+  max-width: 16ch;
+  margin: 0;
+  font-size: clamp(2.2rem, 6.2vw, 6rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+.dev-end-item {
+  opacity: 0;
+  visibility: hidden;
+}
+.dev-slide-end .button {
+  gap: 3rem;
+  padding: 1.4rem 2.2rem;
+  font-size: clamp(0.72rem, 1vw, 0.9rem);
+}
+
+/* Portrait / narrow screens: show the whole slide image so nothing is cropped,
+   and move the slide-2 text into the space above and below it. */
+@media (max-aspect-ratio: 3 / 2) {
+  .dev-slide {
+    --u: 2.5cqw;
+    --fh: 56.25cqw;
+  }
+  .dev-slide-media img {
+    object-fit: contain;
+  }
+  .dev-slide-backdrop {
+    display: block;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .dev-slide-backdrop img {
+    object-fit: cover;
+    filter: blur(26px) brightness(0.5);
+    transform: scale(1.25);
+  }
+  .dev-s2-top {
+    height: var(--ft);
+  }
+  .dev-s2-bottom {
+    top: calc(var(--ft) + var(--fh));
+  }
+  .dev-s2-caption {
+    display: none;
+  }
+  /* Keep the text clear of the CTA, which sits at the bottom on small screens. */
+  .dev-s2-bottom {
+    bottom: 4.6rem;
+    overflow: hidden;
+  }
+  /* Little vertical room below the image: run the services together in rows. */
+  .dev-s2-closing {
+    font-size: max(1.05rem, calc(var(--u) * 1.9));
+  }
+  .dev-s2-bottom .dev-s2-rule {
+    margin: calc(var(--u) * 0.9) 0 calc(var(--u) * 0.7);
+  }
+  .dev-s2-services {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1.4em;
+    line-height: 1.7;
+    /* One tidy row; anything that would wrap is left out rather than cut in half. */
+    max-height: 1.7em;
+    overflow: hidden;
+  }
+}
+@media (max-aspect-ratio: 3 / 2) and (max-height: 800px) {
+  /* Short phones: not enough room under the image, so keep just the closing line. */
+  .dev-s2-bottom .dev-s2-rule,
+  .dev-s2-services {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+  .dev-story {
+    --dev-header: 78px;
+  }
+  .dev-s1 {
+    grid-template-columns: 1fr;
+    align-content: center;
+    gap: 1.5rem;
+    padding-top: 14vh;
+  }
+  .dev-s1-title {
+    text-align: left;
+    font-size: clamp(2rem, 9vw, 3.4rem);
+  }
+  .dev-s1-specs {
+    font-size: clamp(0.85rem, 3.5vw, 1.05rem);
+  }
+  .dev-slide-cta {
+    left: var(--pad);
+    right: var(--pad);
+    bottom: 1.25rem;
+  }
+}
+
+/* Reduced motion: no pinning, each project reads top to bottom */
+@media (prefers-reduced-motion: reduce) {
+  .dev-story {
+    height: auto;
+  }
+  .dev-story-stage {
+    position: static;
+    height: auto;
+    overflow: visible;
+    container-type: normal;
+  }
+  .dev-slide {
+    position: relative;
+    display: grid;
+    gap: 1.5rem;
+    min-height: 100svh;
+    padding-bottom: 2rem;
+    clip-path: none !important;
+  }
+  .dev-slide:not(:first-child) {
+    clip-path: none;
+  }
+  .dev-slide-end {
+    min-height: 60svh;
+  }
+  .dev-slide-tint {
+    opacity: 0.6;
+  }
+  .dev-slide-scrim {
+    opacity: 1;
+  }
+  .dev-slide-media {
+    transform: none;
+  }
+  .dev-s1,
+  .dev-s2,
+  .dev-s2-top,
+  .dev-s2-bottom {
+    position: relative;
+    inset: auto;
+    height: auto;
+    padding-top: 0;
+  }
+  .dev-s2-caption {
+    position: static;
+    max-width: none;
+    text-align: left;
+    margin-top: 1rem;
+  }
+  .dev-s1-item,
+  .dev-s2-item,
+  .dev-end-item,
+  .dev-slide-count,
+  .dev-slide-cta {
+    opacity: 1;
+    visibility: visible;
+  }
+  .dev-slide-cta {
+    position: relative;
+    inset: auto;
+    justify-self: start;
+    margin: 0 var(--pad);
+  }
+  .dev-slide-count {
+    display: none;
+  }
+}

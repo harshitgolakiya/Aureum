@@ -99,12 +99,12 @@ async function usageMap(paths: string[]) {
   if (!paths.length) return usage;
   const database = getCmsPool();
   if (!database) return usage;
-  const [projects] = await database.query<(RowDataPacket & { slug: string; cover_image: string; gallery_images: string })[]>("SELECT slug, cover_image, gallery_images FROM cms_projects");
+  const [projects] = await database.query<(RowDataPacket & { slug: string; cover_image: string; gallery_images: string; homepage_image: string })[]>("SELECT slug, cover_image, gallery_images, homepage_image FROM cms_projects");
   const [posts] = await database.query<(RowDataPacket & { slug: string; cover_image: string; body_document: unknown })[]>("SELECT slug, cover_image, body_document FROM cms_posts");
   const [entries] = await database.query<(RowDataPacket & { content_key: string; value_json: unknown })[]>("SELECT content_key, value_json FROM cms_entries");
   for (const publicPath of paths) {
     const hits = usage.get(publicPath)!;
-    projects.forEach((project) => { if (project.cover_image === publicPath || project.gallery_images.includes(publicPath)) hits.push(`Project: ${project.slug}`); });
+    projects.forEach((project) => { if (project.cover_image === publicPath || project.homepage_image === publicPath || project.gallery_images.includes(publicPath)) hits.push(`Project: ${project.slug}`); });
     posts.forEach((post) => { if (post.cover_image === publicPath || JSON.stringify(post.body_document ?? "").includes(publicPath)) hits.push(`Insight: ${post.slug}`); });
     entries.forEach((entry) => { if (JSON.stringify(entry.value_json ?? "").includes(publicPath)) hits.push(`Page content: ${entry.content_key}`); });
   }

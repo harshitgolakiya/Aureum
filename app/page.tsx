@@ -11,6 +11,8 @@ import {
   HomepageReveals,
   LifecycleStory,
 } from "@/components/home-experience";
+import { DevelopmentsIntro } from "@/components/developments-intro";
+import { DevelopmentsStory } from "@/components/developments-story";
 import { AureumSequenceStory } from "@/components/aureum-sequence-story";
 import type { Metadata } from "next";
 import { getCmsContent } from "@/lib/cms/content";
@@ -29,6 +31,21 @@ export default async function Home() {
     getProjects(),
     getPosts(),
   ]);
+  const featuredDevelopments = projects
+    .filter((project) => project.homepageFeatured && project.homepageImage)
+    .map((project) => ({
+      slug: project.slug,
+      name: project.name,
+      location: project.location,
+      image: project.homepageImage,
+      headline: project.homepageHeadline || project.name,
+      subline: project.homepageSubline,
+      specs: project.homepageSpecs,
+      tagline: project.homepageTagline,
+      taglineSub: project.homepageTaglineSub,
+      closing: project.homepageClosing,
+      services: project.homepageServices,
+    }));
   return (
     <main>
       <HomeHero content={heroContent} />
@@ -36,7 +53,12 @@ export default async function Home() {
       <AureumSequenceStory />
       <LifecycleStory />
       <EngagementModels />
+      <DevelopmentsIntro />
+      {featuredDevelopments.length > 0 ? (
+        <DevelopmentsStory items={featuredDevelopments} />
+      ) : (
       <section className="work section">
+        {/* PREVIOUS HEADING (kept for easy rollback: restore this block and remove <DevelopmentsIntro />)
         <div className="section-heading">
           <Eyebrow>Selected Developments</Eyebrow>
           <h2>
@@ -47,6 +69,7 @@ export default async function Home() {
             practice.
           </p>
         </div>
+        */}
         <div className="project-grid">
           {projects.map((p, i) => (
             <Link
@@ -67,6 +90,7 @@ export default async function Home() {
           View All Developments
         </ArrowLink>
       </section>
+      )}
       <section className="insights section">
         <div className="section-heading">
           <Eyebrow>Intelligence</Eyebrow>

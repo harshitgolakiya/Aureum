@@ -33,6 +33,7 @@ export function ProjectEditor({ project, redirects = [] }: { project?: Project &
   const [slugAutomatic, setSlugAutomatic] = useState(!project);
   const [slugStatus, setSlugStatus] = useState("");
   const [coverImage, setCoverImage] = useState(project?.coverImage ?? "/media/heroes/portfolio.webp");
+  const [homepageImage, setHomepageImage] = useState(project?.homepageImage ?? "");
   const [gallery, setGallery] = useState(() => project?.galleryImages.split(/\r?\n/).filter(Boolean) ?? []);
   const [galleryDraft, setGalleryDraft] = useState("");
   const [chapters, setChapters] = useState<ProjectChapterKey[]>(() => initialChapterOrder(project));
@@ -133,7 +134,7 @@ export function ProjectEditor({ project, redirects = [] }: { project?: Project &
 
       <aside className="cms-editor-outline">
         <p>Project content</p>
-        <a href="#overview">Overview</a><a href="#details">Details</a><a href="#story">Story</a><a href="#media">Media</a><a href="#seo">SEO</a><a href="#publishing">Publishing</a>
+        <a href="#overview">Overview</a><a href="#details">Details</a><a href="#story">Story</a><a href="#media">Media</a><a href="#homepage">Homepage</a><a href="#seo">SEO</a><a href="#publishing">Publishing</a>
         <div><span className={`cms-record-status is-${workflowStatus}`}><i />{statusLabel}</span><small>{dirty ? "Unsaved changes" : result.savedAt ? `Saved ${new Date(result.savedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}` : "All changes saved"}</small></div>
       </aside>
 
@@ -178,11 +179,23 @@ export function ProjectEditor({ project, redirects = [] }: { project?: Project &
           </div>
         </EditorSection>
 
-        <EditorSection id="seo" number="05" title="SEO" copy="Control search visibility and preview exactly how this project appears in search and social sharing.">
+        <EditorSection id="homepage" number="05" title="Homepage feature" copy="Show this project as a full-screen scroll story in the homepage's Selected Developments section. Featured projects appear in display order.">
+          <div className="cms-seo-toggles is-wide"><label><input name="homepageFeatured" type="checkbox" defaultChecked={project?.homepageFeatured ?? false} /><span>Show this project on the homepage</span></label></div>
+          <label className="cms-editor-field is-wide"><span>Homepage slide image <small>One image used for the whole story: full screen behind the details, then revealed as the finished slide. Upload it as designed.</small></span><div className="cms-cover-editor"><div>{homepageImage.startsWith("/") && <Image src={homepageImage} alt="" fill sizes="180px" />}</div><span><input aria-label="Homepage slide image path" autoComplete="off" name="homepageImage" placeholder="/media/projects/homepage-slide.webp" spellCheck={false} value={homepageImage} onChange={(event) => setHomepageImage(event.target.value)} /><MediaPicker label="Choose homepage image" type="image" onSelect={(asset) => { setHomepageImage(asset.publicPath); setDirty(true); }} /></span></div>{errors.homepageImage && <em>{errors.homepageImage}</em>}</label>
+          <EditorField label="Headline" name="homepageHeadline" value={project?.homepageHeadline} error={errors.homepageHeadline} />
+          <EditorField label="Location line" name="homepageSubline" value={project?.homepageSubline} error={errors.homepageSubline} />
+          <label className="cms-editor-field is-wide"><span>Slide 2 tagline <small>Top left of the finished slide. One line per row.</small></span><textarea name="homepageTagline" defaultValue={project?.homepageTagline ?? ""} rows={3} placeholder={"SPACES THAT KEEP\nTHE WORLD MOVING"} />{errors.homepageTagline && <em>{errors.homepageTagline}</em>}</label>
+          <label className="cms-editor-field is-wide"><span>Slide 2 tagline sub-line <small>Smaller text under the tagline.</small></span><textarea name="homepageTaglineSub" defaultValue={project?.homepageTaglineSub ?? ""} rows={2} placeholder={"LOGISTICS INFRASTRUCTURE\nBUILT FOR WHAT'S NEXT"} />{errors.homepageTaglineSub && <em>{errors.homepageTaglineSub}</em>}</label>
+          <label className="cms-editor-field is-wide"><span>Slide 2 closing line <small>Bottom left of the finished slide.</small></span><textarea name="homepageClosing" defaultValue={project?.homepageClosing ?? ""} rows={3} placeholder={"ENGINEERED FOR EFFICIENCY.\nBUILT FOR GROWTH."} />{errors.homepageClosing && <em>{errors.homepageClosing}</em>}</label>
+          <label className="cms-editor-field is-wide"><span>Slide 2 service list <small>One service per line, shown under the closing line.</small></span><textarea name="homepageServices" defaultValue={project?.homepageServices ?? ""} rows={6} placeholder={"WAREHOUSING\nDISTRIBUTION\nCOLD STORAGE"} />{errors.homepageServices && <em>{errors.homepageServices}</em>}</label>
+          <label className="cms-editor-field is-wide"><span>Project details <small>One per line as “Label: Value”, shown in this order (for example “Client: Gulf Integrated Logistics LLC”).</small></span><textarea name="homepageSpecs" defaultValue={project?.homepageSpecs ?? ""} rows={10} placeholder={"Project: Al Quoz Logistics & Distribution Centre\nClient: Gulf Integrated Logistics LLC\nLocation: Dubai, UAE"} />{errors.homepageSpecs && <em>{errors.homepageSpecs}</em>}</label>
+        </EditorSection>
+
+        <EditorSection id="seo" number="06" title="SEO" copy="Control search visibility and preview exactly how this project appears in search and social sharing.">
           <SeoControls initial={project} fallbackTitle={name} fallbackDescription={project?.philosophy ?? ""} fallbackImage={coverImage} route={`/portfolio/${slug || "project-slug"}`} errors={errors} redirects={redirects} />
         </EditorSection>
 
-        <EditorSection id="publishing" number="06" title="Publishing" copy="Drafts can be incomplete. Publishing requires every essential project field.">
+        <EditorSection id="publishing" number="07" title="Publishing" copy="Drafts can be incomplete. Publishing requires every essential project field.">
           <EditorField label="Display order" name="sortOrder" value={project?.sortOrder ?? 0} type="number" />
           <EditorField label="Schedule publication — Dubai time (GST)" name="scheduledAt" value={formatDubaiDateTimeLocal(project?.scheduledAt)} error={errors.scheduledAt} type="datetime-local" />
           <div className="cms-publish-summary is-wide"><span className={`cms-record-status is-${workflowStatus}`}><i />{statusLabel}</span><p>{published ? "Saving changes updates the public project immediately." : workflowStatus === "scheduled" ? "This project will publish automatically at the scheduled time." : "Autosave runs after 15 seconds of inactivity. Non-published projects are hidden from the public website."}</p></div>

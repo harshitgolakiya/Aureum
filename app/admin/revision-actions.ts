@@ -26,7 +26,7 @@ export async function restoreRevisionAction(formData: FormData) {
 
   if (contentType === "project") {
     const snapshot = revision.snapshot as Project;
-    const restored: Project = { ...snapshot, slug, canonicalUrl: snapshot.canonicalUrl ?? "", searchIndex: snapshot.searchIndex ?? true, searchFollow: snapshot.searchFollow ?? true, socialTitle: snapshot.socialTitle ?? "", socialDescription: snapshot.socialDescription ?? "", socialImage: snapshot.socialImage ?? "", published: false, archived: false, workflowStatus: "unpublished", scheduledAt: "" };
+    const restored: Project = { ...snapshot, slug, homepageFeatured: snapshot.homepageFeatured ?? false, homepageImage: snapshot.homepageImage ?? "", homepageHeadline: snapshot.homepageHeadline ?? "", homepageSubline: snapshot.homepageSubline ?? "", homepageSpecs: snapshot.homepageSpecs ?? "", homepageTagline: snapshot.homepageTagline ?? "", homepageTaglineSub: snapshot.homepageTaglineSub ?? "", homepageClosing: snapshot.homepageClosing ?? "", homepageServices: snapshot.homepageServices ?? "", canonicalUrl: snapshot.canonicalUrl ?? "", searchIndex: snapshot.searchIndex ?? true, searchFollow: snapshot.searchFollow ?? true, socialTitle: snapshot.socialTitle ?? "", socialDescription: snapshot.socialDescription ?? "", socialImage: snapshot.socialImage ?? "", published: false, archived: false, workflowStatus: "unpublished", scheduledAt: "" };
     await saveProject(slug, restored);
     await recordCmsRevision("project", slug, "restore_revision", session.email, restored);
     await recordCmsAudit(session, "restore", "project", slug, restored.name, { revisionId });
