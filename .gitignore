@@ -84,3 +84,6 @@ Desktop.ini
 /AUREUM NEW WEBSITE CONTENTS (1).md
 /AUREUM - SECONDARY COLORS PROPOSAL.pdf
 /aureumLogo.svg
+
+# CMS uploads (stored outside version control; see UPLOAD_DIR)
+/uploads/

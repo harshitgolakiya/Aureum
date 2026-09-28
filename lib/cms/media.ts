@@ -8,6 +8,7 @@ import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { connection } from "next/server";
 import { approvedMedia, homeHeroMedia } from "@/data/media";
 import { ensureCmsSchema, getCmsPool } from "./database";
+import { readUploadedFile, removeUploadedFiles, uploadedMimeType, writeUploadedFiles } from "./media-storage";
 
 export type MediaVariant = { width: number; height: number; path: string; size: number };
 export type MediaAsset = {
@@ -65,7 +66,7 @@ async function seedCheckedInMedia() {
   if (!database) return;
   const publicRoot = path.join(process.cwd(), "public");
   const paths: string[] = [];
-  for (const directory of ["media/heroes", "leadership"]) {
+  for (const directory of ["media/heroes", "media/projects", "leadership"]) {
     try {
       const files = await readdir(path.join(publicRoot, directory));
       files.forEach((file) => paths.push(`/${directory}/${file}`));
@@ -136,6 +137,11 @@ export async function registerMediaAsset(asset: Omit<MediaAsset, "usage" | "crea
   const database = getCmsPool();
   if (!database) throw new Error("DATABASE_URL is not configured.");
   await ensureCmsSchema();
+  // What this asset owned before (a replace re-processes the same id), so leftovers can be removed.
+  const [previous] = await database.execute<MediaRow[]>("SELECT * FROM cms_media WHERE id = ? LIMIT 1", [asset.id]);
+  const previousPaths = previous[0] ? [previous[0].public_path, ...variants(previous[0].variants_json).map((item) => item.path)] : [];
+  // Files go to disk (UPLOAD_DIR); the database keeps only the record.
+  await writeUploadedFiles(files.map((file) => ({ publicPath: file.publicPath, data: file.data })));
   const transaction = await database.getConnection();
   try {
     await transaction.beginTransaction();
@@ -145,18 +151,22 @@ export async function registerMediaAsset(asset: Omit<MediaAsset, "usage" | "crea
        ON DUPLICATE KEY UPDATE filename=VALUES(filename), original_name=VALUES(original_name), public_path=VALUES(public_path), media_type=VALUES(media_type), mime_type=VALUES(mime_type), width=VALUES(width), height=VALUES(height), size_bytes=VALUES(size_bytes), alt_text=VALUES(alt_text), caption=VALUES(caption), focal_x=VALUES(focal_x), focal_y=VALUES(focal_y), poster_path=VALUES(poster_path), variants_json=VALUES(variants_json)`,
       [asset.id, asset.filename, asset.originalName, asset.publicPath, asset.type, asset.mimeType, asset.width, asset.height, asset.sizeBytes, asset.altText, asset.caption, asset.focalX, asset.focalY, asset.posterPath, JSON.stringify(asset.variants)],
     );
+    // Drop any older database-stored copy so it can never be served instead of the new file.
     await transaction.execute("DELETE FROM cms_media_files WHERE media_id = ?", [asset.id]);
-    for (const file of files) {
-      await transaction.execute("INSERT INTO cms_media_files (public_path, media_id, mime_type, file_data, size_bytes) VALUES (?, ?, ?, ?, ?)", [file.publicPath, asset.id, file.mimeType, file.data, file.data.length]);
-    }
     await transaction.commit();
   } catch (error) {
     await transaction.rollback();
+    if (!previous[0]) await removeUploadedFiles(files.map((file) => file.publicPath));
     throw error;
   } finally { transaction.release(); }
+  const kept = new Set(files.map((file) => file.publicPath));
+  await removeUploadedFiles(previousPaths.filter((item) => !kept.has(item)));
 }
 
+/** Bytes for an uploaded file: from disk first, then the legacy database copy. */
 export async function getStoredMediaFile(publicPath: string) {
+  const onDisk = await readUploadedFile(publicPath);
+  if (onDisk) return { mime_type: uploadedMimeType(publicPath), file_data: onDisk, size_bytes: onDisk.length };
   const database = getCmsPool();
   if (!database) return null;
   await ensureCmsSchema();
@@ -175,6 +185,8 @@ export async function updateMediaMetadata(id: string, input: { filename: string;
 export async function deleteMediaRecord(id: string) {
   const database = getCmsPool();
   if (!database) throw new Error("DATABASE_URL is not configured.");
+  const [rows] = await database.execute<MediaRow[]>("SELECT * FROM cms_media WHERE id = ? LIMIT 1", [id]);
   const [result] = await database.execute<ResultSetHeader>("DELETE FROM cms_media WHERE id = ?", [id]);
   if (!result.affectedRows) throw new Error("Media asset not found.");
+  if (rows[0]) await removeUploadedFiles([rows[0].public_path, ...variants(rows[0].variants_json).map((item) => item.path)]);
 }
