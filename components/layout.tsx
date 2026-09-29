@@ -42,20 +42,36 @@ function SocialIcon({ name }: { name: SocialName }) {
   );
 }
 
-const menus: Record<string, { intro: string; items: string[] }> = {
+const menus: Record<
+  string,
+  { intro: string; items: { label: string; href: string }[] }
+> = {
   "/how-we-partner": {
     intro:
       "Three pathways shaped around the opportunity and guided by one Aureum standard.",
     items: [
-      "Predictive Development",
-      "Development Management",
-      "Strategic Partnerships",
+      {
+        label: "Predictive Development",
+        href: "/how-we-partner#predictive-development",
+      },
+      {
+        label: "Purpose-Built Development",
+        href: "/how-we-partner#purpose-built-development",
+      },
+      {
+        label: "Strategic Development Partnerships",
+        href: "/how-we-partner#strategic-development-partnerships",
+      },
     ],
   },
   "/portfolio": {
     intro:
       "Developments presented as evidence of intelligence, strategy and disciplined execution.",
-    items: ["360° Developments", "All Developments", "Development Approach"],
+    items: [
+      { label: "360° Developments", href: "/portfolio" },
+      { label: "All Developments", href: "/portfolio" },
+      { label: "Development Approach", href: "/portfolio" },
+    ],
   },
 };
 
@@ -203,9 +219,13 @@ export function Header() {
             </div>
             <div>
               {menus[mega].items.map((item, index) => (
-                <Link href={mega} key={item}>
+                <Link
+                  href={item.href}
+                  key={item.label}
+                  onClick={() => setMega(null)}
+                >
                   <span>0{index + 1}</span>
-                  {item}
+                  {item.label}
                   <b>↗</b>
                 </Link>
               ))}

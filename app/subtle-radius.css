@@ -104,7 +104,3 @@
 .conversation-modal {
   overflow: hidden;
 }
-
-.route-shell:not(.route-shell-admin) .partner-system-pathway rect {
-  rx: 3px;
-}

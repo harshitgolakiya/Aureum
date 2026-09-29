@@ -6,7 +6,6 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowLink, Eyebrow, Media } from "./ui";
 import { PartnerSystemGraphic } from "./partner-system-graphic";
-import { PhilosophyDecisionEngine } from "./philosophy-decision-engine";
 import type { LeaderContent } from "@/lib/cms/schema";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -43,18 +42,6 @@ export function WhoNarrative({
           scrub: true,
         },
       });
-      const philosophyEngine = root.current?.querySelector(".philosophy-engine");
-      if (philosophyEngine) {
-        ScrollTrigger.create({
-          trigger: philosophyEngine,
-          start: "top 78%",
-          end: "bottom 18%",
-          onEnter: () => philosophyEngine.classList.add("is-active"),
-          onEnterBack: () => philosophyEngine.classList.add("is-active"),
-          onLeave: () => philosophyEngine.classList.remove("is-active"),
-          onLeaveBack: () => philosophyEngine.classList.remove("is-active"),
-        });
-      }
       gsap.from(".collective-statement span", {
         yPercent: 110,
         stagger: 0.1,
@@ -105,35 +92,24 @@ export function WhoNarrative({
         ].filter(Boolean);
   return (
     <div ref={root}>
-      <section className="who-shift">
+      <section className="who-shift" id="philosophy">
         <div className="who-shift-rail">
           <span>Context</span>
           <i className="who-marker" />
-          <span>Perspective</span>
+          <span>Philosophy</span>
         </div>
-        <div data-who-reveal>
-          <Eyebrow>Our Perspective</Eyebrow>
-          <h2>
-            Industrial opportunity is changing. So is the way it needs to be
-            developed.
-          </h2>
-        </div>
-        <p data-who-reveal>
-          Industrial development is becoming more complex, more interconnected
-          and more commercially demanding. Aureum brings the perspectives
-          required to navigate that complexity, from opportunity and strategy
-          through to development and performance.
-        </p>
-      </section>
-      <section className="who-philosophy" id="philosophy">
-        <PhilosophyDecisionEngine />
         <div data-who-reveal>
           <Eyebrow>Our Philosophy</Eyebrow>
           <h2>A different view demands a different way of thinking.</h2>
-          <blockquote>
+        </div>
+        <div className="who-shift-copy" data-who-reveal>
+          <p>
             The Aureum System brings consistency to how we assess industrial
             development opportunities, shape them and create long-term value.
-          </blockquote>
+          </p>
+          <ArrowLink href="/how-we-partner" dark>
+            Explore What We Do
+          </ArrowLink>
         </div>
       </section>
       <section className="collective-feature">
@@ -272,6 +248,7 @@ export function WhoNarrative({
 const partnerships = [
   {
     n: "01",
+    id: "predictive-development",
     title: "Predictive Development",
     headline: "Opportunity is where development begins.",
     how: "We identify and evaluate opportunities through market intelligence, commercial assessment and development insight and bring the right conditions together to determine what should be developed and why.",
@@ -282,6 +259,7 @@ const partnerships = [
   },
   {
     n: "02",
+    id: "purpose-built-development",
     title: "Purpose-Built Development",
     headline: "Developed around your requirements.",
     how: "We align site, commercial, design, engineering and delivery decisions around the occupier's operational requirements, creating a development purpose-built for how the business needs to perform.",
@@ -292,6 +270,7 @@ const partnerships = [
   },
   {
     n: "03",
+    id: "strategic-development-partnerships",
     title: "Strategic Development Partnerships",
     headline: "The right partners shape the right opportunity.",
     how: "We structure partnerships around the strengths and objectives of each party, creating a clear alignment between the opportunity, the development model and the interests invested in its success.",
@@ -361,7 +340,7 @@ export function PartnerJourney() {
       </div>
       <div className="partner-chapters">
         {partnerships.map((item) => (
-          <article className="partner-chapter" key={item.n}>
+          <article className="partner-chapter" id={item.id} key={item.n}>
             <div className="partner-chapter-media" aria-hidden="true">
               <Image
                 src={item.image}
@@ -398,24 +377,8 @@ export function PartnerJourney() {
 }
 
 export function PartnerConvergence() {
-  const root = useRef<HTMLElement>(null);
-  useEffect(() => {
-    const section = root.current;
-    const graphic = section?.querySelector(".partner-system-graphic");
-    if (!section || !graphic) return;
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    const trigger = ScrollTrigger.create({
-      trigger: section,
-      start: "top 72%",
-      once: true,
-      onEnter: () => graphic.classList.add("is-active"),
-    });
-    return () => trigger.kill();
-  }, []);
-
   return (
-    <section ref={root} className="partner-convergence">
+    <section className="partner-convergence">
       <PartnerSystemGraphic />
       <div>
         <Eyebrow>The Aureum System in Action</Eyebrow>

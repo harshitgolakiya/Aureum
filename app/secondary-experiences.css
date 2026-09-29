@@ -11,10 +11,14 @@
 .leadership h2 {
   font-size: clamp(3rem, 6vw, 7rem);
 }
-.who-shift > p {
+.who-shift-copy > p {
+  margin: 0;
   font-size: clamp(1.25rem, 2vw, 2rem);
   line-height: 1.55;
   color: var(--dusty);
+}
+.who-shift-copy > .button {
+  margin-top: 2rem;
 }
 .who-shift-rail {
   height: 55vh;
@@ -804,6 +808,7 @@
   flex-direction: column;
   justify-content: center;
   border-bottom: 1px solid var(--line);
+  scroll-margin-top: 74px;
 }
 .partner-chapter h2 {
   font-size: clamp(3rem, 5vw, 6rem);
@@ -850,127 +855,85 @@
   overflow: visible;
   width: 100%;
 }
-.partner-system-pathway rect {
-  fill: rgba(16, 26, 43, 0.025);
-  stroke: rgba(16, 26, 43, 0.2);
-  stroke-width: 0.8;
+.aureum-traits {
+  --traits-navy: #1b365d;
+  --traits-blue: #2e64ae;
+  --traits-gold: #c4850c;
+}
+.aureum-traits-track {
+  fill: none;
+  stroke: rgba(16, 26, 43, 0.06);
+}
+.aureum-traits-arc,
+.aureum-traits-leader {
+  fill: none;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
   vector-effect: non-scaling-stroke;
 }
-.partner-system-path-number {
-  fill: var(--gold);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-}
-.partner-system-path-label {
-  fill: var(--navy);
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-}
-.partner-system-flow {
-  fill: none;
-  stroke: var(--gold);
+.aureum-traits-arc {
   stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.4;
-  vector-effect: non-scaling-stroke;
 }
-.partner-system-core-background {
-  fill: var(--navy);
+.aureum-traits-leader {
+  stroke-width: 2;
 }
-.partner-system-core-ring {
-  fill: none;
-  opacity: 0.68;
-  stroke: var(--gold);
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;
-}
-.partner-system-core-kicker,
-.partner-system-core-name {
-  fill: #f4f0e8;
-  font-weight: 600;
-  letter-spacing: 0.24em;
-}
-.partner-system-core-kicker {
-  font-size: 8px;
-}
-.partner-system-core-name {
-  font-size: 13px;
-}
-.partner-system-outcome circle {
-  fill: var(--gold);
-}
-.partner-system-outcome-kicker {
-  fill: var(--dusty);
-  font-size: 7px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-}
-.partner-system-outcome-label {
-  fill: var(--navy);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-}
-.partner-system-caption {
-  fill: var(--dusty);
-  font-size: 7px;
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  opacity: 0.7;
-}
-.partner-system-draw {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-}
-.partner-system-fade {
-  opacity: 0;
-}
-.partner-system-core {
-  opacity: 0;
-  transform: scale(0.9);
+.aureum-traits-dot {
+  transform: scale(0);
   transform-box: fill-box;
   transform-origin: center;
 }
-.partner-system-graphic.is-active .partner-system-pathway-1 .partner-system-draw {
-  animation: partnerSystemDraw 0.85s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+.aureum-traits-label {
+  opacity: 0;
+  transform: translateX(-10px);
 }
-.partner-system-graphic.is-active .partner-system-pathway-2 .partner-system-draw {
-  animation: partnerSystemDraw 0.85s cubic-bezier(0.65, 0, 0.35, 1) 0.13s forwards;
+.aureum-traits-value {
+  font-size: 34px;
+  font-weight: 800;
 }
-.partner-system-graphic.is-active .partner-system-pathway-3 .partner-system-draw {
-  animation: partnerSystemDraw 0.85s cubic-bezier(0.65, 0, 0.35, 1) 0.26s forwards;
+.aureum-traits-name {
+  fill: #6b6b6b;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
-.partner-system-graphic.is-active .partner-system-pathway-4 .partner-system-draw {
-  animation: partnerSystemDraw 0.85s cubic-bezier(0.65, 0, 0.35, 1) 0.39s forwards;
+.aureum-traits-center {
+  opacity: 0;
 }
-.partner-system-graphic.is-active .partner-system-pathway-5 .partner-system-draw {
-  animation: partnerSystemDraw 0.85s cubic-bezier(0.65, 0, 0.35, 1) 0.52s forwards;
+.aureum-traits-brand {
+  fill: var(--traits-gold);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 0.28em;
 }
-.partner-system-graphic.is-active .partner-system-pathway-6 .partner-system-draw {
-  animation: partnerSystemDraw 0.85s cubic-bezier(0.65, 0, 0.35, 1) 0.65s forwards;
+.aureum-traits-subtitle {
+  fill: #6b6b6b;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
 }
-.partner-system-graphic.is-active .partner-system-output-animation {
-  animation: partnerSystemDraw 0.55s cubic-bezier(0.65, 0, 0.35, 1) 1.18s forwards;
+.aureum-traits.is-active .aureum-traits-arc {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1.6s cubic-bezier(0.65, 0, 0.35, 1) var(--trait-delay);
 }
-.partner-system-graphic.is-active .partner-system-core {
-  animation: partnerSystemCoreAppear 0.5s ease 0.84s forwards;
+.aureum-traits.is-active .aureum-traits-leader {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.5s ease calc(var(--trait-delay) + 1.35s);
 }
-.partner-system-graphic.is-active .partner-system-fade {
-  animation: partnerSystemFadeIn 0.4s ease 1.18s forwards;
+.aureum-traits.is-active .aureum-traits-dot {
+  transform: scale(1);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--trait-delay) + 1.8s);
 }
-@keyframes partnerSystemDraw {
-  to { stroke-dashoffset: 0; }
+.aureum-traits.is-active .aureum-traits-label {
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity 0.5s ease calc(var(--trait-delay) + 1.8s),
+    transform 0.5s ease calc(var(--trait-delay) + 1.8s);
 }
-@keyframes partnerSystemFadeIn {
-  to { opacity: 1; }
-}
-@keyframes partnerSystemCoreAppear {
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+.aureum-traits.is-active .aureum-traits-center {
+  opacity: 1;
+  transition: opacity 0.9s ease 0.3s;
 }
 .partner-convergence > div:last-child {
   align-self: center;
@@ -1095,6 +1058,12 @@
   }
 }
 @media (max-width: 600px) {
+  .aureum-traits-value {
+    font-size: 44px;
+  }
+  .aureum-traits-name {
+    font-size: 19px;
+  }
   .who-shift,
   .who-philosophy,
   .collective-feature,
@@ -1172,14 +1141,20 @@
   .philosophy-engine-ring {
     animation: none !important;
   }
-  .partner-system-draw {
+  .aureum-traits-arc,
+  .aureum-traits-leader {
     stroke-dashoffset: 0;
+    transition: none !important;
   }
-  .partner-system-fade,
-  .partner-system-core {
-    animation: none !important;
+  .aureum-traits-dot {
+    transform: scale(1);
+    transition: none !important;
+  }
+  .aureum-traits-label,
+  .aureum-traits-center {
     opacity: 1;
     transform: none;
+    transition: none !important;
   }
 }
 @media (prefers-reduced-motion: reduce) {
