@@ -231,7 +231,7 @@ export function Header() {
               ))}
             </div>
             <Link className="mega-all" href={mega}>
-              View complete page <span>↗</span>
+              Explore Aureum System <span>↗</span>
             </Link>
           </>
         )}
