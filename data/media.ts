@@ -14,22 +14,22 @@ export const homeHeroMedia = {
 // here. Every current composition continues to work until its exact asset lands.
 export const approvedMedia: Record<string, ApprovedMedia> = {
   "leadership-group-portrait.webp": {
-    src: "/leadership/team.webp",
+    src: "/leadership/new-lead.webp",
     alt: "Aureum leadership team: Akhilesh Padinhare, Anish Kasim and Aasim Ameer",
     focalPoint: "50% 50%",
   },
   "leadership-portrait-01.webp": {
-    src: "/leadership/newAasim.webp",
+    src: "/leadership/2_Aasim Ameer.webp",
     alt: "Portrait of Aasim Ameer, Chief Executive Officer",
     focalPoint: "50% 0%",
   },
   "leadership-portrait-02.webp": {
-    src: "/leadership/newAkhilesh.webp",
+    src: "/leadership/1_Akhilesh Padinhare-transparent.png",
     alt: "Portrait of Akhilesh Padinhare, Founder and Executive Director",
     focalPoint: "50% 20%",
   },
   "leadership-portrait-03.webp": {
-    src: "/leadership/newAnish.webp",
+    src: "/leadership/3_Anish Kasim.webp",
     alt: "Portrait of Anish Kasim, Executive Director at Real Estate Development",
     focalPoint: "50% 20%",
   },
@@ -49,7 +49,7 @@ export const approvedMedia: Record<string, ApprovedMedia> = {
     focalPoint: "50% 0%",
   },
   "leadership-portrait-tejeshree.webp": {
-    src: "/leadership/new-tj.webp",
+    src: "/leadership/4_DJ-transparent.png",
     alt: "Portrait of Tejeshree Jadhav, Associate Director – Industrial Assets",
     focalPoint: "50% 20%",
   },
