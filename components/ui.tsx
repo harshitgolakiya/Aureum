@@ -29,11 +29,13 @@ export function Media({
   className = "",
   src,
   alt,
+  objectPosition,
 }: {
   label: string;
   className?: string;
   src?: string;
   alt?: string;
+  objectPosition?: string;
 }) {
   const approved = src ? { src, alt: alt || "", focalPoint: "50% 50%" } : approvedMedia[label];
   const variant = label.includes("portrait")
@@ -60,7 +62,7 @@ export function Media({
           alt={approved.alt}
           fill
           sizes="(max-width: 900px) 100vw, 60vw"
-          style={{ objectPosition: approved.focalPoint || "50% 50%" }}
+          style={{ objectPosition: objectPosition || approved.focalPoint || "50% 50%" }}
         />
       )}
       <div className="media-lines" />

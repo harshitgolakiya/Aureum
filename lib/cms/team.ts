@@ -43,20 +43,23 @@ const legacyMembers = [
 ] as const;
 
 const demoMember: TeamMember = {
-  slug: "maya-rahman-demo",
-  name: "Maya Rahman — Demo",
-  role: "Senior Development Manager",
-  discipline: "Development Management",
-  visualLabel: "Demo",
-  portrait: "",
-  profilePortrait: "",
+  slug: "sivaprasath-balakrishnan",
+  name: "Sivaprasath Balakrishnan",
+  role: "Associate Director, Industrial Development",
+  discipline: "Industrial Development",
+  visualLabel: "Development",
+  portrait: "/leadership/5_Siva.webp",
+  profilePortrait: "/leadership/newbie.webp",
   biographyOne:
-    "A demonstration profile showing how an additional senior-management team member appears across the Aureum website and CMS.",
+    "Sivaprasath Balakrishnan brings deep technical and development expertise to the planning and delivery of industrial and logistics assets across the UAE.",
   biographyTwo:
-    "This sample content can be replaced with an approved biography and portrait when the final team member information is available.",
-  biographyThree: "",
-  biographyFour: "",
-  biographyFive: "",
+    "With extensive experience across industrial design, development planning, project delivery and construction management, Sivaprasath brings together technical depth and a practical understanding of how industrial assets need to perform. His experience spans feasibility, design management, authority approvals, procurement, execution and handover, giving him a perspective that connects development intent with delivery realities.",
+  biographyThree:
+    "A Civil Engineering professional with strong knowledge of civil, structural and MEP systems, Sivaprasath has delivered Built-to-Suit industrial and logistics facilities across the UAE and Qatar. His understanding of manufacturing processes, warehouse operations, distribution networks and industrial workflows enables him to translate occupier requirements into functional, efficient and commercially considered development solutions.",
+  biographyFour:
+    "As a Certified Sustainability Manager, he brings a strong focus on the long-term performance of industrial assets, with expertise in materials, engineering systems and international construction standards. His approach considers not only how an asset is built, but how design and specification decisions influence energy consumption, maintenance, operational efficiency and lifecycle value.",
+  biographyFive:
+    "At Aureum, Sivaprasath works across authorities, consultants, contractors, investors and occupiers to align technical design, operational requirements and development objectives. His role spans both purpose-built and speculative industrial development, helping shape assets that respond to evolving occupier needs while maintaining the quality, efficiency and performance expected of institutional-grade real estate.",
   group: "senior",
   published: true,
   sortOrder: 20,
@@ -143,7 +146,7 @@ async function seedLegacyTeamOnce() {
 async function seedDemoTeamOnce() {
   const database = getCmsPool();
   if (!database) return;
-  const migrationKey = "2026-09-demo-team-member";
+  const migrationKey = "2026-09-sivaprasath-team-profile";
   const [migrations] = await database.execute<RowDataPacket[]>(
     "SELECT 1 FROM cms_migrations WHERE migration_key = ? LIMIT 1",
     [migrationKey],
@@ -154,11 +157,18 @@ async function seedDemoTeamOnce() {
   try {
     await connection.beginTransaction();
     await connection.execute(
-      `INSERT IGNORE INTO cms_team_members
+      `INSERT INTO cms_team_members
         (slug, name, role_title, discipline, visual_label, portrait, profile_portrait,
          biography_one, biography_two, biography_three, biography_four, biography_five,
          leadership_group, published, sort_order)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE name = VALUES(name), role_title = VALUES(role_title),
+         discipline = VALUES(discipline), visual_label = VALUES(visual_label),
+         portrait = VALUES(portrait), profile_portrait = VALUES(profile_portrait),
+         biography_one = VALUES(biography_one), biography_two = VALUES(biography_two),
+         biography_three = VALUES(biography_three), biography_four = VALUES(biography_four),
+         biography_five = VALUES(biography_five), leadership_group = VALUES(leadership_group),
+         published = VALUES(published), sort_order = VALUES(sort_order), deleted_at = NULL`,
       [demoMember.slug, demoMember.name, demoMember.role, demoMember.discipline,
         demoMember.visualLabel, demoMember.portrait, demoMember.profilePortrait,
         demoMember.biographyOne, demoMember.biographyTwo, demoMember.biographyThree,
@@ -166,8 +176,11 @@ async function seedDemoTeamOnce() {
         demoMember.published, demoMember.sortOrder],
     );
     await connection.execute(
+      "UPDATE cms_team_members SET published = FALSE, deleted_at = CURRENT_TIMESTAMP WHERE slug = 'maya-rahman-demo' AND deleted_at IS NULL",
+    );
+    await connection.execute(
       "INSERT IGNORE INTO cms_migrations (migration_key, details_json) VALUES (?, ?)",
-      [migrationKey, JSON.stringify({ slug: demoMember.slug, source: "requested demo profile" })],
+      [migrationKey, JSON.stringify({ slug: demoMember.slug, replaces: "maya-rahman-demo" })],
     );
     await connection.commit();
   } catch (error) {
@@ -179,14 +192,17 @@ async function seedDemoTeamOnce() {
 }
 
 function fallbackMembers(): CmsTeamMember[] {
-  return legacyMembers.map((item) => ({
-    ...cmsDefinitionByKey[item.key].fallback,
-    slug: item.slug,
-    group: item.group,
-    published: true,
-    sortOrder: item.sortOrder,
-    updatedAt: new Date(0),
-  }));
+  return [
+    ...legacyMembers.map((item) => ({
+      ...cmsDefinitionByKey[item.key].fallback,
+      slug: item.slug,
+      group: item.group,
+      published: true,
+      sortOrder: item.sortOrder,
+      updatedAt: new Date(0),
+    })),
+    { ...demoMember, updatedAt: new Date(0) },
+  ];
 }
 
 export async function getTeamMembers(includeDrafts = false): Promise<CmsTeamMember[]> {

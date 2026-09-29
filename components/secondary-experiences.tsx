@@ -157,7 +157,7 @@ export function WhoNarrative({
               aria-label={`View ${leader.name}'s profile`}
             >
               <div className="leadership-card-visual">
-                <Media label={leader.portrait || "leadership-portrait-placeholder.webp"} src={leader.portrait.startsWith("/") ? leader.portrait : undefined} alt={`Portrait of ${leader.name}`} />
+                <Media label={leader.portrait || "leadership-portrait-placeholder.webp"} src={leader.portrait.startsWith("/") ? leader.portrait : undefined} alt={`Portrait of ${leader.name}`} objectPosition="50% 0%" />
               </div>
               <div className="leadership-card-body">
                 <small>{leader.role}</small>
@@ -189,7 +189,7 @@ export function WhoNarrative({
               aria-label={`View ${leader.name}'s profile`}
             >
               <div className="leadership-card-visual">
-                <Media label={leader.portrait || "leadership-portrait-placeholder.webp"} src={leader.portrait.startsWith("/") ? leader.portrait : undefined} alt={`Portrait of ${leader.name}`} />
+                <Media label={leader.portrait || "leadership-portrait-placeholder.webp"} src={leader.portrait.startsWith("/") ? leader.portrait : undefined} alt={`Portrait of ${leader.name}`} objectPosition="50% 0%" />
               </div>
               <div className="leadership-card-body">
                 <small>{leader.role}</small>
@@ -228,8 +228,14 @@ export function WhoNarrative({
               {person.discipline}
             </p>
             {selectedBiography.length ? (
-              selectedBiography.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
+              selectedBiography.map((paragraph, index) => (
+                <p key={paragraph}>
+                  {index === 0 && person.name === "Sivaprasath Balakrishnan" ? (
+                    <strong>{paragraph}</strong>
+                  ) : (
+                    paragraph
+                  )}
+                </p>
               ))
             ) : (
               <p>
