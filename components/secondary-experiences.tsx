@@ -126,18 +126,27 @@ export function WhoNarrative({
           </h2>
           <div className="collective-copy" data-who-reveal>
             <p>
-              Industrial development demands more than one discipline. Aureum’s
-              leadership brings executive oversight, investment strategy and
-              real estate development together around one shared approach.
+              Industrial development demands more than one discipline. Our
+              founders bring investment and capital strategy, development
+              expertise and real-world execution together around one shared
+              perspective.
             </p>
             <p>
-              Their collective perspective connects commercial ambition,
-              development realities and disciplined execution, creating clarity
-              from the earliest opportunity through long-term performance.
+              That perspective starts with understanding where industrial demand
+              is heading, what businesses need to grow, and where the right
+              opportunities lie. It connects the realities of land, capital,
+              development and occupation to shape assets with a clear purpose.
             </p>
             <p>
-              Together, they guide how Aureum evaluates, shapes and delivers
-              every development.
+              As Dubai’s industrial and logistics landscape continues to evolve,
+              Aureum is built to participate in that growth with a long-term view
+              of creating institutional-quality assets that work for the
+              businesses that occupy them and the capital that backs them.
+            </p>
+            <p>
+              Together, our founders shape how Aureum evaluates opportunities,
+              makes decisions and develops assets… …from the first insight to
+              long-term performance.
             </p>
           </div>
         </div>

@@ -40,13 +40,13 @@ export const pillars = [
   },
   {
     n: "02",
-    title: "Development Strategy",
-    body: "Integrated planning that connects commercial objectives, technical requirements and operational readiness into one coherent development pathway. Strategy is not a phase. It is the thread that runs through every decision.",
+    title: "Development Expertise",
+    body: "Bringing industrial development expertise and a deep understanding of occupier requirements together to shape high-performance assets built around how industry operates.",
   },
   {
     n: "03",
-    title: "Disciplined Execution",
-    body: "Governance-led delivery that ensures every milestone meets institutional standards of quality, compliance and long-term performance. We do not simply manage delivery. We own it.",
+    title: "Strategic Development Leadership",
+    body: "Aligning investment and capital strategy with precise development management to create commercially grounded, high-performance assets built for long-term performance.",
   },
 ];
 export const models = [
