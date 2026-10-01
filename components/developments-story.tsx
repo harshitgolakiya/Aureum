@@ -190,12 +190,11 @@ export function DevelopmentsStory({ items }: { items: DevelopmentStory[] }) {
       <div className="dev-story-stage">
         {items.map((item, index) => {
           const specs = parseSpecs(item.specs);
-          const services = toLines(item.services);
           return (
-            <article className="dev-slide" key={item.slug}>
+            <article className={`dev-slide${item.image ? "" : " dev-slide-no-image"}`} key={item.slug}>
               <div className="dev-slide-media">
                 {/* Portrait screens only: soft blurred fill behind the fully shown image. */}
-                <div className="dev-slide-backdrop" aria-hidden="true">
+                {item.image && <><div className="dev-slide-backdrop" aria-hidden="true">
                   <Image src={item.image} alt="" fill sizes="25vw" />
                 </div>
                 <Image
@@ -204,6 +203,7 @@ export function DevelopmentsStory({ items }: { items: DevelopmentStory[] }) {
                   fill
                   sizes="100vw"
                 />
+                </>}
               </div>
               <div className="dev-slide-tint" aria-hidden="true" />
               <div className="dev-slide-scrim" aria-hidden="true" />
@@ -254,18 +254,6 @@ export function DevelopmentsStory({ items }: { items: DevelopmentStory[] }) {
                   <p className="dev-s2-closing dev-s2-item">
                     <Lines value={item.closing} />
                   </p>
-                )}
-                {services.length > 0 && (
-                  <>
-                    <i className="dev-s2-rule dev-s2-item" aria-hidden="true" />
-                    <ul className="dev-s2-services">
-                      {services.map((service, serviceIndex) => (
-                        <li className="dev-s2-item" key={`${service}-${serviceIndex}`}>
-                          {service}
-                        </li>
-                      ))}
-                    </ul>
-                  </>
                 )}
               </div>
 

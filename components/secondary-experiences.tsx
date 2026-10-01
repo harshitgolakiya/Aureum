@@ -166,15 +166,11 @@ export function WhoNarrative({
               aria-label={`View ${leader.name}'s profile`}
             >
               <div className="leadership-card-visual">
-                <Media label={leader.portrait || "leadership-portrait-placeholder.webp"} src={leader.portrait.startsWith("/") ? leader.portrait : undefined} alt={`Portrait of ${leader.name}`} objectPosition="50% 0%" />
+                <Media label={leader.portrait || "leadership-portrait-placeholder.webp"} src={leader.portrait.startsWith("/") ? leader.portrait : undefined} alt={`Portrait of ${leader.name}`} objectPosition="50% 50%" />
               </div>
               <div className="leadership-card-body">
-                <small>{leader.role}</small>
                 <strong>{leader.name}</strong>
-                <div>
-                  <span>{leader.discipline}</span>
-                  <b aria-hidden="true">View profile ↗</b>
-                </div>
+                <span>{leader.role}</span>
               </div>
             </button>
           ))}
@@ -198,15 +194,11 @@ export function WhoNarrative({
               aria-label={`View ${leader.name}'s profile`}
             >
               <div className="leadership-card-visual">
-                <Media label={leader.portrait || "leadership-portrait-placeholder.webp"} src={leader.portrait.startsWith("/") ? leader.portrait : undefined} alt={`Portrait of ${leader.name}`} objectPosition="50% 0%" />
+                <Media label={leader.portrait || "leadership-portrait-placeholder.webp"} src={leader.portrait.startsWith("/") ? leader.portrait : undefined} alt={`Portrait of ${leader.name}`} objectPosition="50% 50%" />
               </div>
               <div className="leadership-card-body">
-                <small>{leader.role}</small>
                 <strong>{leader.name}</strong>
-                <div>
-                  <span>{leader.discipline}</span>
-                  <b aria-hidden="true">View profile ↗</b>
-                </div>
+                <span>{leader.role}</span>
               </div>
             </button>
           ))}

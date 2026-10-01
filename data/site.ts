@@ -1,4 +1,5 @@
-import homepageProjects from "./homepage-projects.json";
+import { clientProjects } from "./client-projects";
+import type { ProjectDetails } from "./project-details";
 
 export const phases = [
   [
@@ -75,6 +76,7 @@ export const models = [
 export type CmsWorkflowStatus = "draft" | "scheduled" | "published" | "unpublished" | "archived";
 
 export type Project = {
+  details?: ProjectDetails;
   slug: string;
   name: string;
   location: string;
@@ -144,9 +146,8 @@ export type InsightArticle = {
   sortOrder: number;
 };
 
-// Demo projects featured in the homepage story. Kept in JSON so the fallback data and
-// scripts/seed-homepage-projects.mjs stay identical.
-export const projects: Project[] = homepageProjects as Project[];
+// Client brochure facilities also used when the CMS connection is unavailable.
+export const projects: Project[] = clientProjects;
 export const articles = [
   "[Article headline — editorial, forward-looking, insight-driven]",
   "[Industry perspective headline]",

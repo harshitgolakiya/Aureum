@@ -92,9 +92,9 @@ const fields = [
   },
 ];
 
-export function ContactForm() {
+export function ContactForm({ projectName = "" }: { projectName?: string }) {
   const formId = useId().replace(/:/g, "");
-  const [values, setValues] = useState(initial);
+  const [values, setValues] = useState({ ...initial, opportunity: projectName ? `I would like to enquire about ${projectName}.` : "" });
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<
     "idle" | "sending" | "success" | "failed"

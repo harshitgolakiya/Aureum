@@ -10,6 +10,8 @@ import { checkProjectSlugAction, saveProjectEditorAction, type ProjectEditorResu
 import { MediaPicker } from "../media/media-picker";
 import { SeoControls } from "../seo-controls";
 import { formatDubaiDateTimeLocal } from "@/lib/cms/scheduling";
+import { emptyProjectDetails } from "@/data/project-details";
+import { FacilityFields } from "./facility-fields";
 
 const chapterLabels: Record<ProjectChapterKey, string> = {
   opportunity: "The Opportunity",
@@ -32,7 +34,9 @@ export function ProjectEditor({ project, redirects = [] }: { project?: Project &
   const [slug, setSlug] = useState(project?.slug ?? "");
   const [slugAutomatic, setSlugAutomatic] = useState(!project);
   const [slugStatus, setSlugStatus] = useState("");
-  const [coverImage, setCoverImage] = useState(project?.coverImage ?? "/media/heroes/portfolio.webp");
+  const [coverImage, setCoverImage] = useState(project?.coverImage ?? "");
+  const [facility, setFacility] = useState(Boolean(project?.details) || !project);
+  const [details, setDetails] = useState(project?.details ?? emptyProjectDetails());
   const [homepageImage, setHomepageImage] = useState(project?.homepageImage ?? "");
   const [gallery, setGallery] = useState(() => project?.galleryImages.split(/\r?\n/).filter(Boolean) ?? []);
   const [galleryDraft, setGalleryDraft] = useState("");
@@ -150,14 +154,15 @@ export function ProjectEditor({ project, redirects = [] }: { project?: Project &
           <EditorField label="Location" name="location" value={project?.location} error={errors.location} />
           <EditorField label="Asset type" name="type" value={project?.type} error={errors.type} />
           <EditorField label="Category" name="category" value={project?.category} error={errors.category} list="project-categories" />
-          <datalist id="project-categories"><option value="Logistics" /><option value="Industrial Parks" /><option value="Distribution" /><option value="Mixed-Use" /></datalist>
+          <datalist id="project-categories"><option value="Trading & Logistics" /><option value="Commercial Office" /><option value="Logistics" /><option value="Industrial Parks" /><option value="Distribution" /><option value="Mixed-Use" /></datalist>
           <EditorField label="Defining metric" name="metric" value={project?.metric} error={errors.metric} />
           <EditorField label="Development status" name="status" value={project?.status} error={errors.status} />
           <EditorField label="Engagement model" name="engagement" value={project?.engagement} error={errors.engagement} />
         </EditorSection>
 
-        <EditorSection id="story" number="03" title="Case-study story" copy="Reorder the chapters and write the narrative shown on the project detail page.">
-          <div className="cms-chapter-editor is-wide">
+        <EditorSection id="story" number="03" title="Facility content" copy="Choose a facility brochure layout or the original completed-project case study. Photos can be added later.">
+          <label className="cms-editor-field is-wide"><span>Project page format</span><select value={facility ? "facility" : "case-study"} onChange={(event) => { setFacility(event.target.value === "facility"); setDirty(true); }}><option value="facility">Facility / availability brochure</option><option value="case-study">Completed-project case study</option></select></label>
+          {facility ? <><FacilityFields value={details} errors={errors} onChange={(next) => { setDetails(next); setDirty(true); }} />{PROJECT_CHAPTERS.map((chapter) => <input key={chapter} type="hidden" name={chapter} value={project?.[chapter] ?? ""} />)}</> : <div className="cms-chapter-editor is-wide">
             {chapters.map((chapter, index) => (
               <article key={chapter}>
                 <header><span>{String(index + 1).padStart(2, "0")}</span><strong>{chapterLabels[chapter]}</strong><div><button type="button" onClick={() => moveChapter(index, -1)} disabled={index === 0} aria-label={`Move ${chapterLabels[chapter]} up`}>↑</button><button type="button" onClick={() => moveChapter(index, 1)} disabled={index === chapters.length - 1} aria-label={`Move ${chapterLabels[chapter]} down`}>↓</button></div></header>
@@ -165,7 +170,7 @@ export function ProjectEditor({ project, redirects = [] }: { project?: Project &
                 {errors[chapter] && <em>{errors[chapter]}</em>}
               </article>
             ))}
-          </div>
+          </div>}
         </EditorSection>
 
         <EditorSection id="media" number="04" title="Media" copy="Assign a cover image and an ordered set of gallery images. Each picker applies the selected asset to the field that opened it.">
@@ -182,13 +187,15 @@ export function ProjectEditor({ project, redirects = [] }: { project?: Project &
         <EditorSection id="homepage" number="05" title="Homepage feature" copy="Show this project as a full-screen scroll story in the homepage's Selected Developments section. Featured projects appear in display order.">
           <div className="cms-seo-toggles is-wide"><label><input name="homepageFeatured" type="checkbox" defaultChecked={project?.homepageFeatured ?? false} /><span>Show this project on the homepage</span></label></div>
           <label className="cms-editor-field is-wide"><span>Homepage slide image <small>One image used for the whole story: full screen behind the details, then revealed as the finished slide. Upload it as designed.</small></span><div className="cms-cover-editor"><div>{homepageImage.startsWith("/") && <Image src={homepageImage} alt="" fill sizes="180px" />}</div><span><input aria-label="Homepage slide image path" autoComplete="off" name="homepageImage" placeholder="/media/projects/homepage-slide.webp" spellCheck={false} value={homepageImage} onChange={(event) => setHomepageImage(event.target.value)} /><MediaPicker label="Choose homepage image" type="image" onSelect={(asset) => { setHomepageImage(asset.publicPath); setDirty(true); }} /></span></div>{errors.homepageImage && <em>{errors.homepageImage}</em>}</label>
+          {facility ? <><p className="cms-field-note is-wide">The homepage uses the facility name, specifications, headline, summary and offering above. Changes here stay in sync automatically. Assign a homepage image when photography is ready.</p>{(["homepageHeadline", "homepageSubline", "homepageSpecs", "homepageTagline", "homepageTaglineSub", "homepageClosing", "homepageServices"] as const).map((key) => <input key={key} type="hidden" name={key} value={project?.[key] ?? ""} />)}</> : <>
           <EditorField label="Headline" name="homepageHeadline" value={project?.homepageHeadline} error={errors.homepageHeadline} />
           <EditorField label="Location line" name="homepageSubline" value={project?.homepageSubline} error={errors.homepageSubline} />
           <label className="cms-editor-field is-wide"><span>Slide 2 tagline <small>Top left of the finished slide. One line per row.</small></span><textarea name="homepageTagline" defaultValue={project?.homepageTagline ?? ""} rows={3} placeholder={"SPACES THAT KEEP\nTHE WORLD MOVING"} />{errors.homepageTagline && <em>{errors.homepageTagline}</em>}</label>
           <label className="cms-editor-field is-wide"><span>Slide 2 tagline sub-line <small>Smaller text under the tagline.</small></span><textarea name="homepageTaglineSub" defaultValue={project?.homepageTaglineSub ?? ""} rows={2} placeholder={"LOGISTICS INFRASTRUCTURE\nBUILT FOR WHAT'S NEXT"} />{errors.homepageTaglineSub && <em>{errors.homepageTaglineSub}</em>}</label>
           <label className="cms-editor-field is-wide"><span>Slide 2 closing line <small>Bottom left of the finished slide.</small></span><textarea name="homepageClosing" defaultValue={project?.homepageClosing ?? ""} rows={3} placeholder={"ENGINEERED FOR EFFICIENCY.\nBUILT FOR GROWTH."} />{errors.homepageClosing && <em>{errors.homepageClosing}</em>}</label>
-          <label className="cms-editor-field is-wide"><span>Slide 2 service list <small>One service per line, shown under the closing line.</small></span><textarea name="homepageServices" defaultValue={project?.homepageServices ?? ""} rows={6} placeholder={"WAREHOUSING\nDISTRIBUTION\nCOLD STORAGE"} />{errors.homepageServices && <em>{errors.homepageServices}</em>}</label>
-          <label className="cms-editor-field is-wide"><span>Project details <small>One per line as “Label: Value”, shown in this order (for example “Client: Gulf Integrated Logistics LLC”).</small></span><textarea name="homepageSpecs" defaultValue={project?.homepageSpecs ?? ""} rows={10} placeholder={"Project: Al Quoz Logistics & Distribution Centre\nClient: Gulf Integrated Logistics LLC\nLocation: Dubai, UAE"} />{errors.homepageSpecs && <em>{errors.homepageSpecs}</em>}</label>
+          <input type="hidden" name="homepageServices" value={project?.homepageServices ?? ""} />
+          <label className="cms-editor-field is-wide"><span>Project details <small>One per line as “Label: Value”, shown in this order.</small></span><textarea name="homepageSpecs" defaultValue={project?.homepageSpecs ?? ""} rows={10} placeholder={"Plot size: 12,465 sqm\nBuilt-up area: 7,963 sqm\nEaves height: 15 m"} />{errors.homepageSpecs && <em>{errors.homepageSpecs}</em>}</label>
+          </>}
         </EditorSection>
 
         <EditorSection id="seo" number="06" title="SEO" copy="Control search visibility and preview exactly how this project appears in search and social sharing.">

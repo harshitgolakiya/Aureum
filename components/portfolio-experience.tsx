@@ -6,6 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Media } from "./ui";
 import { projectPresentation, type Project } from "@/data/site";
+import { FacilityExperience } from "./facility-experience";
 
 gsap.registerPlugin(ScrollTrigger);
 export function PortfolioListing({ projects }: { projects: Project[] }) {
@@ -51,9 +52,9 @@ export function PortfolioListing({ projects }: { projects: Project[] }) {
         </div>
       </div>
       <p className="portfolio-intro">
-        Each development contributes another perspective on how intelligent
-        industrial development creates value. Together they reflect the
-        consistency of thinking that defines Aureum&apos;s work.
+        Explore independent logistics facilities, purpose-built industrial space,
+        and commercial offices. Compare specifications and availability to find
+        the right setting for your business.
       </p>
       <div ref={grid} className="portfolio-editorial-grid" aria-live="polite">
         {visible.map((project, index) => {
@@ -65,12 +66,12 @@ export function PortfolioListing({ projects }: { projects: Project[] }) {
               key={project.slug}
             >
               <div className="portfolio-media" data-cursor="View">
-                <Media label={`portfolio-${project.slug}.webp`} src={project.coverImage} alt={display.name} />
+                {project.coverImage ? <Media label={`portfolio-${project.slug}.webp`} src={project.coverImage} alt={display.name} /> : <div className="facility-card-without-image"><small>{project.category}</small><strong>{project.details?.headline || project.name}</strong><span>{project.engagement}</span></div>}
                 <span className="project-view">View</span>
               </div>
               <div className="portfolio-card-meta">
                 <small>
-                  {project.category} / {display.location}
+                  {[project.category, project.location].filter(Boolean).join(" / ")}
                 </small>
                 <span>{display.status}</span>
               </div>
@@ -78,7 +79,7 @@ export function PortfolioListing({ projects }: { projects: Project[] }) {
               <p>{display.philosophy}</p>
               <div className="portfolio-metric">
                 <span>{display.metric}</span>
-                <b>View full case study ↗</b>
+                <b>{project.details ? "Explore facility ↗" : "View full case study ↗"}</b>
               </div>
             </Link>
           );
@@ -89,6 +90,10 @@ export function PortfolioListing({ projects }: { projects: Project[] }) {
 }
 
 export function CaseStudyExperience({ project, projects }: { project: Project; projects: Project[] }) {
+  return project.details ? <FacilityExperience project={project} projects={projects} /> : <LegacyCaseStudyExperience project={project} projects={projects} />;
+}
+
+function LegacyCaseStudyExperience({ project, projects }: { project: Project; projects: Project[] }) {
   const index = projects.findIndex((item) => item.slug === project.slug);
   const previous = projects[(index - 1 + projects.length) % projects.length];
   const next = projects[(index + 1) % projects.length];

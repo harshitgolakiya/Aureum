@@ -20,7 +20,7 @@ export function normalizeChapterOrder(value: string) {
 }
 
 export function isPublicAssetPath(value: string) {
-  return /^\/[A-Za-z0-9/_\-.]+$/.test(value);
+  return /^\/(?!\/)(?!.*(?:^|\/)\.\.(?:\/|$))[A-Za-z0-9/_ .\-]+$/.test(value);
 }
 
 function isCanonicalUrl(value: string) {
@@ -33,6 +33,15 @@ function isSocialImage(value: string) {
 
 export function validateProjectDraft(project: Project) {
   const errors: Record<string, string> = {};
+  if (project.details) {
+    const details = project.details;
+    if (JSON.stringify(details).length > 60000) errors.details = "Keep facility content under 60,000 characters.";
+    if (details.specifications.length > 30 || details.sections.length > 20 || details.features.length > 40 || details.sectors.length > 40) errors.details = "Use at most 30 specifications, 20 sections and 40 features or sectors.";
+    details.specifications.forEach((spec, index) => { if (!spec.label.trim() || !spec.value.trim()) errors[`details.specifications.${index}`] = "Add both a label and value, or remove this row."; });
+    details.sections.forEach((section, index) => { if (!section.title.trim() || !section.body.trim()) errors[`details.sections.${index}`] = "Add both a heading and body, or remove this section."; });
+    if (details.brochure && (!isPublicAssetPath(details.brochure) || !/\.pdf$/i.test(details.brochure))) errors["details.brochure"] = "Use a public PDF path.";
+    if (details.contactPhone && !/^\+?[\d\s()-]{7,30}$/.test(details.contactPhone)) errors["details.contactPhone"] = "Enter a valid phone number.";
+  }
   if (!project.slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(project.slug)) {
     errors.slug = "Use lowercase letters, numbers, and hyphens only.";
   }
@@ -71,19 +80,19 @@ export function validateProjectForPublishing(project: Project) {
   const errors = validateProjectDraft(project);
   const required: Array<[keyof Project, string]> = [
     ["name", "Add the project name."],
-    ["location", "Add the project location."],
     ["type", "Add the asset type."],
     ["category", "Choose a category."],
     ["metric", "Add a defining metric."],
     ["status", "Add the development status."],
     ["philosophy", "Add the listing summary."],
     ["engagement", "Add the engagement model."],
-    ["coverImage", "Choose a cover image."],
-    ["opportunity", "Complete The Opportunity chapter."],
-    ["strategy", "Complete The Strategy chapter."],
-    ["delivery", "Complete The Delivery chapter."],
-    ["outcome", "Complete The Outcome chapter."],
   ];
+  if (!project.details) required.push(["location", "Add the project location."], ["coverImage", "Choose a cover image."], ["opportunity", "Complete The Opportunity chapter."], ["strategy", "Complete The Strategy chapter."], ["delivery", "Complete The Delivery chapter."], ["outcome", "Complete The Outcome chapter."]);
+  else {
+    if (!project.details.headline.trim()) errors["details.headline"] = "Add the facility headline.";
+    if (!project.details.offering.trim()) errors["details.offering"] = "Add the commercial offering.";
+    if (!project.details.specifications.length) errors.details = "Add at least one specification.";
+  }
   for (const [field, message] of required) {
     const value = project[field];
     if (typeof value !== "string" || !value.trim() || /^\[.*\]$/.test(value.trim())) {
@@ -94,8 +103,8 @@ export function validateProjectForPublishing(project: Project) {
     errors.coverImage = "Choose a valid cover image before publishing.";
   }
   if (project.homepageFeatured) {
-    if (!project.homepageImage.trim()) errors.homepageImage = "Choose the homepage slide image to show this project on the homepage.";
-    if (!project.homepageHeadline.trim()) errors.homepageHeadline = "Add the homepage headline to show this project on the homepage.";
+    if (!project.details && !project.homepageImage.trim()) errors.homepageImage = "Choose the homepage slide image to show this project on the homepage.";
+    if (!project.details && !project.homepageHeadline.trim()) errors.homepageHeadline = "Add the homepage headline to show this project on the homepage.";
   }
   return errors;
 }

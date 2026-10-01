@@ -4,7 +4,7 @@ import { getProjects } from "@/lib/cms/collections";
 export const metadata = {
   title: "Portfolio",
   description:
-    "Explore industrial developments shaped through Aureum's 360° Development Perspective.",
+    "Explore Aureum's available logistics, industrial and commercial facilities, including purpose-built opportunities and ready-to-move-in space.",
   alternates: { canonical: "/portfolio" },
 };
 export default async function Page() {
@@ -15,7 +15,7 @@ export default async function Page() {
         identity="portfolio"
         eyebrow="Portfolio"
         title="Where the Aureum 360° Development Perspective takes form."
-        copy="Every development reflects a different opportunity, shaped through the Aureum perspective to create lasting industrial value."
+        copy="Explore available logistics, industrial and commercial facilities, from ready-to-move-in space to purpose-built opportunities shaped around your business."
       />
       <PortfolioListing projects={projects} />
       <section className="principle">

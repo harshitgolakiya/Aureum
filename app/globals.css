@@ -746,6 +746,17 @@ footer {
   color: var(--gold);
   transform: translateY(-2px);
 }
+.footer-navigation-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: clamp(1rem, 2vw, 2rem);
+}
+.footer-policy-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  color: var(--ivory);
+}
 .footer-links {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -753,12 +764,17 @@ footer {
   color: var(--ivory);
 }
 .footer-links a,
+.footer-policy-links a,
 .footer-contact a,
-.footer-legal a {
+.footer-credit {
   transition: color 0.25s;
 }
 .footer-links a:hover,
-.footer-links a:focus-visible {
+.footer-links a:focus-visible,
+.footer-policy-links a:hover,
+.footer-policy-links a:focus-visible,
+.footer-credit:hover,
+.footer-credit:focus-visible {
   color: var(--gold);
 }
 .footer-contact {
@@ -789,7 +805,7 @@ footer {
   align-items: center;
   font-size: 0.68rem;
 }
-.footer-legal {
+.footer-credit {
   justify-self: end;
 }
 .page-hero {
@@ -1028,7 +1044,7 @@ footer {
   .footer-socials {
     grid-row: 1;
   }
-  .footer-legal {
+  .footer-credit {
     justify-self: start;
   }
   .page-no {

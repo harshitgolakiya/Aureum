@@ -28,6 +28,7 @@ const db = await mysql.createConnection(process.env.DATABASE_URL);
 const rawToken = randomBytes(32).toString("base64url");
 const tokenHash = createHash("sha256").update(rawToken).digest("hex");
 const teamAuditSlug = `qa-team-${Date.now()}`;
+const facilityAuditSlug = `qa-facility-${Date.now()}`;
 const [admins] = await db.query("SELECT id FROM cms_users WHERE role = 'administrator' AND active = TRUE ORDER BY created_at LIMIT 1");
 if (!admins.length) throw new Error("An active CMS administrator is required for the browser audit.");
 await db.execute("INSERT INTO cms_sessions (token_hash, user_id, expires_at) VALUES (?, ?, UTC_TIMESTAMP() + INTERVAL 1 HOUR)", [tokenHash, admins[0].id]);
@@ -63,7 +64,7 @@ const routes = ["/admin", "/admin/projects", "/admin/projects/new", "/admin/insi
 const viewports = [["tablet-768", 768, 1024], ["tablet-1024", 1024, 768], ["desktop-1440", 1440, 900], ["desktop-1920", 1920, 1080]];
 const requestedRoutes = process.env.CMS_AUDIT_ROUTES?.split(",").filter(Boolean);
 const requestedViewports = process.env.CMS_AUDIT_VIEWPORTS?.split(",").filter(Boolean);
-const selectedRoutes = requestedRoutes?.length ? routes.filter((route) => requestedRoutes.includes(route)) : routes;
+const selectedRoutes = requestedRoutes?.length ? requestedRoutes.filter((route) => routes.includes(route) || /^\/admin\/projects\/[a-z0-9-]+(?:\/preview)?$/.test(route)) : routes;
 const selectedViewports = requestedViewports?.length ? viewports.filter(([name]) => requestedViewports.includes(name)) : viewports;
 const expression = `(() => {
   const name = node => (node.getAttribute('aria-label') || node.getAttribute('title') || node.textContent || '').trim() || node.querySelector('img[alt]:not([alt=""])')?.alt || '';
@@ -145,6 +146,69 @@ try {
   const keyboardPass = keyboard.result.value?.pass === true;
   console.log(`${keyboardPass ? "PASS" : "FAIL"} tablet keyboard focus and navigation menu${keyboardPass ? "" : ` ${JSON.stringify(keyboard.result.value)}`}`);
   if (!keyboardPass) failed = true;
+  if (process.env.CMS_AUDIT_FACILITIES === "1") {
+    await navigate("/admin/projects/new");
+    await wait(300);
+    const details = {
+      headline: "QA facility headline", offering: "Lease", specifications: [{ label: "Floor plate", value: "7,000 sq ft", note: "Each floor" }],
+      featuresTitle: "Key features", features: ["Dedicated parking"], sectors: ["Healthcare"], sections: [{ title: "Connectivity", body: "QA facility connectivity." }],
+      contactName: "QA Contact", contactPhone: "+971 55 689 4660", brochure: "/Aureum_Office Building.pdf", imageCaption: "Site photography",
+    };
+    await cdp.send("Runtime.evaluate", { expression: `(async () => {
+      const form = document.querySelector('form.cms-project-editor');
+      const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+      const name = form.elements.namedItem('name'); set.call(name, 'QA Facility'); name.dispatchEvent(new Event('input', { bubbles: true }));
+      await new Promise(r => setTimeout(r, 80));
+      const slug = form.elements.namedItem('slug'); set.call(slug, ${JSON.stringify(facilityAuditSlug)}); slug.dispatchEvent(new Event('input', { bubbles: true }));
+      await new Promise(r => setTimeout(r, 80));
+      for (const [key, value] of Object.entries({ type: 'Office building', category: 'Commercial Office', metric: '7,000 sq ft', status: 'Ready to move in', engagement: 'Lease', philosophy: 'QA facility summary.' })) form.elements.namedItem(key).value = value;
+      form.elements.namedItem('projectDetails').value = ${JSON.stringify(JSON.stringify(details))};
+      [...form.querySelectorAll('button')].find(n => n.textContent === 'Save draft').click();
+    })()`, awaitPromise: true });
+    let saved = false;
+    for (let attempt = 0; attempt < 80; attempt += 1) {
+      await wait(100);
+      const [rows] = await db.execute("SELECT project_details FROM cms_projects WHERE slug = ?", [facilityAuditSlug]);
+      if (rows.length) { const detail = typeof rows[0].project_details === 'string' ? JSON.parse(rows[0].project_details) : rows[0].project_details; saved = detail.specifications[0].value === '7,000 sq ft' && detail.brochure === details.brochure; break; }
+    }
+    console.log(`${saved ? 'PASS' : 'FAIL'} facility details save to database without images or invented location`);
+    if (!saved) failed = true;
+    if (saved) {
+      await navigate(`/admin/projects/${facilityAuditSlug}`);
+      await wait(300);
+      const edited = await cdp.send("Runtime.evaluate", { expression: `(async () => {
+        const form = document.querySelector('form.cms-project-editor');
+        [...form.querySelectorAll('button')].find(n => n.textContent === 'Add specification').click();
+        await new Promise(r => setTimeout(r, 80));
+        const articles = [...form.querySelectorAll('.cms-chapter-editor article')];
+        const last = articles.filter(n => n.textContent.includes('Specification')).at(-1);
+        const inputs = last.querySelectorAll('input');
+        const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+        set.call(inputs[0], 'Configuration'); inputs[0].dispatchEvent(new Event('input', { bubbles: true }));
+        await new Promise(r => setTimeout(r, 50));
+        set.call(inputs[1], 'G+1'); inputs[1].dispatchEvent(new Event('input', { bubbles: true }));
+        await new Promise(r => setTimeout(r, 50));
+        const details = JSON.parse(form.elements.namedItem('projectDetails').value);
+        const pass = details.specifications.length === 2 && details.specifications[1].value === 'G+1';
+        [...form.querySelectorAll('button')].find(n => n.textContent === 'Publish project').click();
+        return pass;
+      })()`, awaitPromise: true, returnByValue: true });
+      let published = false;
+      for (let attempt = 0; attempt < 80; attempt += 1) {
+        await wait(100);
+        const [rows] = await db.execute("SELECT published, JSON_LENGTH(project_details, '$.specifications') AS specs FROM cms_projects WHERE slug = ?", [facilityAuditSlug]);
+        if (rows[0]?.published) { published = rows[0].specs === 2; break; }
+      }
+      const html = await (await fetch(origin + `/portfolio/${facilityAuditSlug}`)).text();
+      const pass = edited.result.value && published && html.includes('G+1') && html.includes('7,000 sq ft');
+      console.log(`${pass ? 'PASS' : 'FAIL'} facility CMS specification edit and publish round trip`);
+      if (!pass) failed = true;
+      const [revisions] = await db.execute("SELECT COUNT(*) AS count FROM cms_revisions WHERE content_type = 'project' AND content_slug = ?", [facilityAuditSlug]);
+      const revisionPass = revisions[0].count >= 2;
+      console.log(`${revisionPass ? 'PASS' : 'FAIL'} facility changes retain revision history`);
+      if (!revisionPass) failed = true;
+    }
+  }
   await navigate("/admin/team/new");
   await cdp.send("Runtime.evaluate", {
     expression: `(() => {
@@ -210,6 +274,9 @@ try {
   await db.execute("DELETE FROM cms_sessions WHERE token_hash = ?", [tokenHash]);
   await db.execute("DELETE FROM cms_audit_log WHERE content_type = 'team_member' AND content_slug = ?", [teamAuditSlug]);
   await db.execute("DELETE FROM cms_team_members WHERE slug = ?", [teamAuditSlug]);
+  await db.execute("DELETE FROM cms_revisions WHERE content_type = 'project' AND content_slug = ?", [facilityAuditSlug]);
+  await db.execute("DELETE FROM cms_audit_log WHERE content_type = 'project' AND content_slug = ?", [facilityAuditSlug]);
+  await db.execute("DELETE FROM cms_projects WHERE slug = ?", [facilityAuditSlug]);
   await db.end();
   app.kill("SIGTERM");
   await Promise.race([once(app, "exit"), wait(2000)]);

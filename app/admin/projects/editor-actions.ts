@@ -18,6 +18,7 @@ import type { CmsWorkflowStatus, Project } from "@/data/site";
 import { recordCmsRevision } from "@/lib/cms/revisions";
 import { recordCmsAudit, type CmsAuditAction } from "@/lib/cms/audit";
 import { parseDubaiDateTimeLocal } from "@/lib/cms/scheduling";
+import { parseProjectDetails } from "@/data/project-details";
 
 export type ProjectEditorResult = {
   ok: boolean;
@@ -66,6 +67,7 @@ function projectFromForm(formData: FormData, workflowStatus: CmsWorkflowStatus, 
     .filter(Boolean)
     .join("\n");
   return {
+    details: parseProjectDetails(value(formData, "projectDetails")),
     slug,
     name: name || "Untitled project",
     location: value(formData, "location"),
@@ -148,7 +150,9 @@ export async function saveProjectEditorAction(formData: FormData): Promise<Proje
   const scheduledAt = workflowStatus === "scheduled"
     ? (intent === "schedule" ? scheduledDate?.toISOString() ?? "" : existing?.scheduledAt ?? "")
     : "";
-  const project = projectFromForm(formData, workflowStatus, scheduledAt);
+  let project: Project;
+  try { project = projectFromForm(formData, workflowStatus, scheduledAt); }
+  catch { return { ok: false, errors: { details: "Invalid facility content. Reload the editor and try again." } }; }
   if (!project.slug) return { ok: false, errors: { slug: "Enter a project name before saving." } };
 
   const errors = intent === "publish" || intent === "schedule"

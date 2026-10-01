@@ -1,6 +1,6 @@
 import { notFound, permanentRedirect } from "next/navigation";
 import { CaseStudyExperience } from "@/components/portfolio-experience";
-import { Media } from "@/components/ui";
+import { ProjectHero } from "@/components/facility-experience";
 import { projectPresentation } from "@/data/site";
 import { getCmsRedirect, getProjectBySlug, getProjects } from "@/lib/cms/collections";
 import { getSiteOrigin } from "@/lib/site-url";
@@ -57,26 +57,17 @@ export default async function Page({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Place",
-              additionalType: "Industrial development",
+              additionalType: project.type,
               name: display.name,
               description: display.philosophy,
               url: new URL(project.canonicalUrl || `/portfolio/${slug}`, siteUrl).toString(),
-              location: display.location,
+              ...(project.location ? { location: project.location } : {}),
               creator: { "@type": "Organization", name: "Aureum Development" },
             }).replace(/</g, "\\u003c"),
           }}
         />
       )}
-      <section className="case-hero">
-        <Media label="project-hero.webp" src={project.coverImage} alt={display.name} />
-        <div>
-          <small>
-            {display.location} / {project.type}
-          </small>
-          <h1>{display.name}</h1>
-          <p>{display.philosophy}</p>
-        </div>
-      </section>
+      <ProjectHero project={project} />
       <CaseStudyExperience project={project} projects={projects} />
     </main>
   );

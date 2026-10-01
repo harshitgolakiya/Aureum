@@ -48,6 +48,16 @@
 .dev-slide-backdrop {
   display: none;
 }
+.dev-slide-no-image { background: linear-gradient(135deg, var(--navy), #243c55); }
+.dev-slide-no-image .dev-s2-top > div { max-width: min(65%, 850px); }
+.dev-slide-no-image .dev-s2-sub { max-width: 48ch; font-weight: 400; }
+@media (max-aspect-ratio: 3 / 2) and (prefers-reduced-motion: no-preference) {
+  .dev-slide-no-image .dev-s2-top { height: 70%; }
+  .dev-slide-no-image .dev-s2-top > div { max-width: 100%; }
+  .dev-slide-no-image .dev-s2-tagline { font-size: clamp(1.8rem, 6vw, 3rem); }
+  .dev-slide-no-image .dev-s2-sub { font-size: clamp(0.9rem, 2.5vw, 1.1rem); }
+  .dev-slide-no-image .dev-s2-bottom { top: 74%; }
+}
 .dev-slide-tint {
   position: absolute;
   inset: 0;
@@ -196,20 +206,11 @@
 }
 .dev-s2-closing {
   margin: 0;
-  font-size: max(1.15rem, calc(var(--u) * 2.3));
-  font-weight: 500;
+  max-width: 22ch;
+  font-size: max(1.05rem, calc(var(--u) * 2.05));
+  font-weight: 400;
   line-height: 1.15;
   letter-spacing: -0.03em;
-}
-.dev-s2-bottom .dev-s2-rule {
-  margin: calc(var(--u) * 1.1) 0 calc(var(--u) * 0.9);
-}
-.dev-s2-services {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: max(0.62rem, calc(var(--u) * 0.8));
-  line-height: 1.9;
 }
 
 /* Counter and CTA */
@@ -306,34 +307,17 @@
   .dev-s2-caption {
     display: none;
   }
-  /* Keep the text clear of the CTA, which sits at the bottom on small screens. */
+  /* Keep the statement clear of the compact CTA on small screens. */
   .dev-s2-bottom {
-    bottom: 4.6rem;
+    bottom: 4rem;
     overflow: hidden;
   }
-  /* Little vertical room below the image: run the services together in rows. */
   .dev-s2-closing {
-    font-size: max(1.05rem, calc(var(--u) * 1.9));
-  }
-  .dev-s2-bottom .dev-s2-rule {
-    margin: calc(var(--u) * 0.9) 0 calc(var(--u) * 0.7);
-  }
-  .dev-s2-services {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 1.4em;
-    line-height: 1.7;
-    /* One tidy row; anything that would wrap is left out rather than cut in half. */
-    max-height: 1.7em;
-    overflow: hidden;
+    font-size: max(1rem, calc(var(--u) * 1.7));
   }
 }
 @media (max-aspect-ratio: 3 / 2) and (max-height: 800px) {
-  /* Short phones: not enough room under the image, so keep just the closing line. */
-  .dev-s2-bottom .dev-s2-rule,
-  .dev-s2-services {
-    display: none;
-  }
+  .dev-s2-closing { max-width: 20ch; }
 }
 @media (max-width: 900px) {
   .dev-story {
@@ -354,8 +338,12 @@
   }
   .dev-slide-cta {
     left: var(--pad);
-    right: var(--pad);
-    bottom: 1.25rem;
+    right: auto;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    width: auto;
+    padding: 0.85rem 1rem;
+    gap: 1.75rem;
+    font-size: 0.62rem;
   }
 }
 
