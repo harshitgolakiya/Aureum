@@ -1,3 +1,45 @@
+/* Facility brochure pages can be published before photography is available. */
+.facility-card-without-image { min-height: clamp(280px, 30vw, 460px); display: flex; flex-direction: column; justify-content: center; gap: 2rem; padding: clamp(2rem, 5vw, 5rem); color: var(--white); background: linear-gradient(135deg, var(--navy), #243c55); }
+.facility-card-without-image small, .facility-card-without-image span { text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.7rem; color: var(--gold); }
+.facility-card-without-image strong { font-size: clamp(2rem, 4vw, 4rem); font-weight: 400; line-height: 1.08; max-width: 22ch; }
+.case-hero.case-hero-without-image { height: auto; min-height: 540px; padding: clamp(9rem, 14vw, 13rem) var(--pad) 5rem; background: linear-gradient(135deg, var(--navy), #243c55); }
+.case-hero.case-hero-without-image > div:last-child { position: relative; inset: auto; max-width: 1100px; }
+.case-hero.case-hero-without-image h1 { max-width: 19ch; font-size: clamp(2.6rem, 6.5vw, 7rem); }
+.case-hero .facility-offering { color: var(--gold) !important; }
+.facility-experience h2 { font-size: clamp(2rem, 3.5vw, 4rem); line-height: 1.08; }
+.facility-specs { display: grid; grid-template-columns: 0.75fr 1.25fr; gap: 6vw; }
+.facility-specs > div > p:last-child { margin-top: 1.5rem; color: var(--dusty); }
+.facility-specs dl { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; }
+.facility-specs dl > div { padding-top: 1.4rem; border-top: 1px solid var(--gold); }
+.facility-specs dt { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--dusty); }
+.facility-specs dd { margin: 1rem 0; font-size: clamp(1.5rem, 2vw, 2.4rem); line-height: 1.2; }
+.facility-specs dd.facility-spec-note { font-size: 0.85rem; color: var(--dusty); line-height: 1.6; }
+.facility-features { background: var(--navy); color: var(--white); }
+.facility-features ul { padding: 0; margin: 3rem 0 0; list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem; }
+.facility-features li { border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1.2rem; font-size: 1.1rem; line-height: 1.5; }
+.facility-features li span { display: block; color: var(--gold); font-size: 0.7rem; margin-bottom: 1rem; }
+.facility-sectors ul { padding: 0; margin: 2rem 0 0; list-style: none; display: flex; flex-wrap: wrap; gap: 1rem; }
+.facility-sectors li { border: 1px solid var(--line); padding: 1rem 1.5rem; }
+.facility-sections { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4rem; }
+.facility-sections article { border-top: 1px solid var(--line); padding-top: 2rem; }
+.facility-sections small { color: var(--gold); }
+.facility-sections h2 { margin: 1.5rem 0; }
+.facility-sections p { color: var(--dusty); line-height: 1.8; }
+.facility-gallery > p { margin: 1rem 0 2rem; color: var(--dusty); }
+.facility-lightbox { width: 92vw; max-width: 1400px; height: 90svh; max-height: 90svh; padding: 1.5rem; border: 0; background: var(--navy); color: white; }
+.facility-lightbox::backdrop { background: rgba(0,0,0,0.85); }
+.facility-lightbox > div { position: relative; height: calc(100% - 7rem); margin: 1rem 0; }
+.facility-lightbox img { object-fit: contain; }
+.facility-lightbox nav { display: flex; justify-content: space-between; gap: 1rem; }
+.facility-lightbox button { background: transparent; color: white; padding: 0.5rem; border: 1px solid var(--line); cursor: pointer; }
+@media (max-width: 900px) {
+  .facility-specs, .facility-sections { grid-template-columns: 1fr; }
+  .facility-features ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .facility-specs dl, .facility-features ul { grid-template-columns: 1fr; }
+  .portfolio-card-meta, .portfolio-metric { gap: 1rem; flex-wrap: wrap; }
+}
 .portfolio-explore {
   padding: clamp(7rem, 11vw, 12rem) var(--pad);
 }

@@ -19,17 +19,17 @@ export const approvedMedia: Record<string, ApprovedMedia> = {
     focalPoint: "50% 50%",
   },
   "leadership-portrait-01.webp": {
-    src: "/leadership/2_Aasim Ameer.webp",
+    src: "/leadership/Aasim Ameer_photo.webp",
     alt: "Portrait of Aasim Ameer, Chief Executive Officer",
     focalPoint: "50% 0%",
   },
   "leadership-portrait-02.webp": {
-    src: "/leadership/1_Akhilesh Padinhare-transparent.png",
+    src: "/leadership/Akhilesh Padinhare_photo.webp",
     alt: "Portrait of Akhilesh Padinhare, Founder and Executive Director",
     focalPoint: "50% 20%",
   },
   "leadership-portrait-03.webp": {
-    src: "/leadership/3_Anish Kasim.webp",
+    src: "/leadership/Anish Kasim_photo.webp",
     alt: "Portrait of Anish Kasim, Executive Director at Real Estate Development",
     focalPoint: "50% 20%",
   },
@@ -49,7 +49,7 @@ export const approvedMedia: Record<string, ApprovedMedia> = {
     focalPoint: "50% 0%",
   },
   "leadership-portrait-tejeshree.webp": {
-    src: "/leadership/4_DJ-transparent.png",
+    src: "/leadership/DJ_photopng.webp",
     alt: "Portrait of Tejeshree Jadhav, Associate Director – Industrial Assets",
     focalPoint: "50% 20%",
   },

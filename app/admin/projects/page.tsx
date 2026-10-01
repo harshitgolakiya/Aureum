@@ -104,7 +104,7 @@ export default async function ProjectsPage({ searchParams }: {
             {visible.map((project) => (
               <article className="cms-project-row" key={project.slug}>
                 <div className="cms-project-identity">
-                  <div className="cms-project-thumb"><Image src={project.coverImage} alt="" fill sizes="72px" /></div>
+                  <div className="cms-project-thumb">{project.coverImage && <Image src={project.coverImage} alt="" fill sizes="72px" />}</div>
                   <div><strong>{project.name}</strong><small>/{project.slug}</small></div>
                 </div>
                 <div><span className={`cms-record-status is-${projectStatus(project).toLowerCase()}`}><i />{projectStatus(project)}</span></div>

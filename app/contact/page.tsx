@@ -9,7 +9,8 @@ export const metadata = {
     "Start a conversation with Aureum about industrial development, investment, expansion or strategic partnership opportunities.",
   alternates: { canonical: "/contact" },
 };
-export default async function Page() {
+export default async function Page({ searchParams }: { searchParams: Promise<{ project?: string }> }) {
+  const { project } = await searchParams;
   const contact = await getCmsContent("site.footer");
   const officeAddress = [
     contact.addressTwo,
@@ -54,7 +55,7 @@ export default async function Page() {
             what matters now; the right development pathway follows.
           </p>
         </div>
-        <ContactForm />
+        <ContactForm projectName={typeof project === "string" ? project.slice(0, 255) : ""} />
       </section>
       <section className="office">
         <div className="office-copy">

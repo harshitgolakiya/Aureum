@@ -13,8 +13,11 @@ import { ensureCmsSchema, getCmsPool } from "./database";
 import { recordCmsRevision } from "./revisions";
 import { recordCmsAudit } from "./audit";
 import { softDeleteCmsRecord } from "./recovery";
+import { parseProjectDetails } from "@/data/project-details";
+import { importClientProjectsOnce } from "./project-import";
 
 type ProjectRow = RowDataPacket & {
+  project_details?: unknown;
   slug: string;
   name: string;
   location: string;
@@ -90,6 +93,7 @@ type PostRow = RowDataPacket & {
 
 function projectFromRow(row: ProjectRow): Project {
   return {
+    details: parseProjectDetails(row.project_details),
     slug: row.slug,
     name: row.name,
     location: row.location,
@@ -131,6 +135,43 @@ function projectFromRow(row: ProjectRow): Project {
   };
 }
 
+async function applyHomepageStoryCopyMigration() {
+  const database = getCmsPool();
+  if (!database) return;
+
+  const migrationKey = "2026-10-nexus-homepage-story-copy";
+  const [migrations] = await database.execute<RowDataPacket[]>(
+    "SELECT 1 FROM cms_migrations WHERE migration_key = ? LIMIT 1",
+    [migrationKey],
+  );
+  if (migrations.length) return;
+
+  const databaseConnection = await database.getConnection();
+  try {
+    await databaseConnection.beginTransaction();
+    await databaseConnection.execute(
+      `UPDATE cms_projects
+       SET homepage_tagline = ?, homepage_tagline_sub = ?, homepage_services = ''
+       WHERE slug = ? AND deleted_at IS NULL`,
+      [
+        "Nexus Logistics\nWarehouse",
+        "A 38,000 m² Grade A logistics asset shaped for efficient circulation, flexible distribution operations and scalable growth.",
+        "nexus-logistics-warehouse",
+      ],
+    );
+    await databaseConnection.execute(
+      "INSERT IGNORE INTO cms_migrations (migration_key, details_json) VALUES (?, ?)",
+      [migrationKey, JSON.stringify({ slug: "nexus-logistics-warehouse" })],
+    );
+    await databaseConnection.commit();
+  } catch (error) {
+    await databaseConnection.rollback();
+    throw error;
+  } finally {
+    databaseConnection.release();
+  }
+}
+
 function postFromRow(row: PostRow): InsightArticle {
   return {
     slug: row.slug,
@@ -168,13 +209,15 @@ export async function getProjects(includeDrafts = false): Promise<Project[]> {
   if (!database) return fallbackProjects.filter((item) => includeDrafts || item.published);
   try {
     await ensureCmsSchema();
+    await applyHomepageStoryCopyMigration();
+    await importClientProjectsOnce();
     await publishDueContent();
     const [rows] = await database.query<ProjectRow[]>(
       `SELECT slug, name, location, asset_type, category, metric, project_status,
         philosophy, engagement, cover_image, opportunity, strategy, delivery,
         outcome, chapter_order, gallery_images, homepage_featured, homepage_image, homepage_headline, homepage_subline, homepage_specs, homepage_tagline, homepage_tagline_sub, homepage_closing, homepage_services, seo_title, seo_description,
         canonical_url, search_index, search_follow, social_title, social_description, social_image,
-        published, archived, workflow_status, scheduled_at, sort_order, updated_at
+        published, archived, workflow_status, scheduled_at, sort_order, updated_at, project_details
        FROM cms_projects
        ${includeDrafts ? "WHERE archived = FALSE AND deleted_at IS NULL" : "WHERE published = TRUE AND archived = FALSE AND deleted_at IS NULL"}
        ORDER BY sort_order ASC, updated_at DESC`,
@@ -201,13 +244,15 @@ export async function getCmsProjectLibrary(): Promise<CmsProjectListItem[]> {
   }
   try {
     await ensureCmsSchema();
+    await applyHomepageStoryCopyMigration();
+    await importClientProjectsOnce();
     await publishDueContent();
     const [rows] = await database.query<ProjectRow[]>(
       `SELECT slug, name, location, asset_type, category, metric, project_status,
         philosophy, engagement, cover_image, opportunity, strategy, delivery,
         outcome, chapter_order, gallery_images, homepage_featured, homepage_image, homepage_headline, homepage_subline, homepage_specs, homepage_tagline, homepage_tagline_sub, homepage_closing, homepage_services, seo_title, seo_description,
         canonical_url, search_index, search_follow, social_title, social_description, social_image,
-        published, archived, workflow_status, scheduled_at, sort_order, lock_version, updated_at
+        published, archived, workflow_status, scheduled_at, sort_order, lock_version, updated_at, project_details
        FROM cms_projects WHERE deleted_at IS NULL
        ORDER BY updated_at DESC, sort_order ASC`,
     );
@@ -412,8 +457,8 @@ export async function saveProject(originalSlug: string, project: Project, expect
        philosophy, engagement, cover_image, opportunity, strategy, delivery,
        outcome, chapter_order, gallery_images, homepage_featured, homepage_image, homepage_headline, homepage_subline, homepage_specs, homepage_tagline, homepage_tagline_sub, homepage_closing, homepage_services, seo_title, seo_description,
        canonical_url, search_index, search_follow, social_title, social_description, social_image,
-       published, archived, workflow_status, scheduled_at, sort_order)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       published, archived, workflow_status, scheduled_at, sort_order, project_details)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
      ${originalSlug ? `ON DUPLICATE KEY UPDATE
        name = VALUES(name), location = VALUES(location),
        asset_type = VALUES(asset_type), category = VALUES(category),
@@ -434,6 +479,7 @@ export async function saveProject(originalSlug: string, project: Project, expect
        social_description = VALUES(social_description), social_image = VALUES(social_image),
        published = VALUES(published), archived = VALUES(archived),
        workflow_status = VALUES(workflow_status), scheduled_at = VALUES(scheduled_at),
+       project_details = VALUES(project_details),
        sort_order = VALUES(sort_order)${expectedVersion === undefined ? ", lock_version = lock_version + 1" : ""}` : ""}`,
     [
       project.slug,
@@ -474,6 +520,7 @@ export async function saveProject(originalSlug: string, project: Project, expect
       project.workflowStatus,
       project.scheduledAt ? new Date(project.scheduledAt) : null,
       project.sortOrder,
+      project.details ? JSON.stringify(project.details) : null,
     ],
   );
 }
@@ -505,7 +552,7 @@ export async function duplicateProjectRecord(slug: string) {
       philosophy, engagement, cover_image, opportunity, strategy, delivery,
       outcome, chapter_order, gallery_images, homepage_featured, homepage_image, homepage_headline, homepage_subline, homepage_specs, homepage_tagline, homepage_tagline_sub, homepage_closing, homepage_services, seo_title, seo_description,
       canonical_url, search_index, search_follow, social_title, social_description, social_image,
-      published, archived, workflow_status, scheduled_at, sort_order, updated_at
+      published, archived, workflow_status, scheduled_at, sort_order, updated_at, project_details
      FROM cms_projects WHERE slug = ? AND deleted_at IS NULL LIMIT 1`,
     [slug],
   );
@@ -671,7 +718,7 @@ export async function publishDueContent() {
       philosophy, engagement, cover_image, opportunity, strategy, delivery,
       outcome, chapter_order, gallery_images, homepage_featured, homepage_image, homepage_headline, homepage_subline, homepage_specs, homepage_tagline, homepage_tagline_sub, homepage_closing, homepage_services, seo_title, seo_description,
       canonical_url, search_index, search_follow, social_title, social_description, social_image,
-      published, archived, workflow_status, scheduled_at, sort_order, updated_at
+      published, archived, workflow_status, scheduled_at, sort_order, updated_at, project_details
      FROM cms_projects WHERE workflow_status = 'scheduled' AND scheduled_at <= UTC_TIMESTAMP() AND deleted_at IS NULL`,
   );
   const [duePosts] = await database.query<PostRow[]>(

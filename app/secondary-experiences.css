@@ -549,6 +549,7 @@
 }
 .leadership-list {
   display: grid;
+  width: min(85%, 1260px);
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(0.8rem, 1.5vw, 1.5rem);
   margin-top: clamp(3rem, 5vw, 5rem);
@@ -599,13 +600,8 @@
   background: var(--warm);
 }
 .leadership-card-visual .media-approved > img {
+  object-fit: contain;
   transform: none;
-  filter: grayscale(1);
-  transition: filter 0.45s var(--ease);
-}
-.leadership-list button:hover .leadership-card-visual .media-approved > img,
-.leadership-list button:focus-visible .leadership-card-visual .media-approved > img {
-  filter: grayscale(0);
 }
 .leadership-card-visual .media::after,
 .bio-visual .media::after {
@@ -614,43 +610,29 @@
 .leadership-card-body {
   display: flex;
   flex-direction: column;
-  padding: clamp(1.25rem, 2vw, 2rem);
-  line-height: normal;
+  align-items: center;
+  text-align: center;
+  gap: 0.8rem;
+  padding: clamp(1.5rem, 2.5vw, 2.5rem) 1rem;
+  line-height: 1.25;
 }
-.leadership-card-body > small {
+.leadership-card-body > span {
   display: block;
-  font-size: 0.6rem;
-  color: var(--gold);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  font-size: clamp(0.9rem, 1.2vw, 1.2rem);
+  font-weight: 400;
+  color: var(--navy);
 }
 .leadership-list strong {
   display: block;
-  margin-top: 0.65rem;
-  font-size: clamp(1.15rem, 1.5vw, 1.5rem);
+  margin: 0;
+  font-size: clamp(1.2rem, 1.8vw, 1.8rem);
   font-weight: 500;
 }
-.leadership-card-body > div {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  align-items: end;
-  margin-top: auto;
-  padding-top: 1rem;
-  border-top: 1px solid var(--line);
+.leadership-list-compact strong {
+  font-size: clamp(1.05rem, 1.4vw, 1.4rem);
 }
-.leadership-card-body > div span {
-  max-width: none;
-  color: var(--dusty);
-  font-size: 0.64rem;
-  line-height: 1.5;
-  white-space: nowrap;
-}
-.leadership-card-body b {
-  color: var(--gold);
-  font-size: 0.58rem;
-  font-weight: 600;
-  white-space: nowrap;
+.leadership-list-compact .leadership-card-body > span {
+  font-size: clamp(0.8rem, 1vw, 1rem);
 }
 .bio-overlay {
   position: fixed;
@@ -1110,6 +1092,7 @@
     width: 100%;
   }
   .leadership-list {
+    width: min(88%, 380px);
     grid-template-columns: 1fr;
   }
   .leadership-card-visual {

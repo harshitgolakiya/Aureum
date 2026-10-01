@@ -32,18 +32,18 @@ export default async function Home() {
     getPosts(),
   ]);
   const featuredDevelopments = projects
-    .filter((project) => project.homepageFeatured && project.homepageImage)
+    .filter((project) => project.homepageFeatured && (project.homepageImage || project.details))
     .map((project) => ({
       slug: project.slug,
       name: project.name,
       location: project.location,
       image: project.homepageImage,
-      headline: project.homepageHeadline || project.name,
-      subline: project.homepageSubline,
-      specs: project.homepageSpecs,
-      tagline: project.homepageTagline,
-      taglineSub: project.homepageTaglineSub,
-      closing: project.homepageClosing,
+      headline: project.details ? project.name : project.homepageHeadline || project.name,
+      subline: project.details ? project.location : project.homepageSubline,
+      specs: project.details ? project.details.specifications.map((spec) => `${spec.label}: ${spec.value}`).join("\n") : project.homepageSpecs,
+      tagline: project.details ? project.details.headline : project.homepageTagline,
+      taglineSub: project.details ? project.philosophy : project.homepageTaglineSub,
+      closing: project.details ? project.details.offering : project.homepageClosing,
       services: project.homepageServices,
     }));
   return (

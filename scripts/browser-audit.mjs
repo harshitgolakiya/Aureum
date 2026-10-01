@@ -1,7 +1,7 @@
 import { spawn, spawnSync } from "node:child_process";
 import { once } from "node:events";
 import { existsSync } from "node:fs";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -47,7 +47,7 @@ const motionModes = ["no-preference", "reduce"];
 const routeFilter = process.env.AUDIT_ROUTES?.split(",").filter(Boolean);
 const viewportFilter = process.env.AUDIT_VIEWPORTS?.split(",").filter(Boolean);
 const selectedRoutes = routeFilter?.length
-  ? routes.filter((route) => routeFilter.includes(route))
+  ? routeFilter.filter((route) => routes.includes(route) || /^\/portfolio\/[a-z0-9-]+$/.test(route))
   : routes;
 const selectedViewports = viewportFilter?.length
   ? viewports.filter(([name]) => viewportFilter.includes(name))
@@ -119,7 +119,7 @@ const auditExpression = `(() => {
     .filter(node => !node.getAttribute('aria-label') && !node.getAttribute('aria-labelledby') && !node.labels?.length).length;
   const brokenAriaReferences = [...document.querySelectorAll('[aria-controls], [aria-describedby], [aria-labelledby]')]
     .flatMap(node => ['aria-controls', 'aria-describedby', 'aria-labelledby']
-      .flatMap(attribute => (node.getAttribute(attribute) || '').split(/\s+/).filter(Boolean)))
+      .flatMap(attribute => (node.getAttribute(attribute) || '').split(/\\s+/).filter(Boolean)))
     .filter(id => !document.getElementById(id));
   const navigation = performance.getEntriesByType('navigation')[0];
   const resources = performance.getEntriesByType('resource');
@@ -279,6 +279,11 @@ try {
             if (pass) console.log(`PASS ${label}`);
             else console.log(`FAIL ${label}`, JSON.stringify(value));
             if (!pass) failed = true;
+            if (process.env.AUDIT_SCREENSHOTS === "1" && motion === "reduce") {
+              await mkdir(".qa-shots", { recursive: true });
+              const shot = await cdp.send("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
+              await writeFile(`.qa-shots/${viewport}-${route.replaceAll("/", "-") || "home"}.png`, Buffer.from(shot.data, "base64"));
+            }
           }
         }
       }
@@ -292,8 +297,8 @@ try {
       const interactions = [
         ["mobile navigation", "/", `async () => { const button = document.querySelector('.menu-button'); button?.focus(); button?.click(); await new Promise(resolve => setTimeout(resolve, 100)); const menu = document.querySelector('#mobile-menu'); const opened = button?.getAttribute('aria-expanded') === 'true' && menu?.getAttribute('aria-hidden') === 'false' && menu?.contains(document.activeElement); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })); await new Promise(resolve => setTimeout(resolve, 100)); return opened && button?.getAttribute('aria-expanded') === 'false' && menu?.getAttribute('aria-hidden') === 'true' && document.activeElement === button; }`],
         ["conversation modal", "/", `async () => { const trigger = document.querySelector('.footer-cta'); if (!trigger) return false; trigger.focus(); trigger.click(); await new Promise(resolve => setTimeout(resolve, 100)); const dialog = document.querySelector('.conversation-modal'); const close = dialog?.querySelector('.conversation-modal-close'); const opened = dialog?.open && dialog.querySelectorAll('.strategic-form input, .strategic-form select, .strategic-form textarea').length === 9 && close === document.activeElement; close?.click(); await new Promise(resolve => setTimeout(resolve, 100)); return Boolean(opened && !document.querySelector('.conversation-modal') && document.activeElement === trigger); }`],
-        ["homepage image sequence", "/", `async () => { const section = document.querySelector('.aureum-sequence-story'); if (!section) return false; const travel = Math.max(section.offsetHeight - innerHeight, 1); scrollTo({ top: section.offsetTop + travel * 0.55, behavior: 'instant' }); window.dispatchEvent(new Event('scroll')); const deadline = performance.now() + 60000; while (!section.querySelector('.aureum-sequence-visual')?.classList.contains('is-buffered') && performance.now() < deadline) await new Promise(resolve => setTimeout(resolve, 100)); await new Promise(resolve => setTimeout(resolve, 450)); const active = section.querySelector('.aureum-sequence-stage-stack article.is-active'); const progress = section.querySelector('.aureum-sequence-progress > span'); const visual = section.querySelector('.aureum-sequence-visual'); const loader = section.querySelector('.aureum-sequence-loader'); return visual?.classList.contains('is-ready') && visual?.classList.contains('is-buffered') && getComputedStyle(loader).visibility === 'hidden' && active?.querySelector('h2')?.textContent.trim() === 'Development Strategy' && parseFloat(getComputedStyle(progress).width) > 0; }`, "no-preference"],
-        ["portfolio filter", "/portfolio", `async () => { const buttons = [...document.querySelectorAll('.portfolio-filter-bar button')]; const button = buttons.find(node => node.textContent.trim() === 'Logistics'); if (!button) return buttons.length === 1 && buttons[0].textContent.trim() === 'All' && buttons[0].getAttribute('aria-pressed') === 'true'; button.click(); await new Promise(resolve => setTimeout(resolve, 100)); return button.getAttribute('aria-pressed') === 'true'; }`],
+        ["homepage image sequence", "/", `async () => { const section = document.querySelector('.aureum-sequence-story'); if (!section) return false; const travel = Math.max(section.offsetHeight - innerHeight, 1); scrollTo({ top: section.offsetTop + travel * 0.55, behavior: 'instant' }); window.dispatchEvent(new Event('scroll')); const deadline = performance.now() + 60000; while (!section.querySelector('.aureum-sequence-visual')?.classList.contains('is-buffered') && performance.now() < deadline) await new Promise(resolve => setTimeout(resolve, 100)); await new Promise(resolve => setTimeout(resolve, 450)); const active = section.querySelector('.aureum-sequence-stage-stack article.is-active'); const progress = section.querySelector('.aureum-sequence-progress > span'); const visual = section.querySelector('.aureum-sequence-visual'); const loader = section.querySelector('.aureum-sequence-loader'); return visual?.classList.contains('is-ready') && visual?.classList.contains('is-buffered') && getComputedStyle(loader).visibility === 'hidden' && active?.querySelector('h2')?.textContent.trim() === 'Development Expertise' && parseFloat(getComputedStyle(progress).width) > 0; }`, "no-preference"],
+        ["portfolio filter", "/portfolio", `async () => { const buttons = [...document.querySelectorAll('.portfolio-filter-bar button')]; const button = buttons.find(node => node.textContent.trim() !== 'All'); if (!button) return buttons.length === 1 && buttons[0].getAttribute('aria-pressed') === 'true'; button.click(); await new Promise(resolve => setTimeout(resolve, 100)); return button.getAttribute('aria-pressed') === 'true'; }`],
         ["contact validation", "/contact", `async () => { document.querySelector('.strategic-form button[type="submit"]')?.click(); await new Promise(resolve => setTimeout(resolve, 100)); const alert = document.querySelector('.error-summary[role="alert"]'); return Boolean(alert && document.activeElement === alert && document.querySelectorAll('[aria-invalid="true"]').length >= 4); }`],
         ["contact visual states", "/contact", `async () => { await new Promise(resolve => setTimeout(resolve, 1200)); const title = document.querySelector('.contact-hero h1'); const selects = [...document.querySelectorAll('.strategic-form .select-field')]; if (!title || selects.length !== 2) return false; const titleStyle = getComputedStyle(title); const titleVisible = Number(titleStyle.opacity) >= 0.99 && titleStyle.color === 'rgb(255, 255, 255)'; const labelsClear = selects.every(field => { const label = field.querySelector(':scope > span')?.getBoundingClientRect(); const select = field.querySelector('select')?.getBoundingClientRect(); return label && select && label.bottom <= select.top + 2; }); return titleVisible && labelsClear; }`],
         ["contact spam protection", "/contact", `async () => { const input = document.querySelector('.form-honeypot input'); const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set; setter?.call(input, 'https://spam.invalid'); input?.dispatchEvent(new Event('input', { bubbles: true })); await new Promise(resolve => setTimeout(resolve, 50)); document.querySelector('.strategic-form button[type="submit"]')?.click(); await new Promise(resolve => setTimeout(resolve, 100)); return Boolean(document.querySelector('.confirmation.success') && !document.querySelector('.error-summary')); }`],

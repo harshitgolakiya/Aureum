@@ -283,6 +283,7 @@ export function Footer({ content }: { content: FooterContent }) {
       <div className="footer-grid">
         <div className="footer-column">
           <small className="footer-label">Explore</small>
+          <div className="footer-navigation-columns">
           <nav className="footer-links" aria-label="Footer navigation">
             {links.map(([label, href]) => (
               <Link key={href} href={href}>
@@ -290,6 +291,12 @@ export function Footer({ content }: { content: FooterContent }) {
               </Link>
             ))}
           </nav>
+          <nav className="footer-policy-links" aria-label="Legal information">
+            <Link href="/privacy-policy">Privacy</Link>
+            <Link href="/terms">Terms</Link>
+            <Link href="/cookie-policy">Cookies</Link>
+          </nav>
+          </div>
         </div>
         <div className="footer-column">
           <small className="footer-label">Address</small>
@@ -330,11 +337,9 @@ export function Footer({ content }: { content: FooterContent }) {
             </a>
           ))}
         </nav>
-        <span className="footer-legal">
-          <Link href="/privacy-policy">Privacy</Link> ·{" "}
-          <Link href="/terms">Terms</Link> ·{" "}
-          <Link href="/cookie-policy">Cookies</Link>
-        </span>
+        <a className="footer-credit" href="https://crwdmarketing.com/" target="_blank" rel="noopener noreferrer">
+          Designed &amp; Developed by: CRWD Agency Dubai
+        </a>
       </div>
     </footer>
   );

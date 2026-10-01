@@ -48,7 +48,7 @@ const demoMember: TeamMember = {
   role: "Associate Director, Industrial Development",
   discipline: "Industrial Development",
   visualLabel: "Development",
-  portrait: "/leadership/5_Siva.webp",
+  portrait: "/leadership/Siva_photo.webp",
   profilePortrait: "/leadership/newbie.webp",
   biographyOne:
     "Sivaprasath Balakrishnan brings deep technical and development expertise to the planning and delivery of industrial and logistics assets across the UAE.",
@@ -191,6 +191,39 @@ async function seedDemoTeamOnce() {
   }
 }
 
+async function updateTeamPortraitsOnce() {
+  const database = getCmsPool();
+  if (!database) return;
+  const transaction = await database.getConnection();
+  try {
+    await transaction.beginTransaction();
+    const [claim] = await transaction.execute<ResultSetHeader>(
+      "INSERT IGNORE INTO cms_migrations (migration_key, details_json) VALUES (?, ?)",
+      ["2026-10-colour-team-portraits", JSON.stringify({ source: "Client supplied colour profile photos" })],
+    );
+    if (claim.affectedRows) {
+      for (const [slug, filename] of [
+        ["aasim-ameer", "Aasim Ameer_photo.webp"],
+        ["akhilesh-padinhare", "Akhilesh Padinhare_photo.webp"],
+        ["anish-kasim", "Anish Kasim_photo.webp"],
+        ["tejeshree-jadhav", "DJ_photopng.webp"],
+        ["sivaprasath-balakrishnan", "Siva_photo.webp"],
+      ]) {
+        await transaction.execute(
+          "UPDATE cms_team_members SET portrait = ? WHERE slug = ? AND deleted_at IS NULL",
+          [`/leadership/${filename}`, slug],
+        );
+      }
+    }
+    await transaction.commit();
+  } catch (error) {
+    await transaction.rollback();
+    throw error;
+  } finally {
+    transaction.release();
+  }
+}
+
 function fallbackMembers(): CmsTeamMember[] {
   return [
     ...legacyMembers.map((item) => ({
@@ -213,6 +246,7 @@ export async function getTeamMembers(includeDrafts = false): Promise<CmsTeamMemb
     await ensureCmsSchema();
     await seedLegacyTeamOnce();
     await seedDemoTeamOnce();
+    await updateTeamPortraitsOnce();
     const [rows] = await database.query<TeamMemberRow[]>(
       `SELECT slug, name, role_title, discipline, visual_label, portrait, profile_portrait,
         biography_one, biography_two, biography_three, biography_four, biography_five,

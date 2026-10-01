@@ -166,6 +166,8 @@ export async function ensureCmsSchema() {
     if (!projectHomepageColumnNames.has("homepage_services")) await database.execute("ALTER TABLE cms_projects ADD COLUMN homepage_services VARCHAR(1000) NOT NULL DEFAULT '' AFTER homepage_closing");
     const [projectLockColumns] = await database.query<RowDataPacket[]>("SHOW COLUMNS FROM cms_projects WHERE Field = 'lock_version'");
     if (!projectLockColumns.length) await database.execute("ALTER TABLE cms_projects ADD COLUMN lock_version INT UNSIGNED NOT NULL DEFAULT 1 AFTER sort_order");
+    const [projectDetailsColumns] = await database.query<RowDataPacket[]>("SHOW COLUMNS FROM cms_projects LIKE 'project_details'");
+    if (!projectDetailsColumns.length) await database.execute("ALTER TABLE cms_projects ADD COLUMN project_details JSON NULL");
     await database.execute(`
       CREATE TABLE IF NOT EXISTS cms_posts (
         id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
