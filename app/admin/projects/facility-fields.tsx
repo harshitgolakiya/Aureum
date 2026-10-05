@@ -11,7 +11,7 @@ export function FacilityFields({ value, onChange, errors }: { value: ProjectDeta
     <input type="hidden" name="projectDetails" value={JSON.stringify(value)} />
     {errors.details && <p className="cms-alert cms-alert-error is-wide">{errors.details}</p>}
     {text("Facility headline", "headline")}{text("Offering / commercial terms", "offering")}
-    <div className="cms-chapter-editor is-wide">
+    <div className="cms-chapter-editor cms-facility-editor is-wide">
       <h3>Specifications</h3><p>Keep the original units and approximation notes. Add any specification the facility needs.</p>
       {value.specifications.map((spec, index) => <article key={index}>
         <header><strong>Specification {index + 1}</strong><button type="button" onClick={() => field("specifications", value.specifications.filter((_, i) => i !== index))}>Remove</button></header>
@@ -23,7 +23,7 @@ export function FacilityFields({ value, onChange, errors }: { value: ProjectDeta
     {text("Features heading", "featuresTitle")}
     <label className="cms-editor-field is-wide"><span>Features / advantages <small>One per line</small></span><textarea rows={6} value={value.features.join("\n")} onChange={(event) => field("features", event.target.value.split("\n"))} /></label>
     <label className="cms-editor-field is-wide"><span>Designed for / sectors <small>One per line, optional</small></span><textarea rows={4} value={value.sectors.join("\n")} onChange={(event) => field("sectors", event.target.value.split("\n"))} /></label>
-    <div className="cms-chapter-editor is-wide">
+    <div className="cms-chapter-editor cms-facility-editor is-wide">
       <h3>Content sections</h3><p>Add connectivity, operational details, or other headings. Use the arrows to set their order.</p>
       {value.sections.map((section, index) => <article key={index}>
         <header><strong>Section {index + 1}</strong><div>{([-1, 1] as const).map((direction) => <button type="button" key={direction} disabled={index + direction < 0 || index + direction >= value.sections.length} aria-label={`Move section ${index + 1} ${direction === -1 ? "up" : "down"}`} onClick={() => { const next = [...value.sections]; [next[index], next[index + direction]] = [next[index + direction], next[index]]; field("sections", next); }}>{direction === -1 ? "↑" : "↓"}</button>)}<button type="button" onClick={() => field("sections", value.sections.filter((_, i) => i !== index))}>Remove</button></div></header>
