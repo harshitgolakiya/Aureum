@@ -862,7 +862,7 @@ footer:before,
   --type-section-title: clamp(2.5rem, 4.4vw, 5rem);
   --type-supporting-title: clamp(2.4rem, 3.8vw, 4.5rem);
   --type-editorial-title: clamp(2rem, 3vw, 3.5rem);
-  --type-section-label: 0.65rem;
+  --type-section-label: 0.85rem;
 }
 
 /* Keep every public section label on one typographic standard. */
@@ -915,6 +915,12 @@ p.eyebrow > span:first-child {
 body .system-story .system-copy h2,
 .aureum-sequence-stage-stack h2 {
   font-size: var(--type-section-title);
+}
+
+/* Engagement pathway headlines sit above dense point grids, so they run a step smaller. */
+.partner-chapter h2 {
+  font-size: clamp(2rem, 3.2vw, 3.6rem);
+  margin: 2rem 0 1.5rem;
 }
 
 :is(.next-insight, .confirmation, .bio-overlay) h2,

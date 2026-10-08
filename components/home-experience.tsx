@@ -205,17 +205,16 @@ export function AureumSystemIntroduction() {
   return (
     <section className="system-introduction">
       <div>
-        <Eyebrow>The Aureum System</Eyebrow>
+        <Eyebrow>The Thinking Behind Every Development</Eyebrow>
         <h2>
           Better development starts with <em>integrated thinking.</em>
         </h2>
       </div>
       <div>
         <p>
-          Every development is shaped by interconnected decisions. The Aureum
-          System brings strategic thinking, commercial insight and disciplined
-          execution into one integrated framework—where every decision
-          strengthens the next.
+          Aureum brings market intelligence, development expertise and
+          strategic leadership together to turn industrial opportunities into
+          assets built for lasting value.
         </p>
         <ArrowLink href="/how-we-partner" dark>
           Discover What We Do
@@ -356,7 +355,7 @@ export function LifecycleStory() {
     <section ref={root} className="lifecycle">
       <div className="lifecycle-top">
         <div>
-          <Eyebrow>Development Perspective</Eyebrow>
+          <Eyebrow>The Aureum 360 System</Eyebrow>
           <h2>
             Development looks different when you see the <em>whole picture.</em>
           </h2>
@@ -381,7 +380,7 @@ export function LifecycleStory() {
             <i className={index <= active ? "active" : ""} key={n} />
           ))}
         </div>
-        <span>Development phases</span>
+        <span>Development stages</span>
       </div>
       <div ref={track} className="lifecycle-track">
         {phases.map(([n, title, body], index) => {
@@ -442,7 +441,7 @@ export function LifecycleStory() {
                   </g>
                 </svg>
               </div>
-              <small>Development phase {n}</small>
+              <small>Stage {Number(n)}</small>
               <h3>{title}</h3>
               <p>{body}</p>
             </article>

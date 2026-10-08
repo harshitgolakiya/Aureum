@@ -25,12 +25,12 @@ export const approvedMedia: Record<string, ApprovedMedia> = {
   },
   "leadership-portrait-02.webp": {
     src: "/leadership/Akhilesh Padinhare_photo.webp",
-    alt: "Portrait of Akhilesh Padinhare, Founder and Executive Director",
+    alt: "Portrait of Akhilesh Padinhare, Executive Director",
     focalPoint: "50% 20%",
   },
   "leadership-portrait-03.webp": {
     src: "/leadership/Anish Kasim_photo.webp",
-    alt: "Portrait of Anish Kasim, Executive Director at Real Estate Development",
+    alt: "Portrait of Anish Kasim, Executive Director",
     focalPoint: "50% 20%",
   },
   "leadership-profile-portrait-01.webp": {
@@ -40,12 +40,12 @@ export const approvedMedia: Record<string, ApprovedMedia> = {
   },
   "leadership-profile-portrait-02.webp": {
     src: "/leadership/akhi inner.webp",
-    alt: "Portrait of Akhilesh Padinhare, Founder and Executive Director",
+    alt: "Portrait of Akhilesh Padinhare, Executive Director",
     focalPoint: "50% 0%",
   },
   "leadership-profile-portrait-03.webp": {
     src: "/leadership/anish inner.webp",
-    alt: "Portrait of Anish Kasim, Executive Director at Real Estate Development",
+    alt: "Portrait of Anish Kasim, Executive Director",
     focalPoint: "50% 0%",
   },
   "leadership-portrait-tejeshree.webp": {

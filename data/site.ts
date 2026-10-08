@@ -5,39 +5,39 @@ export const phases = [
   [
     "01",
     "Opportunity Intelligence",
-    "Market intelligence, commercial evaluation and technical feasibility reveal where opportunity exists and how it can be shaped for long-term value.",
+    "Identifies the optimum development proposition for the land, market and demand.",
   ],
   [
     "02",
     "Development Strategy",
-    "Commercial objectives, stakeholder priorities and technical requirements come together to shape a development strategy built for long-term value.",
+    "Structures the development proposition around clear commercial, technical and regulatory parameters.",
   ],
   [
     "03",
-    "Integrated Design",
-    "Design brings strategy, technical requirements and operational needs together to shape a high-performing asset.",
+    "Opportunity Planning",
+    "Translates development strategy into an integrated plan for land layout, asset configuration, phasing and delivery.",
   ],
   [
     "04",
-    "Flawless Delivery",
-    "Disciplined execution keeps every decision aligned, every milestone accountable and the development true to its strategic intent.",
+    "Asset Realisation",
+    "Transforms development strategy into assets that perform from day one.",
   ],
   [
     "05",
     "Operational Readiness",
-    "Every development is shaped for how it will operate, bringing commissioning, transition and operational requirements into focus before handover.",
+    "Maps development configuration with occupier requirements, operational needs and the conditions for effective use.",
   ],
   [
     "06",
     "Asset Performance",
-    "We position every development for sustained high-performance, long-term value and the demands of what comes next.",
+    "Positions developed assets for sustained operational, commercial and investment performance over its lifecycle.",
   ],
 ] as const;
 export const pillars = [
   {
     n: "01",
     title: "Industrial Intelligence",
-    body: "Market analysis, opportunity identification, commercial evaluation and strategic positioning. Every development begins with understanding before action. We apply rigorous data-driven intelligence to identify opportunities positioned for sustained long-term performance.",
+    body: "Turning market signals, land potential and industrial demand into high-performance development propositions built for lasting value.",
   },
   {
     n: "02",

@@ -224,6 +224,36 @@ async function updateTeamPortraitsOnce() {
   }
 }
 
+async function updateTeamTitlesOnce() {
+  const database = getCmsPool();
+  if (!database) return;
+  const transaction = await database.getConnection();
+  try {
+    await transaction.beginTransaction();
+    const [claim] = await transaction.execute<ResultSetHeader>(
+      "INSERT IGNORE INTO cms_migrations (migration_key, details_json) VALUES (?, ?)",
+      ["2026-10-executive-director-titles", JSON.stringify({ source: "Client review of leadership cards" })],
+    );
+    if (claim.affectedRows) {
+      for (const [slug, role, discipline] of [
+        ["akhilesh-padinhare", "Executive Director", "Investment & Strategy"],
+        ["anish-kasim", "Executive Director", "Development management & delivery"],
+      ]) {
+        await transaction.execute(
+          "UPDATE cms_team_members SET role_title = ?, discipline = ? WHERE slug = ? AND deleted_at IS NULL",
+          [role, discipline, slug],
+        );
+      }
+    }
+    await transaction.commit();
+  } catch (error) {
+    await transaction.rollback();
+    throw error;
+  } finally {
+    transaction.release();
+  }
+}
+
 function fallbackMembers(): CmsTeamMember[] {
   return [
     ...legacyMembers.map((item) => ({
@@ -247,6 +277,7 @@ export async function getTeamMembers(includeDrafts = false): Promise<CmsTeamMemb
     await seedLegacyTeamOnce();
     await seedDemoTeamOnce();
     await updateTeamPortraitsOnce();
+    await updateTeamTitlesOnce();
     const [rows] = await database.query<TeamMemberRow[]>(
       `SELECT slug, name, role_title, discipline, visual_label, portrait, profile_portrait,
         biography_one, biography_two, biography_three, biography_four, biography_five,

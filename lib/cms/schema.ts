@@ -153,7 +153,7 @@ export const CMS_DEFINITIONS = [
     fields: leaderFields,
     fallback: {
       name: "Akhilesh Padinhare",
-      role: "Founder and Executive Director",
+      role: "Executive Director",
       discipline: "Investment & Strategy",
       visualLabel: "Invest",
       portrait: "leadership-portrait-02.webp",
@@ -173,8 +173,8 @@ export const CMS_DEFINITIONS = [
     fields: leaderFields,
     fallback: {
       name: "Anish Kasim",
-      role: "Executive Director at Real Estate Development",
-      discipline: "Real Estate Development",
+      role: "Executive Director",
+      discipline: "Development management & delivery",
       visualLabel: "Estate",
       portrait: "leadership-portrait-03.webp",
       profilePortrait: "leadership-profile-portrait-03.webp",
