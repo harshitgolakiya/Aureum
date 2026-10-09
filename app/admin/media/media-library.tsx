@@ -3,10 +3,22 @@
 import Image from "next/image";
 import { useMemo, useRef, useState } from "react";
 import type { MediaAsset } from "@/lib/cms/media";
+import type { UploadStorageStatus } from "@/lib/cms/media-storage";
 
 function bytes(value: number) { if (value < 1024 * 1024) return `${Math.max(1, Math.round(value / 1024))} KB`; return `${(value / 1024 / 1024).toFixed(1)} MB`; }
 
-export function MediaLibrary({ initialAssets, canEdit }: { initialAssets: MediaAsset[]; canEdit: boolean }) {
+/** Reads a JSON API response without throwing on proxy or server error pages. */
+async function readResponse(response: Response): Promise<{ message: string; [key: string]: unknown }> {
+  const text = await response.text();
+  try {
+    const payload = JSON.parse(text) as { message?: string; [key: string]: unknown };
+    return { ...payload, message: payload.message ?? (response.ok ? "Done." : `Request failed (HTTP ${response.status}).`) };
+  } catch {
+    return { message: `The server returned an unexpected ${response.status} response${text.trim() ? `: ${text.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 160)}` : "."}` };
+  }
+}
+
+export function MediaLibrary({ initialAssets, canEdit, storage }: { initialAssets: MediaAsset[]; canEdit: boolean; storage?: UploadStorageStatus }) {
   const uploadRef = useRef<HTMLFormElement>(null);
   const [assets, setAssets] = useState(initialAssets);
   const [query, setQuery] = useState("");
@@ -25,11 +37,16 @@ export function MediaLibrary({ initialAssets, canEdit }: { initialAssets: MediaA
 
   async function upload(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const form = new FormData(event.currentTarget);
     setBusy(true); setNotice(null);
-    const response = await fetch("/api/admin/media", { method: "POST", body: new FormData(event.currentTarget) });
-    const payload = await response.json();
-    setBusy(false); setNotice({ ok: response.ok, message: payload.message });
-    if (response.ok) { uploadRef.current?.reset(); await refreshAssets(); setSelectedId(payload.asset.id); }
+    try {
+      const response = await fetch("/api/admin/media", { method: "POST", body: form });
+      const payload = await readResponse(response);
+      setNotice({ ok: response.ok, message: payload.message });
+      if (response.ok) { uploadRef.current?.reset(); await refreshAssets(); setSelectedId((payload.asset as MediaAsset).id); }
+    } catch (cause) {
+      setNotice({ ok: false, message: `The upload could not be sent: ${cause instanceof Error ? cause.message : "network error"}.` });
+    } finally { setBusy(false); }
   }
 
   async function saveDetails(event: React.FormEvent<HTMLFormElement>) {
@@ -37,7 +54,7 @@ export function MediaLibrary({ initialAssets, canEdit }: { initialAssets: MediaA
     setBusy(true); setNotice(null);
     const form = new FormData(event.currentTarget);
     const response = await fetch("/api/admin/media", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: selected.id, filename: form.get("filename"), altText: form.get("altText"), caption: form.get("caption"), focalX: form.get("focalX"), focalY: form.get("focalY"), posterPath: form.get("posterPath") }) });
-    const payload = await response.json(); setBusy(false); setNotice({ ok: response.ok, message: payload.message });
+    const payload = await readResponse(response); setBusy(false); setNotice({ ok: response.ok, message: payload.message });
     if (response.ok) await refreshAssets();
   }
 
@@ -46,7 +63,7 @@ export function MediaLibrary({ initialAssets, canEdit }: { initialAssets: MediaA
     const form = new FormData(event.currentTarget); form.set("replaceId", selected.id); form.set("filename", selected.filename); form.set("altText", selected.altText); form.set("caption", selected.caption); form.set("focalX", String(selected.focalX)); form.set("focalY", String(selected.focalY)); form.set("posterPath", selected.posterPath);
     setBusy(true); setNotice(null);
     const response = await fetch("/api/admin/media", { method: "POST", body: form });
-    const payload = await response.json(); setBusy(false); setNotice({ ok: response.ok, message: payload.message });
+    const payload = await readResponse(response); setBusy(false); setNotice({ ok: response.ok, message: payload.message });
     if (response.ok) { (event.currentTarget as HTMLFormElement).reset(); await refreshAssets(); }
   }
 
@@ -54,13 +71,15 @@ export function MediaLibrary({ initialAssets, canEdit }: { initialAssets: MediaA
     if (!selected || !window.confirm(`Delete “${selected.filename}”? This cannot be undone.`)) return;
     setBusy(true); setNotice(null);
     const response = await fetch(`/api/admin/media?id=${encodeURIComponent(selected.id)}`, { method: "DELETE" });
-    const payload = await response.json(); setBusy(false); setNotice({ ok: response.ok, message: payload.usage?.length ? `${payload.message} ${payload.usage.join(", ")}` : payload.message });
+    const payload = await readResponse(response); const usage = Array.isArray(payload.usage) ? (payload.usage as string[]) : []; setBusy(false); setNotice({ ok: response.ok, message: usage.length ? `${payload.message} ${usage.join(", ")}` : payload.message });
     if (response.ok) { setSelectedId(null); await refreshAssets(); }
   }
 
   return <div className="cms-media-library">
     {notice && <div className={`cms-alert ${notice.ok ? "cms-alert-success" : "cms-alert-error"}`}>{notice.message}</div>}
     {!canEdit && <div className="cms-alert">Viewer access is read-only. Asset upload and metadata controls are disabled.</div>}
+    {canEdit && storage && !storage.writable && <div className="cms-alert cms-alert-error">Uploads cannot be saved: the upload folder <code>{storage.root}</code> is not writable ({storage.problem}). Set <code>UPLOAD_DIR</code> to a writable folder outside the app directory in the hosting environment and redeploy.</div>}
+    {canEdit && storage && storage.writable && !storage.configured && <div className="cms-alert">Uploads are being stored inside the app directory (<code>{storage.root}</code>) because <code>UPLOAD_DIR</code> is not set. On hosts that rebuild the app from Git, every deploy deletes those files. Set <code>UPLOAD_DIR</code> to a folder outside the app directory.</div>}
     <section className="cms-library-summary"><div><p className="cms-eyebrow">Media library</p><h2>Optimized assets, ready to publish.</h2></div><div className="cms-library-counts"><span><strong>{assets.filter((item) => item.type === "image").length}</strong>Images</span><span><strong>{assets.filter((item) => item.type === "video").length}</strong>Videos</span><span><strong>{assets.filter((item) => item.usage.length).length}</strong>In use</span></div></section>
 
     {canEdit && <form className="cms-media-upload" ref={uploadRef} onSubmit={upload}>

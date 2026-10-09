@@ -1,6 +1,7 @@
 import "server-only";
 
-import { mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, rename, rm, writeFile } from "node:fs/promises";
+import { constants as fsConstants } from "node:fs";
 import path from "node:path";
 
 /*
@@ -26,6 +27,37 @@ const MIME_BY_EXTENSION: Record<string, string> = {
 export function getUploadRoot() {
   const configured = process.env.UPLOAD_DIR?.trim();
   return configured ? path.resolve(configured) : path.join(process.cwd(), "uploads");
+}
+
+export type UploadStorageStatus = {
+  root: string;
+  configured: boolean;
+  writable: boolean;
+  problem: string;
+};
+
+/** Checks that the upload folder exists (creating it if needed) and accepts writes. */
+export async function getUploadStorageStatus(): Promise<UploadStorageStatus> {
+  const root = getUploadRoot();
+  const configured = Boolean(process.env.UPLOAD_DIR?.trim());
+  const mediaDirectory = path.join(root, "media");
+  try {
+    await mkdir(mediaDirectory, { recursive: true });
+    await access(mediaDirectory, fsConstants.W_OK);
+    const probe = path.join(mediaDirectory, `.write-check.${process.pid}.tmp`);
+    await writeFile(probe, "ok");
+    await rm(probe, { force: true });
+    return { root, configured, writable: true, problem: "" };
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code ?? "unknown";
+    return { root, configured, writable: false, problem: `${code}: ${(error as Error).message}` };
+  }
+}
+
+/** True for filesystem failures (permissions, read-only disk, out of space, missing folder). */
+export function isStorageError(error: unknown) {
+  const code = (error as NodeJS.ErrnoException | undefined)?.code;
+  return typeof code === "string" && ["EACCES", "EPERM", "EROFS", "ENOSPC", "ENOENT", "ENOTDIR", "EBUSY", "EMFILE", "EIO"].includes(code);
 }
 
 export function isUploadedMediaPath(publicPath: string) {

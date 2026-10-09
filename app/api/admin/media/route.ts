@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { cmsRoleCanEdit, getCmsSession } from "@/lib/cms/auth";
 import { deleteMediaRecord, getMediaAsset, getMediaLibrary, registerMediaAsset, updateMediaMetadata, type MediaVariant } from "@/lib/cms/media";
+import { getUploadRoot, isStorageError } from "@/lib/cms/media-storage";
 
 export const runtime = "nodejs";
 const IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"]);
@@ -91,7 +92,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, asset: await getMediaAsset(id), message: existing ? "Media replaced." : "Media uploaded." });
   } catch (cause) {
     console.error("Media upload failed", cause);
-    return error("The media file could not be processed.", 422);
+    if (isStorageError(cause)) {
+      const code = (cause as NodeJS.ErrnoException).code;
+      return error(`The file could not be written to the upload folder (${code}) at ${getUploadRoot()}. Set UPLOAD_DIR to a writable folder outside the app directory and redeploy.`, 500);
+    }
+    if (typeof (cause as { code?: unknown })?.code === "string" && /^(ER_|ECONNREFUSED|ETIMEDOUT|PROTOCOL_)/.test(String((cause as { code: string }).code))) {
+      return error(`The media record could not be saved to the database (${(cause as { code: string }).code}).`, 500);
+    }
+    if (cause instanceof Error && /DATABASE_URL/.test(cause.message)) return error("The CMS database is not configured, so uploads cannot be saved.", 500);
+    return error("The media file could not be processed. Check that it is a valid image or video.", 422);
   }
 }
 
