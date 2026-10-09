@@ -573,6 +573,23 @@ footer:before,
     linear-gradient(0deg, rgba(8, 21, 39, 0.58), transparent 48%);
   pointer-events: none;
 }
+/* Project heroes carry white copy over bright site photography; shade them like the page heroes. */
+.case-hero:not(.case-hero-without-image):after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(8, 21, 39, 0.9) 0%, rgba(8, 21, 39, 0.62) 42%, rgba(8, 21, 39, 0.1) 78%),
+    linear-gradient(0deg, rgba(8, 21, 39, 0.72), rgba(8, 21, 39, 0.2) 45%, transparent 70%);
+  pointer-events: none;
+}
+.case-hero > div:last-child {
+  z-index: 2;
+}
+.case-hero h1 {
+  text-shadow: 0 2px 28px rgba(4, 12, 24, 0.3);
+}
 .page-hero .hero-identity {
   display: none;
 }
