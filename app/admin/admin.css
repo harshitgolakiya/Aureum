@@ -1341,3 +1341,21 @@
   .cms-page-actionbar > div:first-child { display: none; }
   .cms-page-actionbar > div:last-child { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
 }
+
+/* Upload drop zone: confirm the chosen file so editors know the picker worked. */
+.cms-upload-drop.has-file {
+  border-style: solid;
+  border-color: #2c8a61;
+  background: #f1faf5;
+}
+.cms-upload-drop.has-file > span {
+  color: #1f5f44;
+}
+.cms-upload-drop.has-file strong {
+  font-weight: 700;
+}
+/* Result messages sit beside the action that produced them. */
+.cms-alert-inline {
+  grid-column: 1 / -1;
+  margin: 0;
+}
