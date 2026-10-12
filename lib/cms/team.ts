@@ -215,6 +215,21 @@ async function updateTeamPortraitsOnce() {
         );
       }
     }
+    const [profileClaim] = await transaction.execute<ResultSetHeader>(
+      "INSERT IGNORE INTO cms_migrations (migration_key, details_json) VALUES (?, ?)",
+      ["2026-10-12-inner-team-portraits", JSON.stringify({ source: "Client supplied Anish and Tejeshree inner profile images" })],
+    );
+    if (profileClaim.affectedRows) {
+      for (const [slug, filename] of [
+        ["anish-kasim", "ani-in.webp"],
+        ["tejeshree-jadhav", "tj-in.webp"],
+      ]) {
+        await transaction.execute(
+          "UPDATE cms_team_members SET profile_portrait = ? WHERE slug = ? AND deleted_at IS NULL",
+          [`/leadership/${filename}`, slug],
+        );
+      }
+    }
     await transaction.commit();
   } catch (error) {
     await transaction.rollback();

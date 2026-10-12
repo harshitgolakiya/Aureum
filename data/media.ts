@@ -44,7 +44,7 @@ export const approvedMedia: Record<string, ApprovedMedia> = {
     focalPoint: "50% 0%",
   },
   "leadership-profile-portrait-03.webp": {
-    src: "/leadership/anish inner.webp",
+    src: "/leadership/ani-in.webp",
     alt: "Portrait of Anish Kasim, Executive Director",
     focalPoint: "50% 0%",
   },
@@ -54,7 +54,7 @@ export const approvedMedia: Record<string, ApprovedMedia> = {
     focalPoint: "50% 20%",
   },
   "leadership-profile-portrait-tejeshree.webp": {
-    src: "/leadership/tj.webp",
+    src: "/leadership/tj-in.webp",
     alt: "Portrait of Tejeshree Jadhav, Associate Director – Industrial Assets",
     focalPoint: "50% 50%",
   },
