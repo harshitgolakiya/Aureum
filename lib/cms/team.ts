@@ -48,7 +48,7 @@ const demoMember: TeamMember = {
   role: "Associate Director, Industrial Development",
   discipline: "Industrial Development",
   visualLabel: "Development",
-  portrait: "/leadership/Siva_photo.webp",
+  portrait: "/leadership/siva.webp",
   profilePortrait: "/leadership/newbie.webp",
   biographyOne:
     "Sivaprasath Balakrishnan brings deep technical and development expertise to the planning and delivery of industrial and logistics assets across the UAE.",
@@ -199,15 +199,15 @@ async function updateTeamPortraitsOnce() {
     await transaction.beginTransaction();
     const [claim] = await transaction.execute<ResultSetHeader>(
       "INSERT IGNORE INTO cms_migrations (migration_key, details_json) VALUES (?, ?)",
-      ["2026-10-colour-team-portraits", JSON.stringify({ source: "Client supplied colour profile photos" })],
+      ["2026-10-12-about-team-portraits-v2", JSON.stringify({ source: "Client supplied replacement About Us portraits, including akhi-2" })],
     );
     if (claim.affectedRows) {
       for (const [slug, filename] of [
-        ["aasim-ameer", "Aasim Ameer_photo.webp"],
-        ["akhilesh-padinhare", "Akhilesh Padinhare_photo.webp"],
-        ["anish-kasim", "Anish Kasim_photo.webp"],
-        ["tejeshree-jadhav", "DJ_photopng.webp"],
-        ["sivaprasath-balakrishnan", "Siva_photo.webp"],
+        ["aasim-ameer", "aasi.webp"],
+        ["akhilesh-padinhare", "akhi-2.webp"],
+        ["anish-kasim", "ani.webp"],
+        ["tejeshree-jadhav", "tj_1.webp"],
+        ["sivaprasath-balakrishnan", "siva.webp"],
       ]) {
         await transaction.execute(
           "UPDATE cms_team_members SET portrait = ? WHERE slug = ? AND deleted_at IS NULL",
