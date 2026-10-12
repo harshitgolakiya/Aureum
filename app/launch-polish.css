@@ -1064,3 +1064,56 @@ body .system-story .system-copy h2,
     padding-top: 3.5rem;
   }
 }
+
+/* Floating scroll control: next section near the top of a page, back to top after that. */
+.scroll-assist {
+  position: fixed;
+  z-index: 70;
+  right: var(--pad);
+  bottom: 76px;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(183, 154, 88, 0.55);
+  border-radius: 50%;
+  background: rgba(16, 26, 43, 0.86);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(4, 12, 24, 0.28);
+  backdrop-filter: blur(6px);
+  transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.3s var(--ease);
+}
+.scroll-assist svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.45s var(--ease);
+}
+.scroll-assist-up svg {
+  transform: rotate(180deg);
+}
+.scroll-assist:hover,
+.scroll-assist:focus-visible {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy);
+  transform: translateY(-2px);
+}
+.scroll-assist:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .scroll-assist {
+    bottom: 64px;
+    width: 44px;
+    height: 44px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-assist,
+  .scroll-assist svg {
+    transition: none;
+  }
+}

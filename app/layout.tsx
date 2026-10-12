@@ -25,6 +25,7 @@ import "./developments-story.css";
 import "./subtle-radius.css";
 import { Footer, Header } from "@/components/layout";
 import { RouteExperience } from "@/components/route-experience";
+import { ScrollAssist } from "@/components/scroll-assist";
 import { WebVitals } from "@/components/web-vitals";
 import { ConversationProvider } from "@/components/conversation-modal";
 import { getCmsContent } from "@/lib/cms/content";
@@ -103,6 +104,7 @@ export default async function RootLayout({
             </div>
             <Footer content={footerContent} />
           </RouteExperience>
+          <ScrollAssist />
         </ConversationProvider>
         <WebVitals />
       </body>
