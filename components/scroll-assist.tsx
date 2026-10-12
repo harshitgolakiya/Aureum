@@ -7,8 +7,8 @@ type Mode = "down" | "up";
 
 /**
  * Floating scroll control in the bottom-right corner. Near the top of a page it
- * points down and jumps straight to the footer; once the visitor has scrolled
- * past about half a screen it points up and returns to the top.
+ * points down and jumps straight to the footer; once the footer is on screen it
+ * points up and returns to the top.
  */
 export function ScrollAssist() {
   const pathname = usePathname();
@@ -22,7 +22,10 @@ export function ScrollAssist() {
       frame = 0;
       const scrollable = document.documentElement.scrollHeight - innerHeight;
       setReady(scrollable > innerHeight * 0.5);
-      setMode(scrollY > innerHeight * 0.6 ? "up" : "down");
+      // Point down until the footer has come into view, then offer the way back up.
+      const footer = document.querySelector<HTMLElement>("footer");
+      const footerVisible = footer ? footer.getBoundingClientRect().top < innerHeight - 80 : scrollY >= scrollable - 2;
+      setMode(footerVisible ? "up" : "down");
     };
     const onScroll = () => { if (!frame) frame = requestAnimationFrame(update); };
     update();
