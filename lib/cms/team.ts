@@ -269,6 +269,31 @@ async function updateTeamTitlesOnce() {
   }
 }
 
+async function updateAkhileshBiographyOnce() {
+  const database = getCmsPool();
+  if (!database) return;
+  const transaction = await database.getConnection();
+  try {
+    await transaction.beginTransaction();
+    const [claim] = await transaction.execute<ResultSetHeader>(
+      "INSERT IGNORE INTO cms_migrations (migration_key, details_json) VALUES (?, ?)",
+      ["2026-10-akhilesh-biography-two", JSON.stringify({ source: "Statement supplied by Akhilesh after website review" })],
+    );
+    if (claim.affectedRows) {
+      await transaction.execute(
+        "UPDATE cms_team_members SET biography_two = ? WHERE slug = 'akhilesh-padinhare' AND deleted_at IS NULL",
+        [cmsDefinitionByKey["leader.akhilesh"].fallback.biographyTwo],
+      );
+    }
+    await transaction.commit();
+  } catch (error) {
+    await transaction.rollback();
+    throw error;
+  } finally {
+    transaction.release();
+  }
+}
+
 function fallbackMembers(): CmsTeamMember[] {
   return [
     ...legacyMembers.map((item) => ({
@@ -293,6 +318,7 @@ export async function getTeamMembers(includeDrafts = false): Promise<CmsTeamMemb
     await seedDemoTeamOnce();
     await updateTeamPortraitsOnce();
     await updateTeamTitlesOnce();
+    await updateAkhileshBiographyOnce();
     const [rows] = await database.query<TeamMemberRow[]>(
       `SELECT slug, name, role_title, discipline, visual_label, portrait, profile_portrait,
         biography_one, biography_two, biography_three, biography_four, biography_five,
