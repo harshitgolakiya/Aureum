@@ -54,14 +54,14 @@ export const models = [
   {
     n: "01",
     title: "Predictive Development",
-    qualifier: "Built-to-lease",
+    qualifier: "Build-to-lease",
     lead: "We originate the opportunity.",
     body: "Market intelligence identifies where demand is heading. Aureum turns that insight into industrial developments positioned for long-term performance.",
   },
   {
     n: "02",
     title: "Purpose-Built Development",
-    qualifier: "Built-to-suit",
+    qualifier: "Build-to-suit",
     lead: "We develop around your requirements.",
     body: "Aureum develops fully functional industrial and logistics operations facilities built around specific occupier operational requirements.",
   },

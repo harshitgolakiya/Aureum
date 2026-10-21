@@ -475,6 +475,7 @@
 .collective-portrait-trigger .media {
   transition: transform 0.7s var(--ease);
 }
+.collective-portrait .media::after,
 .collective-portrait-trigger .media::after {
   content: none;
 }
@@ -668,6 +669,39 @@
 .bio-overlay h3 {
   color: var(--gold);
   font-weight: 400;
+}
+.bio-role-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.bio-linkedin {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  color: var(--gold);
+}
+.bio-linkedin svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+a.bio-linkedin:hover,
+a.bio-linkedin:focus-visible {
+  background: var(--gold);
+  color: var(--navy);
+}
+a.bio-linkedin:focus-visible {
+  outline: 2px solid white;
+  outline-offset: 3px;
+}
+.bio-linkedin.is-unavailable {
+  opacity: 0.55;
 }
 .bio-overlay p {
   color: var(--ivory);

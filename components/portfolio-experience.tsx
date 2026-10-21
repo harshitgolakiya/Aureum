@@ -32,10 +32,9 @@ export function PortfolioListing({ projects }: { projects: Project[] }) {
     <section className="portfolio-explore">
       <div className="portfolio-filter-bar">
         <div>
-          <small>All Developments</small>
-          <strong>
-            {visible.length.toString().padStart(2, "0")} /{" "}
-            {projects.length.toString().padStart(2, "0")}
+          <small>Developments shown</small>
+          <strong role="status">
+            {visible.length} of {projects.length}
           </strong>
         </div>
         <div role="group" aria-label="Filter developments">

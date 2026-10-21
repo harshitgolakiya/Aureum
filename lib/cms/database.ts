@@ -217,6 +217,7 @@ export async function ensureCmsSchema() {
         visual_label VARCHAR(60) NOT NULL DEFAULT '',
         portrait VARCHAR(500) NOT NULL,
         profile_portrait VARCHAR(500) NOT NULL,
+        linkedin_url VARCHAR(500) NOT NULL DEFAULT '',
         biography_one TEXT NOT NULL,
         biography_two TEXT NOT NULL,
         biography_three TEXT NOT NULL,
@@ -233,6 +234,12 @@ export async function ensureCmsSchema() {
         KEY cms_team_members_public_order (published, leadership_group, sort_order)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     `);
+    const [teamLinkedinColumns] = await database.query<RowDataPacket[]>(
+      "SHOW COLUMNS FROM cms_team_members LIKE 'linkedin_url'",
+    );
+    if (!teamLinkedinColumns.length) {
+      await database.execute("ALTER TABLE cms_team_members ADD COLUMN linkedin_url VARCHAR(500) NOT NULL DEFAULT '' AFTER profile_portrait");
+    }
     const [postWorkflowColumns] = await database.query<RowDataPacket[]>(
       "SHOW COLUMNS FROM cms_posts WHERE Field IN ('archived', 'workflow_status', 'scheduled_at', 'deleted_at')",
     );
@@ -422,6 +429,13 @@ export async function ensureCmsSchema() {
         PRIMARY KEY (migration_key)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     `);
+    await database.execute(
+      `UPDATE cms_entries
+       SET value_json = JSON_SET(value_json, '$.copy', REPLACE(JSON_UNQUOTE(JSON_EXTRACT(value_json, '$.copy')), ?, ?))
+       WHERE content_key = 'who.hero'
+         AND JSON_UNQUOTE(JSON_EXTRACT(value_json, '$.copy')) LIKE ?`,
+      ["multi-disciplinary", "multidisciplinary", "%multi-disciplinary%"],
+    );
   })();
   return schemaReady;
 }

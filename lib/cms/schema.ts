@@ -20,6 +20,7 @@ export type LeaderContent = {
   visualLabel: string;
   portrait: string;
   profilePortrait: string;
+  linkedinUrl?: string;
   biographyOne: string;
   biographyTwo: string;
   biographyThree: string;
@@ -79,6 +80,7 @@ const leaderFields = [
   { name: "visualLabel", label: "Card label", maxLength: 30 },
   { name: "portrait", label: "Media reservation label", maxLength: 120 },
   { name: "profilePortrait", label: "Profile media reservation label", maxLength: 120 },
+  { name: "linkedinUrl", label: "LinkedIn profile URL", kind: "url", maxLength: 500, required: false },
   { name: "biographyOne", label: "Biography — introduction", kind: "textarea", maxLength: 1200 },
   { name: "biographyTwo", label: "Biography — experience", kind: "textarea", maxLength: 1800 },
   { name: "biographyThree", label: "Biography — Aureum role", kind: "textarea", maxLength: 1200 },
@@ -122,7 +124,7 @@ export const CMS_DEFINITIONS = [
     fallback: {
       eyebrow: "Who We Are",
       title: "Built around a different view of industrial development.",
-      copy: "Industrial development is multi-disciplinary. Aureum brings the right commercial, technical and strategic thinking together to shape the opportunity from every angle.",
+      copy: "Industrial development is multidisciplinary. Aureum brings the right commercial, technical and strategic thinking together to shape the opportunity from every angle.",
     },
   },
   {

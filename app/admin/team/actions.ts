@@ -33,6 +33,7 @@ function memberFromForm(formData: FormData): TeamMember {
     visualLabel: value(formData, "visualLabel"),
     portrait: value(formData, "portrait"),
     profilePortrait: value(formData, "profilePortrait"),
+    linkedinUrl: value(formData, "linkedinUrl"),
     biographyOne: value(formData, "biographyOne"),
     biographyTwo: value(formData, "biographyTwo"),
     biographyThree: value(formData, "biographyThree"),
@@ -53,6 +54,16 @@ function validate(member: TeamMember) {
   if (member.name.length > 255) errors.name = "Keep this under 256 characters.";
   if (member.role.length > 255) errors.role = "Keep this under 256 characters.";
   if (member.discipline.length > 180) errors.discipline = "Keep this under 181 characters.";
+  if (member.linkedinUrl) {
+    try {
+      const url = new URL(member.linkedinUrl);
+      if (url.protocol !== "https:" || !["linkedin.com", "www.linkedin.com"].includes(url.hostname) || !url.pathname.startsWith("/in/") || !url.pathname.slice(4).replaceAll("/", "") || url.username || url.password || url.port || member.linkedinUrl.length > 500) {
+        errors.linkedinUrl = "Enter an HTTPS LinkedIn profile URL, such as https://www.linkedin.com/in/name/.";
+      }
+    } catch {
+      errors.linkedinUrl = "Enter a valid LinkedIn profile URL.";
+    }
+  }
   return errors;
 }
 

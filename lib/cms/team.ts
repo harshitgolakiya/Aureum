@@ -24,6 +24,7 @@ type TeamMemberRow = RowDataPacket & {
   visual_label: string;
   portrait: string;
   profile_portrait: string;
+  linkedin_url: string;
   biography_one: string;
   biography_two: string;
   biography_three: string;
@@ -45,7 +46,7 @@ const legacyMembers = [
 const demoMember: TeamMember = {
   slug: "sivaprasath-balakrishnan",
   name: "Sivaprasath Balakrishnan",
-  role: "Associate Director, Industrial Development",
+  role: "Associate Director – Industrial Development",
   discipline: "Industrial Development",
   visualLabel: "Development",
   portrait: "/leadership/siva.webp",
@@ -74,6 +75,7 @@ function fromRow(row: TeamMemberRow): CmsTeamMember {
     visualLabel: row.visual_label,
     portrait: row.portrait,
     profilePortrait: row.profile_portrait,
+    linkedinUrl: row.linkedin_url,
     biographyOne: row.biography_one,
     biographyTwo: row.biography_two,
     biographyThree: row.biography_three,
@@ -260,6 +262,21 @@ async function updateTeamTitlesOnce() {
         );
       }
     }
+    const [seniorClaim] = await transaction.execute<ResultSetHeader>(
+      "INSERT IGNORE INTO cms_migrations (migration_key, details_json) VALUES (?, ?)",
+      ["2026-10-21-senior-management-title-format", JSON.stringify({ source: "Consistent senior management title separators" })],
+    );
+    if (seniorClaim.affectedRows) {
+      for (const [slug, role] of [
+        ["tejeshree-jadhav", "Associate Director – Industrial Assets"],
+        ["sivaprasath-balakrishnan", "Associate Director – Industrial Development"],
+      ]) {
+        await transaction.execute(
+          "UPDATE cms_team_members SET role_title = ? WHERE slug = ? AND deleted_at IS NULL",
+          [role, slug],
+        );
+      }
+    }
     await transaction.commit();
   } catch (error) {
     await transaction.rollback();
@@ -320,7 +337,7 @@ export async function getTeamMembers(includeDrafts = false): Promise<CmsTeamMemb
     await updateTeamTitlesOnce();
     await updateAkhileshBiographyOnce();
     const [rows] = await database.query<TeamMemberRow[]>(
-      `SELECT slug, name, role_title, discipline, visual_label, portrait, profile_portrait,
+      `SELECT slug, name, role_title, discipline, visual_label, portrait, profile_portrait, linkedin_url,
         biography_one, biography_two, biography_three, biography_four, biography_five,
         leadership_group, published, sort_order, updated_at
        FROM cms_team_members
@@ -356,18 +373,18 @@ export async function saveTeamMember(originalSlug: string, member: TeamMember) {
     `INSERT INTO cms_team_members
       (slug, name, role_title, discipline, visual_label, portrait, profile_portrait,
        biography_one, biography_two, biography_three, biography_four, biography_five,
-       leadership_group, published, sort_order)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+       leadership_group, published, sort_order, linkedin_url)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
      ON DUPLICATE KEY UPDATE name = VALUES(name), role_title = VALUES(role_title),
        discipline = VALUES(discipline), visual_label = VALUES(visual_label),
        portrait = VALUES(portrait), profile_portrait = VALUES(profile_portrait),
        biography_one = VALUES(biography_one), biography_two = VALUES(biography_two),
        biography_three = VALUES(biography_three), biography_four = VALUES(biography_four),
        biography_five = VALUES(biography_five), leadership_group = VALUES(leadership_group),
-       published = VALUES(published), sort_order = VALUES(sort_order), deleted_at = NULL`,
+       published = VALUES(published), sort_order = VALUES(sort_order), linkedin_url = VALUES(linkedin_url), deleted_at = NULL`,
     [member.slug, member.name, member.role, member.discipline, member.visualLabel, member.portrait,
       member.profilePortrait, member.biographyOne, member.biographyTwo, member.biographyThree,
-      member.biographyFour, member.biographyFive, member.group, member.published, member.sortOrder],
+      member.biographyFour, member.biographyFive, member.group, member.published, member.sortOrder, member.linkedinUrl ?? ""],
   );
 }
 

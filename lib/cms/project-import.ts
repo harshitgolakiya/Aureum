@@ -1,7 +1,41 @@
 import "server-only";
-import type { RowDataPacket } from "mysql2/promise";
+import type { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { clientProjects } from "@/data/client-projects";
 import { getCmsPool } from "./database";
+
+export async function addTradingLeaseOptionOnce() {
+  const database = getCmsPool();
+  if (!database) return;
+  const db = await database.getConnection();
+  try {
+    await db.beginTransaction();
+    const [claim] = await db.execute<ResultSetHeader>(
+      "INSERT IGNORE INTO cms_migrations (migration_key, details_json) VALUES (?, ?)",
+      ["2026-10-21-trading-lease-option", JSON.stringify({ slug: "aureum-trading" })],
+    );
+    if (claim.affectedRows) {
+      await db.execute(
+        `UPDATE cms_projects SET engagement = ?,
+         project_details = CASE WHEN JSON_UNQUOTE(JSON_EXTRACT(project_details, '$.offering')) = ?
+           THEN JSON_SET(project_details, '$.offering', ?) ELSE project_details END,
+         homepage_closing = CASE WHEN homepage_closing = ? THEN ? ELSE homepage_closing END,
+         lock_version = lock_version + 1
+         WHERE slug = 'aureum-trading' AND deleted_at IS NULL`,
+        ["Build-to-own | Lease",
+          "Build-to-own | Build-to-suit | Independent development",
+          "Build-to-own | Lease | Build-to-suit | Independent development",
+          "Build-to-own | Build-to-suit | Independent development",
+          "Build-to-own | Lease | Build-to-suit | Independent development"],
+      );
+    }
+    await db.commit();
+  } catch (error) {
+    await db.rollback();
+    throw error;
+  } finally {
+    db.release();
+  }
+}
 
 // Versioned, transactional import. Later CMS edits are never overwritten.
 export async function importClientProjectsOnce() {

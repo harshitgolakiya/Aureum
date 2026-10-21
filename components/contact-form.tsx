@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useId, useRef, useState } from "react";
+import { CONTACT_INTERESTS, CONTACT_SOURCES } from "@/lib/contact-options";
 
 type Values = {
   name: string;
@@ -208,13 +209,9 @@ export function ContactForm({ projectName = "" }: { projectName?: string }) {
           aria-describedby={errors.interest ? `${fieldId("interest")}-error` : undefined}
         >
           <option value="">Select one</option>
-          <option>Industrial Investment</option>
-          <option>Development Management</option>
-          <option>Strategic Partnership</option>
-          <option>Land Development</option>
-          <option>Market Intelligence</option>
-          <option>Built-to-suit</option>
-          <option>Other</option>
+          {CONTACT_INTERESTS.map((interest) => (
+            <option key={interest} value={interest}>{interest}</option>
+          ))}
         </select>
         {errors.interest && (
           <small id={`${fieldId("interest")}-error`}>{errors.interest}</small>
@@ -247,10 +244,9 @@ export function ContactForm({ projectName = "" }: { projectName?: string }) {
           onChange={(event) => update("source", event.target.value)}
         >
           <option value="">Select one</option>
-          <option>Referral</option>
-          <option>Search</option>
-          <option>Event</option>
-          <option>Other</option>
+          {CONTACT_SOURCES.filter(Boolean).map((source) => (
+            <option key={source} value={source}>{source}</option>
+          ))}
         </select>
       </label>
       <div className="form-actions">

@@ -14,7 +14,7 @@ import { recordCmsRevision } from "./revisions";
 import { recordCmsAudit } from "./audit";
 import { softDeleteCmsRecord } from "./recovery";
 import { parseProjectDetails } from "@/data/project-details";
-import { importClientProjectsOnce } from "./project-import";
+import { addTradingLeaseOptionOnce, importClientProjectsOnce } from "./project-import";
 
 type ProjectRow = RowDataPacket & {
   project_details?: unknown;
@@ -211,6 +211,7 @@ export async function getProjects(includeDrafts = false): Promise<Project[]> {
     await ensureCmsSchema();
     await applyHomepageStoryCopyMigration();
     await importClientProjectsOnce();
+    await addTradingLeaseOptionOnce();
     await publishDueContent();
     const [rows] = await database.query<ProjectRow[]>(
       `SELECT slug, name, location, asset_type, category, metric, project_status,
@@ -246,6 +247,7 @@ export async function getCmsProjectLibrary(): Promise<CmsProjectListItem[]> {
     await ensureCmsSchema();
     await applyHomepageStoryCopyMigration();
     await importClientProjectsOnce();
+    await addTradingLeaseOptionOnce();
     await publishDueContent();
     const [rows] = await database.query<ProjectRow[]>(
       `SELECT slug, name, location, asset_type, category, metric, project_status,

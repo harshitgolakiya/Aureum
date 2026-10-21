@@ -38,6 +38,7 @@ export function TeamEditor({ member }: { member?: TeamMember }) {
           <EditorField name="role" label="Role" value={member?.role} error={errors.role} required />
           <EditorField name="discipline" label="Discipline" value={member?.discipline} error={errors.discipline} required />
           <EditorField name="visualLabel" label="Card label" value={member?.visualLabel} placeholder="Optional short label" />
+          <EditorField name="linkedinUrl" label="LinkedIn profile URL" value={member?.linkedinUrl} error={errors.linkedinUrl} type="url" placeholder="https://www.linkedin.com/in/name/" />
           <label className="cms-editor-field"><span>Leadership group</span><select name="group" defaultValue={member?.group ?? "senior"}><option value="executive">Executive Leadership</option><option value="senior">Senior Management</option></select></label>
         </EditorSection>
         <EditorSection id="media" number="02" title="Media" copy="Portraits are optional and can be added from the media library at any time.">
@@ -65,7 +66,7 @@ function EditorSection({ id, number, title, copy, children }: { id: string; numb
   return <section className="cms-editor-section" id={id}><header><span>{number}</span><div><h2>{title}</h2><p>{copy}</p></div></header><div className="cms-editor-grid">{children}</div></section>;
 }
 
-function EditorField({ name, label, value = "", error, textarea = false, required = false, wide = false, type = "text", placeholder }: { name: string; label: string; value?: string | number; error?: string; textarea?: boolean; required?: boolean; wide?: boolean; type?: "text" | "number"; placeholder?: string }) {
+function EditorField({ name, label, value = "", error, textarea = false, required = false, wide = false, type = "text", placeholder }: { name: string; label: string; value?: string | number; error?: string; textarea?: boolean; required?: boolean; wide?: boolean; type?: "text" | "number" | "url"; placeholder?: string }) {
   return <label className={`cms-editor-field ${wide ? "is-wide" : ""}`}><span>{label}{!required && <small>Optional</small>}</span>{textarea ? <textarea name={name} defaultValue={value} rows={6} required={required} /> : <input name={name} type={type} defaultValue={value} required={required} placeholder={placeholder} />}{error && <em>{error}</em>}</label>;
 }
 

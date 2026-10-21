@@ -41,9 +41,9 @@ export const clientProjects: Project[] = [
     },
   },
   {
-    ...defaults, slug: "aureum-trading", name: "Aureum Trading", type: "Purpose-built industrial facility", category: "Trading & Logistics", metric: "Approx. 1,450 sqm operational area", status: "Build-to-suit opportunity", engagement: "Build-to-own", sortOrder: 30,
+    ...defaults, slug: "aureum-trading", name: "Aureum Trading", type: "Purpose-built industrial facility", category: "Trading & Logistics", metric: "Approx. 1,450 sqm operational area", status: "Build-to-suit opportunity", engagement: "Build-to-own | Lease", sortOrder: 30,
     philosophy: "A unique opportunity to own a purpose-built industrial facility, developed to meet your operational requirements. From design and specifications to construction, Aureum can work with you to deliver a facility tailored to your business.",
-    details: { ...emptyProjectDetails(), ...contact, headline: "Own the facility built around your business", offering: "Build-to-own | Build-to-suit | Independent development", brochure: "/Aureum Trading.pdf", imageCaption: "Illustrative development concept",
+    details: { ...emptyProjectDetails(), ...contact, headline: "Own the facility built around your business", offering: "Build-to-own | Lease | Build-to-suit | Independent development", brochure: "/Aureum Trading.pdf", imageCaption: "Illustrative development concept",
       specifications: [
         { label: "Approx. plot size", value: "2,500 sqm", note: "" },
         { label: "Approx. built-up area", value: "1,450 sqm", note: operationalArea },
