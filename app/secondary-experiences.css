@@ -1132,18 +1132,43 @@ a.bio-linkedin:focus-visible {
   .leadership-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  /* Small screens: a plain scrolling column instead of a centred two-column grid. */
   .bio-overlay {
-    grid-template-columns: 1fr;
-    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2rem;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 5rem;
+  }
+  .bio-visual {
+    display: block;
+    flex: 0 0 auto;
   }
   .bio-visual .media {
-    width: min(100%, 24rem);
+    width: min(100%, 20rem);
+    max-height: 55svh;
     height: auto;
+    margin: 0 auto;
   }
   .bio-copy {
+    flex: 0 0 auto;
     max-height: none;
     overflow: visible;
     padding-right: 0;
+  }
+  .bio-overlay h2 {
+    margin: 1rem 0;
+    overflow-wrap: anywhere;
+  }
+  .bio-close {
+    position: fixed;
+    top: 1.25rem;
+    right: var(--pad);
+    z-index: 1;
+    padding: 0.5rem 0.75rem;
+    background: rgba(16, 26, 43, 0.85);
   }
   .partner-visual {
     display: none;
